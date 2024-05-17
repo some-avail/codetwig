@@ -332,7 +332,8 @@ proc createDeclarationList(proj_def_pathst: string) =
     else:
       echo "Could not open one or two files"
 
-
+    # phase 3 uses a phase-2 dec-list and appends all used decs from the source-code-range..
+    
 
   except IndexDefect:
     let errob = getCurrentException()
