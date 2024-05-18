@@ -1,0 +1,191 @@
+flashread--------
+    getWebTitle___proc___line: 97
+        getTitleFromWebsite___process_text___proc___110
+    jump_to_end_step___proc___line: 144
+        sequenceFromValueList___fr_tools___proc___155
+        readOptionFromFile___fr_tools___proc___155
+        handleTextPartsFromHtml___process_text___proc___159
+        formatText___process_text___proc___160
+        replaceInPastedText___process_text___proc___166
+    showPage___proc___line: 171
+fr_tools--------
+    sequenceFromValueList___proc___line: 31
+    readOptionFromFile___proc___line: 35
+    newlang___proc___line: 99
+        readOptionFromFile___fr_tools___proc___114
+    doWork___proc___line: 175
+    timeStuff___template___line: 181
+    timeNeatly___template___line: 187
+        newlang___fr_tools___proc___199
+g_mine--------
+    getWebSite___proc___line: 36
+    getWebSiteAsync___proc___line: 82
+    getSubstringPositions___proc___line: 90
+    pairChainsAreValid___proc___line: 122
+    getDataSeqClean___proc___line: 155
+        getSubstringPositions___g_mine___proc___177
+        pairChainsAreValid___g_mine___proc___182
+        getDataSeqClean___g_mine___proc___163
+    getDataSeqDirty___proc___line: 197
+        getSubstringPositions___g_mine___proc___221
+        getDataSeqDirty___g_mine___proc___207
+    getPartFromWebAddress___proc___line: 245
+    getBaseFromWebAddress2___proc___line: 302
+    convertWebLinksToAbsolute___proc___line: 337
+        getBaseFromWebAddress2___g_mine___proc___346
+        getBaseFromWebAddress___process_text___proc___346
+    substringsInString___proc___line: 367
+    linkIsPresent___proc___line: 400
+    multiplyString___proc___line: 409
+    removeSingleStrings___proc___line: 421
+    removeDuplicateStrings___proc___line: 436
+        multiplyString___g_mine___proc___447
+    removeLongWords___proc___line: 462
+    getInnerText3___proc___line: 484
+        getDataSeqDirty___g_mine___proc___489
+        substringsInString___g_mine___proc___539
+        removeSingleStrings___g_mine___proc___524
+        removeDuplicateStrings___g_mine___proc___525
+        removeLongWords___g_mine___proc___553
+    getInnerText3_old___proc___line: 572
+        getDataSeqDirty___g_mine___proc___577
+        removeSingleStrings___g_mine___proc___597
+        removeDuplicateStrings___g_mine___proc___605
+        removeLongWords___g_mine___proc___600
+    getInnerText2___proc___line: 612
+        getDataSeqDirty___g_mine___proc___617
+        removeSingleStrings___g_mine___proc___644
+        removeDuplicateStrings___g_mine___proc___645
+        removeLongWords___g_mine___proc___638
+    createSeqOfUniqueWords___proc___line: 652
+        removeSingleStrings___g_mine___proc___667
+    calcWordFrequencies___proc___line: 678
+        removeSingleStrings___g_mine___proc___707
+    calcCumulFrequencies___proc___line: 798
+        removeSingleStrings___g_mine___proc___814
+    calcCumulFrequencies_old___proc___line: 847
+        removeSingleStrings___g_mine___proc___861
+    getDataSequence___proc___line: 868
+        getWebSite___g_mine___proc___883
+        getDataSeqClean___g_mine___proc___888
+        getDataSeqDirty___g_mine___proc___893
+    getDataBetweenTags2___proc___line: 899
+        getDataSequence___g_mine___proc___910
+    getTitleFromWebsite2___proc___line: 924
+        getDataBetweenTags2___g_mine___proc___927
+        getDataBetweenTags___process_text___proc___927
+    getChildLinks___proc___line: 936
+        getWebSite___g_mine___proc___958
+        getDataSeqClean___g_mine___proc___964
+        getDataSeqDirty___g_mine___proc___969
+        convertWebLinksToAbsolute___g_mine___proc___1005
+        substringsInString___g_mine___proc___1007
+        linkIsPresent___g_mine___proc___1009
+        getInnerText2___g_mine___proc___995
+        getDataSequence___g_mine___proc___975
+        getTitleFromWebsite2___g_mine___proc___982
+        getChildLinks___g_mine___proc___1017
+        getInnerText___process_text___proc___995
+        getTitleFromWebsite___process_text___proc___982
+    countWords___proc___line: 1029
+    getTagContent___proc___line: 1036
+        getInnerText2___g_mine___proc___1060
+        getDataSequence___g_mine___proc___1045
+        getInnerText___process_text___proc___1060
+    enlistSequenceToDoc___proc___line: 1071
+    getHtmlHeaders___proc___line: 1102
+        multiplyString___g_mine___proc___1139
+        getInnerText2___g_mine___proc___1131
+        getDataSequence___g_mine___proc___1110
+        getInnerText___process_text___proc___1131
+g_options--------
+    readOptionFromFile_fut___proc___line: 44
+    readOptionFromFile___proc___line: 118
+    getValList___proc___line: 190
+    newlang___proc___line: 196
+        readOptionFromFile___fr_tools___proc___211
+jo_htmlgen--------
+    setCheckBoxSet___proc___line: 79
+        newlang___fr_tools___proc___108
+    setDropDown___proc___line: 129
+        newlang___fr_tools___proc___156
+loadgui--------
+    loadTextLangsFromConfig___proc___line: 31
+        readOptionFromFile___fr_tools___proc___43
+    loadComboFromDir_Old___proc___line: 63
+        loadComboFromDir___loadgui___proc___64
+    loadComboFromDir___proc___line: 93
+        loadComboFromDir___loadgui___proc___94
+    setCheckboxSetFromConfig___proc___line: 129
+        readOptionFromFile___fr_tools___proc___144
+    testWalkdir___proc___line: 159
+process_text--------
+    testWebSite___proc___line: 109
+    getSubstringPositions___proc___line: 126
+    getDataBetweenTags___proc___line: 159
+        getSubstringPositions___g_mine___proc___186
+        getDataBetweenTags___process_text___proc___170
+    getInnerText___proc___line: 219
+        getDataBetweenTags___process_text___proc___234
+    myTest___proc___line: 246
+    calculateWordFrequencies___proc___line: 252
+    applyDefinitionFileToText___proc___line: 285
+        createCombinedSummaryFile___source_files___proc___352
+        customReplace___stringstuff___proc___386
+    getBaseFromWebAddress2___proc___line: 511
+    convertWebLinksToAbsolute___proc___line: 546
+        getBaseFromWebAddress2___g_mine___proc___555
+        getBaseFromWebAddress___process_text___proc___555
+    getBaseFromWebAddress___proc___line: 578
+    getPartFromWebAddress___proc___line: 604
+    convertRelPathsToAbsolute___proc___line: 661
+        getPartFromWebAddress___g_mine___proc___672
+    handleTextPartsFromHtml___proc___line: 700
+        getInnerText___process_text___proc___973
+        applyDefinitionFileToText___process_text___proc___984
+        getBaseFromWebAddress___process_text___proc___895
+        convertRelPathsToAbsolute___process_text___proc___898
+        stripSymbolsFromList___stringstuff___proc___961
+    extractSentencesFromText___proc___line: 1008
+        readOptionFromFile___fr_tools___proc___1065
+        extractSentencesFromText___process_text___proc___1198
+        createCombinedSummaryFile___source_files___proc___1071
+    formatText___proc___line: 1388
+        applyDefinitionFileToText___process_text___proc___1404
+        extractSentencesFromText___process_text___proc___1402
+    replaceInPastedText___proc___line: 1413
+        stripSymbolsFromList___stringstuff___proc___1439
+    getTitleFromWebsite___proc___line: 1477
+        getDataBetweenTags___process_text___proc___1486
+    testConversion___proc___line: 1496
+        getBaseFromWebAddress___process_text___proc___1501
+        convertRelPathsToAbsolute___process_text___proc___1504
+        handleTextPartsFromHtml___process_text___proc___1508
+source_files--------
+    withFile___template___line: 68
+    allFilesExist___proc___line: 82
+    getSeqFromFileSection___proc___line: 99
+    createCombinedSummaryFile___proc___line: 138
+        allFilesExist___source_files___proc___170
+        getSeqFromFileSection___source_files___proc___168
+    addLanguageFilesToList___proc___line: 204
+        readOptionFromFile___fr_tools___proc___215
+    loadTextSourceFiles___proc___line: 228
+    writeFilePatternToSeq___proc___line: 250
+    evaluateDataFiles___proc___line: 274
+        withFile___source_files___template___322
+        writeFilePatternToSeq___source_files___proc___292
+    compareDataFiles___proc___line: 398
+        withFile___source_files___template___422
+stringstuff--------
+    stripSymbolsFromList___proc___line: 22
+    countOccurencesInContext___proc___line: 40
+    customReplace___proc___line: 86
+        countOccurencesInContext___stringstuff___proc___126
+    test_customReplace___proc___line: 158
+        customReplace___stringstuff___proc___165
+    outer_test_customReplace___proc___line: 169
+        customReplace___stringstuff___proc___176
+        test_customReplace___stringstuff___proc___176
+    test_countOccurencesInContext___proc___line: 204
+        countOccurencesInContext___stringstuff___proc___216

@@ -13,7 +13,7 @@ ctwig myfunc
 ]#
 
 import g_disk2nim, g_templates
-import std/[os, strutils, paths, dirs]
+import std/[os, strutils, paths, dirs, tables]
 
 
 var 
@@ -21,6 +21,15 @@ var
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
+
+type 
+  ViewType = enum
+    viewBasic_OneLevel
+    viewBasic_TwoLevels
+    viewExtended_OneLevel
+    viewExtended_TwoLevels
+    viewAll
+
 
 proc addSourceFilesToProject(proj_def_pathst: string): string = 
   #[
@@ -97,6 +106,10 @@ proc addSourceFilesToProject(proj_def_pathst: string): string =
 
 
 proc extractFileSectionToSequence(filepathst, start_separst, end_separst: string): seq[string] = 
+  #[
+    Extract the lines of a file that are located between the starting and ending separator and 
+    put them in a sequence.
+  ]#
 
   var 
     in_phasebo: bool
@@ -119,7 +132,7 @@ proc getSliceFromAnchor(tekst, anchorst: string, possib_endmarksq: seq[string], 
   #[
     Searching in the tekst, return a target-string indicated as slice [start,end] located after an anchor-string.
     If the target-string must be a separate word, then set appendspacebo = true
-    The end of the target-string is the first of the possible end-markers.
+    The end of the target-string is the first one of the possible end-markers.
 
     if myarray != [-1, -1]:
       if myarray[1] != 99999999:
@@ -198,25 +211,22 @@ proc createDeclarationList(proj_def_pathst: string) =
   (that is without the underlying declarations)
   Then, for each proc / declaration, one can scan for the used procs /decs and append them after earch dec-line.
 
-  in pseudo-code:
-  for dec1 in dec-list:
-    for dec2 in dec-list:
-      if the source-code-range of dec1 contains dec2:
-        append dec2-data to the line of dec1
-
-  dec_module_line_colstart_colend_dec-type
+  dec_module_dec-type_linestart_colstart_colend_line-end
+  ADAP FUT
+  -unificeren op dec_module, niet alleen op dec
   ]#
 
+
   var
-    fileob, phase1fileob, phase1file2ob, phase2fileob: File
+    fileob, phase1fileob, phase2fileob, phase2file2ob, phase3fileob: File
     source_filesq: seq[string]
     # declaration-types
     nim_dec_typesq: seq[string] = @["proc", "template", "macro", "func"]
     langekst: string = "nim"
     filepathst: string
     sourceprojectpathst, reltargetprojectpathst: string
-    linecountit: int
-    phase1_dec_list_filepathst, phase2_dec_list_filepathst: string
+    linecountit, linecount2it, linecount3it, foundcountit: int
+    phase1_dec_list_filepathst, phase2_dec_list_filepathst, phase3_dec_list_filepathst: string
     dec_namear: array[0..1, int]
     dec_namest: string
     targlinest: string
@@ -229,7 +239,16 @@ proc createDeclarationList(proj_def_pathst: string) =
     startingtoken: string
     dectypefoundbo, incommentblockbo, commentclosingbo, singlecommentbo: bool
     previous_linest, line_endst, newlinest: string
-    linesq: seq[string]
+    linesq, line1sq, line2sq: seq[string]
+    moduleta = initOrderedTable[string, File]()
+    declarest, modulest, declaretypest: string
+    declare2st, module2st, declaretype2st: string
+    linestartit, lineendit: int
+    usagest, appendst: string
+    excluded_declaresq: seq[string] = @["log", "l1"]
+    # to avoid doubles
+    unique_declare2sq: seq[string]
+
 
   try:
 
@@ -250,8 +269,12 @@ proc createDeclarationList(proj_def_pathst: string) =
 
     phase1_dec_list_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase1_" & dec_list_suffikst))
     phase2_dec_list_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase2_" & dec_list_suffikst))
+    phase3_dec_list_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
 
-    # first phase; create intermediate product phase1_dec_list_filepathst
+
+    # first phase; create first intermediate product phase1_dec_list_filepathst
+    # per line: declaration, module, declaration-type, dec.line-start, col.start, col.end, dec.line-end
+    echo "-------------first phase----------------"
     if phase1fileob.open(phase1_dec_list_filepathst, fmWrite):
       for filest in source_filesq:
         filepathst = string(Path(sourceprojectpathst) / Path(filest))
@@ -314,6 +337,7 @@ proc createDeclarationList(proj_def_pathst: string) =
 
 
     # phase two; create new file and append declaration-endings to each line, called line-ends le, that is the last line of the declare
+    echo "-------------second phase----------------"
     
     # work with one file-object of phase one and one of phase two
     if phase1fileob.open(phase1_dec_list_filepathst, fmRead) and phase2fileob.open(phase2_dec_list_filepathst, fmWrite):
@@ -332,8 +356,72 @@ proc createDeclarationList(proj_def_pathst: string) =
     else:
       echo "Could not open one or two files"
 
+    phase1fileob.close()
+    phase2fileob.close()
+
+
+
     # phase 3 uses a phase-2 dec-list and appends all used decs from the source-code-range..
-    
+    echo "-------------third phase----------------"
+
+    # create a source-file-table
+    for filest in source_filesq:
+      filepathst = string(Path(sourceprojectpathst) / Path(filest))
+      moduleta[filest] = open(filepathst, fmRead)
+
+    if phase2fileob.open(phase2_dec_list_filepathst, fmRead) and phase2file2ob.open(phase2_dec_list_filepathst, fmRead) and phase3fileob.open(phase3_dec_list_filepathst, fmWrite):
+
+      # for dec1 in dec-list:
+      linecountit = 0
+      for line1st in phase2fileob.lines:
+        linecountit += 1
+        # parse the line into data        
+        line1sq = line1st.split(sep1st)
+        #declarest = line1sq[0]
+        modulest = line1sq[1]
+        #declaretypest = line1sq[2]
+        linestartit = parseInt(line1sq[3].split(":")[1])
+        lineendit  = parseInt(line1sq[6].split(":")[1])
+        appendst = ""
+        unique_declare2sq = @[]
+
+        # for dec2 in dec-list:
+        phase2file2ob.setFilePos(0)
+        for line2st in phase2file2ob.lines:          
+          line2sq = line2st.split(sep1st)
+          declare2st = line2sq[0]
+          #echo declare2st
+          module2st = line2sq[1]
+          declaretype2st = line2sq[2]
+
+          foundcountit = 0
+          linecount3it = 0
+          if not (declare2st in excluded_declaresq) and not (declare2st in unique_declare2sq):
+            # if the source-code-range of dec1 contains dec2:
+            moduleta[modulest & ".nim"].setFilePos(0)
+            for sline in moduleta[modulest & ".nim"].lines:
+              linecount3it += 1
+              if linecount3it > linestartit and linecount3it <= lineendit:
+                if sline.contains(declare2st):
+                  foundcountit += 1
+                  if not (declare2st in unique_declare2sq):
+                    unique_declare2sq.add(declare2st)
+                    usagest = declare2st & sep1st & module2st & sep1st & declaretype2st & sep1st & $linecount3it
+                    appendst &= sep3st & usagest
+
+        #append dec2-data to the line of dec1
+        phase3fileob.writeLine(line1st & appendst)
+        echo "Adding: ", $linecountit
+        echo unique_declare2sq
+
+    else:
+      echo "Could not open one or three files"
+
+
+    for filest in source_filesq:
+      moduleta[filest].close()
+
+
 
   except IndexDefect:
     let errob = getCurrentException()
@@ -342,7 +430,7 @@ proc createDeclarationList(proj_def_pathst: string) =
     echo "System-error-description:"
     echo errob.name
     echo errob.msg
-    #echo repr(errob) 
+    echo repr(errob) 
     echo "----End error-----\p"
 
     #unanticipated errors come here
@@ -351,10 +439,128 @@ proc createDeclarationList(proj_def_pathst: string) =
     echo "\p******* Unanticipated error *******" 
     echo errob.name
     echo errob.msg
-    #echo repr(errob) 
+    echo repr(errob)
     echo "\p****End exception****\p"
-  finally:
-    phase1fileob.close()
+
+
+
+
+
+proc createCodeViewFile(viewtypeeu: ViewType, proj_def_pathst: string) = 
+#[
+  Create view-files of the enum-type
+
+  ADAP FUT
+  - sort second-level decs on line-nr.
+]#
+
+
+  var 
+    decfilob, bofileob, btfileob: File 
+    decfilepathst, boview_filepathst, btview_filepathst: string
+    sourceprojectpathst, reltargetprojectpathst: string
+    source_filesq, dlinesq, decdatasq: seq[string]
+    #sep1st = "~~~"
+    sep1st = "___"
+    sep2st = "___"
+    sep3st = "==="
+    decnamest, modulest, dectypest, linestartst, newmodulest, decdatalinest: string
+
+
+  try:
+    # retrieve project-data from project-def-file
+    sourceprojectpathst = extractFileSectionToSequence(proj_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
+    source_filesq = extractFileSectionToSequence(proj_def_pathst, "SOURCE_FILES", ">----------------------------------<")
+
+    # set the target-dir and declaration-file
+    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
+    reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
+
+    echo "--------------------------------------------------------"
+    echo "Using target-directory for your " & codetwigst & "-project: " & reltargetprojectpathst
+
+    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
+    boview_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_basic_one-level_view.txt"))
+    btview_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_basic_two-level_view.txt"))
+
+
+    decfilob = open(decfilepathst, fmRead)
+    if viewtypeeu == viewBasic_OneLevel:
+      bofileob = open(boview_filepathst, fmWrite)
+      echo "Creating file: " & boview_filepathst
+    elif viewtypeeu == viewBasic_TwoLevels:
+      btfileob = open(btview_filepathst, fmWrite)
+      echo "Creating file: " & btview_filepathst
+
+
+    # create view-types
+    if viewtypeeu == viewBasic_OneLevel or viewtypeeu == viewBasic_TwoLevels:
+      newmodulest = ""
+      # basic one level
+      for dlinest in decfilob.lines:
+        dlinesq = dlinest.split(sep3st)
+        decdatasq = dlinesq[0].split(sep1st)
+        decnamest = decdatasq[0]
+        modulest = decdatasq[1]
+        dectypest = decdatasq[2]
+        linestartst = decdatasq[3]
+
+        if newmodulest != modulest:
+          # write the new module
+          newmodulest = modulest
+          echo "Writing data from: " & newmodulest
+
+          if viewtypeeu == viewBasic_OneLevel:
+            bofileob.writeLine(newmodulest & "-----------------")
+          elif viewtypeeu == viewBasic_TwoLevels:
+            btfileob.writeLine(newmodulest & "-----------------")
+
+        else:
+          decdatalinest = "    " & decnamest & sep2st & dectypest & sep2st & "line: " & linestartst.split(":")[1]
+
+          if viewtypeeu == viewBasic_OneLevel:
+            bofileob.writeLine(decdatalinest)
+          elif viewtypeeu == viewBasic_TwoLevels:
+            btfileob.writeLine(decdatalinest)
+
+            for it, decst in dlinesq:
+              if it > 0:
+                btfileob.writeLine("        " & decst)
+
+
+    decfilob.close()
+
+    if viewtypeeu == viewBasic_OneLevel:
+      bofileob.close()
+    elif viewtypeeu == viewBasic_TwoLevels:
+      btfileob.close()
+
+
+
+  except IndexDefect:
+    let errob = getCurrentException()
+    echo "\p-----error start-----" 
+    echo "Index-error caused by bug in program"
+    echo "System-error-description:"
+    echo errob.name
+    echo errob.msg
+    echo repr(errob) 
+    echo "----End error-----\p"
+
+    #unanticipated errors come here
+  except:
+    let errob = getCurrentException()
+    echo "\p******* Unanticipated error *******" 
+    echo errob.name
+    echo errob.msg
+    echo repr(errob)
+    echo "\p****End exception****\p"
+
+
+
+
+proc showDeclarationBranch(proj_def_pathst, declarationst, directionst: string, depthit: int) = 
+  discard()
 
 
 
@@ -384,6 +590,9 @@ else:
         echo "no target-string or end-string found"
     else:
       echo "anchor not found"
-  if true:
+  if false:
     createDeclarationList(filepathst)
+  if true:
+    createCodeViewFile(viewBasic_OneLevel, filepathst)
+    createCodeViewFile(viewBasic_TwoLevels, filepathst)
 

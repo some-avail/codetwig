@@ -1,0 +1,92 @@
+flashread--------
+    getWebTitle___proc___line: 97
+    jump_to_end_step___proc___line: 144
+    showPage___proc___line: 171
+fr_tools--------
+    sequenceFromValueList___proc___line: 31
+    readOptionFromFile___proc___line: 35
+    newlang___proc___line: 99
+    doWork___proc___line: 175
+    timeStuff___template___line: 181
+    timeNeatly___template___line: 187
+g_mine--------
+    getWebSite___proc___line: 36
+    getWebSiteAsync___proc___line: 82
+    getSubstringPositions___proc___line: 90
+    pairChainsAreValid___proc___line: 122
+    getDataSeqClean___proc___line: 155
+    getDataSeqDirty___proc___line: 197
+    getPartFromWebAddress___proc___line: 245
+    getBaseFromWebAddress2___proc___line: 302
+    convertWebLinksToAbsolute___proc___line: 337
+    substringsInString___proc___line: 367
+    linkIsPresent___proc___line: 400
+    multiplyString___proc___line: 409
+    removeSingleStrings___proc___line: 421
+    removeDuplicateStrings___proc___line: 436
+    removeLongWords___proc___line: 462
+    getInnerText3___proc___line: 484
+    getInnerText3_old___proc___line: 572
+    getInnerText2___proc___line: 612
+    createSeqOfUniqueWords___proc___line: 652
+    calcWordFrequencies___proc___line: 678
+    calcCumulFrequencies___proc___line: 798
+    calcCumulFrequencies_old___proc___line: 847
+    getDataSequence___proc___line: 868
+    getDataBetweenTags2___proc___line: 899
+    getTitleFromWebsite2___proc___line: 924
+    getChildLinks___proc___line: 936
+    countWords___proc___line: 1029
+    getTagContent___proc___line: 1036
+    enlistSequenceToDoc___proc___line: 1071
+    getHtmlHeaders___proc___line: 1102
+g_options--------
+    readOptionFromFile_fut___proc___line: 44
+    readOptionFromFile___proc___line: 118
+    getValList___proc___line: 190
+    newlang___proc___line: 196
+jo_htmlgen--------
+    setCheckBoxSet___proc___line: 79
+    setDropDown___proc___line: 129
+loadgui--------
+    loadTextLangsFromConfig___proc___line: 31
+    loadComboFromDir_Old___proc___line: 63
+    loadComboFromDir___proc___line: 93
+    setCheckboxSetFromConfig___proc___line: 129
+    testWalkdir___proc___line: 159
+process_text--------
+    testWebSite___proc___line: 109
+    getSubstringPositions___proc___line: 126
+    getDataBetweenTags___proc___line: 159
+    getInnerText___proc___line: 219
+    myTest___proc___line: 246
+    calculateWordFrequencies___proc___line: 252
+    applyDefinitionFileToText___proc___line: 285
+    getBaseFromWebAddress2___proc___line: 511
+    convertWebLinksToAbsolute___proc___line: 546
+    getBaseFromWebAddress___proc___line: 578
+    getPartFromWebAddress___proc___line: 604
+    convertRelPathsToAbsolute___proc___line: 661
+    handleTextPartsFromHtml___proc___line: 700
+    extractSentencesFromText___proc___line: 1008
+    formatText___proc___line: 1388
+    replaceInPastedText___proc___line: 1413
+    getTitleFromWebsite___proc___line: 1477
+    testConversion___proc___line: 1496
+source_files--------
+    withFile___template___line: 68
+    allFilesExist___proc___line: 82
+    getSeqFromFileSection___proc___line: 99
+    createCombinedSummaryFile___proc___line: 138
+    addLanguageFilesToList___proc___line: 204
+    loadTextSourceFiles___proc___line: 228
+    writeFilePatternToSeq___proc___line: 250
+    evaluateDataFiles___proc___line: 274
+    compareDataFiles___proc___line: 398
+stringstuff--------
+    stripSymbolsFromList___proc___line: 22
+    countOccurencesInContext___proc___line: 40
+    customReplace___proc___line: 86
+    test_customReplace___proc___line: 158
+    outer_test_customReplace___proc___line: 169
+    test_countOccurencesInContext___proc___line: 204
