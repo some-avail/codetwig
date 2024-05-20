@@ -13,11 +13,12 @@ ctwig myfunc
 ]#
 
 import g_disk2nim, g_templates
+#import std/[os, strutils, paths, dirs, tables, unicode]
 import std/[os, strutils, paths, dirs, tables]
 
 
 var 
-  versionfl: float = 0.1
+  versionfl: float = 0.2
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -557,10 +558,141 @@ proc createCodeViewFile(viewtypeeu: ViewType, proj_def_pathst: string) =
     echo "\p****End exception****\p"
 
 
+proc getSeqFromFileLines(filepathst, searchst, sep1st, sep2st: string, searchfieldar: array[0..1, int]): seq[string] = 
+
+  #[
+    extra separator and sortfieldar comes later
+
+  ]#
+
+  var 
+    fileob: File
+    searchfieldvalst: string
+    outputsq: seq[string] = @[]
+
+  try:
+    fileob = open(filepathst, fmRead)
+
+    for linest in fileob.lines:
+      searchfieldvalst = linest.split(sep1st)[searchfieldar[0]].split(sep2st)[searchfieldar[1]]
+      #echo searchfieldvalst & "-----" & searchst
+      if searchfieldvalst.toLowerAscii.contains(searchst.toLower.toLowerAscii):
+        outputsq.add(linest)
+
+    fileob.close()
+    result = outputsq
 
 
-proc showDeclarationBranch(proj_def_pathst, declarationst, directionst: string, depthit: int) = 
-  discard()
+  except IndexDefect:
+    let errob = getCurrentException()
+    echo "\p-----error start-----" 
+    echo "Index-error caused by bug in program"
+    echo "System-error-description:"
+    echo errob.name
+    echo errob.msg
+    echo repr(errob) 
+    echo "----End error-----\p"
+
+    #unanticipated errors come here
+  except:
+    let errob = getCurrentException()
+    echo "\p******* Unanticipated error *******" 
+    echo errob.name
+    echo errob.msg
+    echo repr(errob)
+    echo "\p****End exception****\p"
+
+
+
+
+
+proc showDeclarationBranch(proj_def_pathst: string) = 
+
+#[
+  Show a tree of declarations; either a usage-tree or a used-by-tree.
+
+  Later: , declarationst, directionst: string, depthit: int
+
+]#
+
+
+  var 
+    decfilob: File 
+    decfilepathst: string
+    sourceprojectpathst, reltargetprojectpathst: string
+    source_filesq, foundlinesq, wordsq: seq[string]
+    #sep1st = "~~~"
+    sep1st = "___"
+    sep2st = "___"
+    sep3st = "==="
+    #decnamest, modulest, dectypest, linestartst, newmodulest, decdatalinest: string
+    resultcountit, maxcountit: int
+    inputst, outputst: string
+
+    #  dlinesq, decdatasq
+
+  try:
+    # retrieve project-data from project-def-file
+    sourceprojectpathst = extractFileSectionToSequence(proj_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
+    source_filesq = extractFileSectionToSequence(proj_def_pathst, "SOURCE_FILES", ">----------------------------------<")
+
+    # set the target-dir and declaration-file
+    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
+    reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
+
+    echo "--------------------------------------------------------"
+
+    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
+
+    decfilob = open(decfilepathst, fmRead)
+
+    # first the usage-tree
+
+    # input a declaration
+    # if not unique then show all the declarations of which the input is a substring
+    # when the filtered set < maxnr then show all with by-data
+    # followingly show all usages if depth = 2 (use 1-based approach)
+    # if depth > 2 perform a recurrent search
+
+    maxcountit = 3
+    resultcountit = 10
+    inputst = ""
+    while not(inputst in ["exit","quit"]):
+      inputst = readline(stdin)
+      foundlinesq = getSeqFromFileLines(decfilepathst, inputst, sep3st, sep1st, [0,0])
+      #echo foundlinesq
+      echo "========================================================================="
+      for linest in foundlinesq:
+        wordsq = linest.split(sep3st)[0].split(sep1st)
+        outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(20) & wordsq[2].alignLeft(10) & wordsq[3].alignLeft(10)
+        echo outputst
+      echo "-------------------------------------------------------------------------"
+
+
+  except IndexDefect:
+    let errob = getCurrentException()
+    echo "\p-----error start-----" 
+    echo "Index-error caused by bug in program"
+    echo "System-error-description:"
+    echo errob.name
+    echo errob.msg
+    echo repr(errob) 
+    echo "----End error-----\p"
+
+    #unanticipated errors come here
+  except:
+    let errob = getCurrentException()
+    echo "\p******* Unanticipated error *******" 
+    echo errob.name
+    echo errob.msg
+    echo repr(errob)
+    echo "\p****End exception****\p"
+
+
+
+
+
+
 
 
 
@@ -592,7 +724,8 @@ else:
       echo "anchor not found"
   if false:
     createDeclarationList(filepathst)
-  if true:
+  if false:
     createCodeViewFile(viewBasic_OneLevel, filepathst)
     createCodeViewFile(viewBasic_TwoLevels, filepathst)
-
+  if true:
+    showDeclarationBranch(filepathst)
