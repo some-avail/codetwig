@@ -14,11 +14,11 @@ ctwig myfunc
 
 import g_disk2nim, g_templates
 #import std/[os, strutils, paths, dirs, tables, unicode]
-import std/[os, strutils, paths, dirs, tables]
+import std/[os, strutils, paths, dirs, tables, parseopt]
 
 
 var 
-  versionfl: float = 0.2
+  versionfl: float = 0.3
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -489,7 +489,7 @@ proc createDeclarationList(proj_def_pathst: string) =
 
 
 
-proc createCodeViewFile(viewtypeeu: ViewType, proj_def_pathst: string) = 
+proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) = 
 #[
   Create view-files of the enum-type
 
@@ -873,16 +873,164 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
     echo "\p****End exception****\p"
 
 
+proc echoHelpInfo() = 
+
+  echo "Help for CodeTwig:"
+  echo "Command-structure: ctwig projects/someproject.pro -o -o:x --some_option --key:value"
+  echo "Most commands require a project-path."
+  echo "---------------------------------------------------"
+  var allcommandst = """
+        case kind:
+      of cmdArgument:
+        projectpathst = key
+      of cmdShortOption, cmdLongOption:
+        case key:
+        of "t", "tree": 
+          procst = "showDeclarationBranch"
+          case val:
+          of "u", "usage":
+            directionst = "usage"
+          of "b", "used-by":
+            directionst = "used-by"
+        of "a", "add_files":
+          procst = "addSourceFilesToProject"
+        of "c", "declarations":
+          procst =  "createDeclarationList"
+        of "v", "views":
+          procst = "createCodeViewFile"
+        of "g", "generate_all":
+          procst = "generate_all"
+        of "d", "depth":
+          depthit = parseInt(val)
+        of "h", "help":
+          procst = "echoHelpInfo"
+  """
+  echo allcommandst
 
 
 
 
+proc createAllViewFiles(filepathst: string) = 
+
+    createCodeViewFile(filepathst, viewBasic_OneLevel)
+    createCodeViewFile(filepathst, viewBasic_TwoLevels)
 
 
 
-var for_realbo: bool = false
+proc generate_all(projectpathst: string) = 
+
+  createDeclarationList(projectpathst)
+  createAllViewFiles(projectpathst)
+
+
+
+
+proc processCommandLine() = 
+#[
+  firstly load the args from the commandline and set the needed vars 
+  then run the chosen procedures.
+
+
+  test: string
+]#
+
+
+  var 
+    optob = initOptParser()
+    #optob = initOptParser()
+    projectpathst, procst: string = ""
+    directionst = "usage"
+    depthit: int = 3
+  
+  try:
+
+    # firstly load the args from the commandline and set the needed vars 
+    for kind, key, val in optob.getopt():
+      case kind:
+      of cmdArgument:
+        projectpathst = key
+      of cmdShortOption, cmdLongOption:
+        case key:
+        of "t", "tree": 
+          procst = "showDeclarationBranch"
+          case val:
+          of "u", "usage":
+            directionst = "usage"
+          of "b", "used-by":
+            directionst = "used-by"
+        of "a", "add_files":
+          procst = "addSourceFilesToProject"
+        of "c", "declarations":
+          procst =  "createDeclarationList"
+        of "v", "views":
+          procst = "createAllViewFiles"
+        of "g", "generate_all":
+          procst = "generate_all"
+        of "d", "depth":
+          depthit = parseInt(val)
+        of "h", "help":
+          procst = "echoHelpInfo"
+      of cmdEnd: 
+        assert(false) # cannot happen
+
+
+    echo "----------------------------------------------------"
+    echo "Thanks for using CodeTwig " & $versionfl
+    echo "Project-path = " & projectpathst
+    echo "Chosen procedure = " & procst
+    echo "For help type: ctwig -h or ctwig --help"
+    echo "----------------------------------------------------"
+    #echo directionst
+    #echo depthit
+
+    if procst != "":
+      if projectpathst != "" or procst == "echoHelpInfo":
+
+        case procst
+        of "addSourceFilesToProject":
+          echo addSourceFilesToProject(projectpathst)
+        of "createDeclarationList":
+          createDeclarationList(projectpathst)
+        of "createAllViewFiles":
+          createAllViewFiles(projectpathst)
+        of "generate_all":
+          generate_all(projectpathst)
+        of "showDeclarationBranch":
+          showDeclarationBranch(projectpathst, directionst, depthit)
+        of "echoHelpInfo":
+          echoHelpInfo()
+
+      else:
+        echo "A project-file was not provided (like: projects/someproject.pro)"
+    else:
+      echo "A command-option was not provided (like -a or -c)"
+
+
+  except IndexDefect:
+    let errob = getCurrentException()
+    echo "\p-----error start-----" 
+    echo "Index-error caused by bug in program"
+    echo "System-error-description:"
+    echo errob.name
+    echo errob.msg
+    echo repr(errob) 
+    echo "----End error-----\p"
+
+    #unanticipated errors come here
+  except:
+    let errob = getCurrentException()
+    echo "\p******* Unanticipated error *******" 
+    echo errob.name
+    echo errob.msg
+    echo repr(errob)
+    echo "\p****End exception****\p"
+
+
+
+var for_realbo: bool = true
 if for_realbo:
-  discard()
+  processCommandLine()
+
 else:
   var 
     filepathst: string = "projects/readibl_test.pro"
@@ -909,8 +1057,8 @@ else:
   if false:
     createDeclarationList(filepathst)
   if false:
-    createCodeViewFile(viewBasic_OneLevel, filepathst)
-    createCodeViewFile(viewBasic_TwoLevels, filepathst)
+    createCodeViewFile(filepathst, viewBasic_OneLevel)
+    createCodeViewFile(filepathst, viewBasic_TwoLevels)
   if true:
     showDeclarationBranch(filepathst, "usage", 3)
     #showDeclarationBranch(filepathst, "used-by", 5)
