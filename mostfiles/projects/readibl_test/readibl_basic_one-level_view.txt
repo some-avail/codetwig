@@ -1,92 +1,94 @@
-flashread--------
-    getWebTitle___proc___line: 97
-    jump_to_end_step___proc___line: 144
-    showPage___proc___line: 171
-fr_tools--------
-    sequenceFromValueList___proc___line: 31
-    readOptionFromFile___proc___line: 35
-    newlang___proc___line: 99
-    doWork___proc___line: 175
-    timeStuff___template___line: 181
-    timeNeatly___template___line: 187
-g_mine--------
-    getWebSite___proc___line: 36
-    getWebSiteAsync___proc___line: 82
-    getSubstringPositions___proc___line: 90
-    pairChainsAreValid___proc___line: 122
-    getDataSeqClean___proc___line: 155
-    getDataSeqDirty___proc___line: 197
-    getPartFromWebAddress___proc___line: 245
-    getBaseFromWebAddress2___proc___line: 302
-    convertWebLinksToAbsolute___proc___line: 337
-    substringsInString___proc___line: 367
-    linkIsPresent___proc___line: 400
-    multiplyString___proc___line: 409
-    removeSingleStrings___proc___line: 421
-    removeDuplicateStrings___proc___line: 436
-    removeLongWords___proc___line: 462
-    getInnerText3___proc___line: 484
-    getInnerText3_old___proc___line: 572
-    getInnerText2___proc___line: 612
-    createSeqOfUniqueWords___proc___line: 652
-    calcWordFrequencies___proc___line: 678
-    calcCumulFrequencies___proc___line: 798
-    calcCumulFrequencies_old___proc___line: 847
-    getDataSequence___proc___line: 868
-    getDataBetweenTags2___proc___line: 899
-    getTitleFromWebsite2___proc___line: 924
-    getChildLinks___proc___line: 936
-    countWords___proc___line: 1029
-    getTagContent___proc___line: 1036
-    enlistSequenceToDoc___proc___line: 1071
-    getHtmlHeaders___proc___line: 1102
-g_options--------
-    readOptionFromFile_fut___proc___line: 44
-    readOptionFromFile___proc___line: 118
-    getValList___proc___line: 190
-    newlang___proc___line: 196
-jo_htmlgen--------
-    setCheckBoxSet___proc___line: 79
-    setDropDown___proc___line: 129
-loadgui--------
-    loadTextLangsFromConfig___proc___line: 31
-    loadComboFromDir_Old___proc___line: 63
-    loadComboFromDir___proc___line: 93
-    setCheckboxSetFromConfig___proc___line: 129
-    testWalkdir___proc___line: 159
-process_text--------
-    testWebSite___proc___line: 109
-    getSubstringPositions___proc___line: 126
-    getDataBetweenTags___proc___line: 159
-    getInnerText___proc___line: 219
-    myTest___proc___line: 246
-    calculateWordFrequencies___proc___line: 252
-    applyDefinitionFileToText___proc___line: 285
-    getBaseFromWebAddress2___proc___line: 511
-    convertWebLinksToAbsolute___proc___line: 546
-    getBaseFromWebAddress___proc___line: 578
-    getPartFromWebAddress___proc___line: 604
-    convertRelPathsToAbsolute___proc___line: 661
-    handleTextPartsFromHtml___proc___line: 700
-    extractSentencesFromText___proc___line: 1008
-    formatText___proc___line: 1388
-    replaceInPastedText___proc___line: 1413
-    getTitleFromWebsite___proc___line: 1477
-    testConversion___proc___line: 1496
-source_files--------
-    withFile___template___line: 68
-    allFilesExist___proc___line: 82
-    getSeqFromFileSection___proc___line: 99
-    createCombinedSummaryFile___proc___line: 138
-    addLanguageFilesToList___proc___line: 204
-    loadTextSourceFiles___proc___line: 228
-    writeFilePatternToSeq___proc___line: 250
-    evaluateDataFiles___proc___line: 274
-    compareDataFiles___proc___line: 398
-stringstuff--------
-    stripSymbolsFromList___proc___line: 22
-    countOccurencesInContext___proc___line: 40
-    customReplace___proc___line: 86
-    test_customReplace___proc___line: 158
-    outer_test_customReplace___proc___line: 169
-    test_countOccurencesInContext___proc___line: 204
+flashread---------------------------------------------------
+    settings                         implementationline: 90
+    getWebTitle                      proc      line: 97
+    jump_to_end_step                 proc      line: 144
+    showPage                         proc      line: 171
+    routes                           implementationline: 187
+fr_tools---------------------------------------------------
+    sequenceFromValueList            proc      line: 31
+    readOptionFromFile               proc      line: 35
+    newlang                          proc      line: 99
+    doWork                           proc      line: 175
+    timeStuff                        template  line: 181
+    timeNeatly                       template  line: 187
+g_mine---------------------------------------------------
+    getWebSite                       proc      line: 36
+    getWebSiteAsync                  proc      line: 82
+    getSubstringPositions            proc      line: 90
+    pairChainsAreValid               proc      line: 122
+    getDataSeqClean                  proc      line: 155
+    getDataSeqDirty                  proc      line: 197
+    getPartFromWebAddress            proc      line: 245
+    getBaseFromWebAddress2           proc      line: 302
+    convertWebLinksToAbsolute        proc      line: 337
+    substringsInString               proc      line: 367
+    linkIsPresent                    proc      line: 400
+    multiplyString                   proc      line: 409
+    removeSingleStrings              proc      line: 421
+    removeDuplicateStrings           proc      line: 436
+    removeLongWords                  proc      line: 462
+    getInnerText3                    proc      line: 484
+    getInnerText3_old                proc      line: 572
+    getInnerText2                    proc      line: 612
+    createSeqOfUniqueWords           proc      line: 652
+    calcWordFrequencies              proc      line: 678
+    calcCumulFrequencies             proc      line: 798
+    calcCumulFrequencies_old         proc      line: 847
+    getDataSequence                  proc      line: 868
+    getDataBetweenTags2              proc      line: 899
+    getTitleFromWebsite2             proc      line: 924
+    getChildLinks                    proc      line: 936
+    countWords                       proc      line: 1029
+    getTagContent                    proc      line: 1036
+    enlistSequenceToDoc              proc      line: 1071
+    getHtmlHeaders                   proc      line: 1102
+g_options---------------------------------------------------
+    readOptionFromFile_fut           proc      line: 44
+    readOptionFromFile               proc      line: 118
+    getValList                       proc      line: 190
+    newlang                          proc      line: 196
+jo_htmlgen---------------------------------------------------
+    setCheckBoxSet                   proc      line: 79
+    setDropDown                      proc      line: 129
+loadgui---------------------------------------------------
+    loadTextLangsFromConfig          proc      line: 31
+    loadComboFromDir_Old             proc      line: 63
+    loadComboFromDir                 proc      line: 93
+    setCheckboxSetFromConfig         proc      line: 129
+    testWalkdir                      proc      line: 159
+process_text---------------------------------------------------
+    testWebSite                      proc      line: 109
+    getSubstringPositions            proc      line: 126
+    getDataBetweenTags               proc      line: 159
+    getInnerText                     proc      line: 219
+    myTest                           proc      line: 246
+    calculateWordFrequencies         proc      line: 252
+    applyDefinitionFileToText        proc      line: 285
+    getBaseFromWebAddress2           proc      line: 511
+    convertWebLinksToAbsolute        proc      line: 546
+    getBaseFromWebAddress            proc      line: 578
+    getPartFromWebAddress            proc      line: 604
+    convertRelPathsToAbsolute        proc      line: 661
+    handleTextPartsFromHtml          proc      line: 700
+    extractSentencesFromText         proc      line: 1008
+    formatText                       proc      line: 1388
+    replaceInPastedText              proc      line: 1413
+    getTitleFromWebsite              proc      line: 1477
+    testConversion                   proc      line: 1496
+source_files---------------------------------------------------
+    withFile                         template  line: 68
+    allFilesExist                    proc      line: 82
+    getSeqFromFileSection            proc      line: 99
+    createCombinedSummaryFile        proc      line: 138
+    addLanguageFilesToList           proc      line: 204
+    loadTextSourceFiles              proc      line: 228
+    writeFilePatternToSeq            proc      line: 250
+    evaluateDataFiles                proc      line: 274
+    compareDataFiles                 proc      line: 398
+stringstuff---------------------------------------------------
+    stripSymbolsFromList             proc      line: 22
+    countOccurencesInContext         proc      line: 40
+    customReplace                    proc      line: 86
+    test_customReplace               proc      line: 158
+    outer_test_customReplace         proc      line: 169
+    test_countOccurencesInContext    proc      line: 204
