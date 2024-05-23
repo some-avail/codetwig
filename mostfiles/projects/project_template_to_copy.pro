@@ -1,5 +1,4 @@
 CodeTwig can create special views of your programming-projects.
-(for now only trees)
 
 Create your project-file below,
 if you want to be able to show code-trees for the project.
@@ -10,32 +9,23 @@ as relative path from the ctwig-executable
 (CT will know which).
 
 The source-files can be entered programmatically, 
-as well as manually.
+as well as manually. 
+(for now only one dir-level of files can be used)
 
 
 
 
-FILE_EXTENSIONS
+FILE_EXTENSIONS (leave: not yet used; for now only nim)
 nim
 >----------------------------------<
 
 
 
 PROJECT_PATH
-testing_projects/readibl_test
+the/path/to/your/project-source-files
 >----------------------------------<
 
 
 
 SOURCE_FILES
-flashread.nim
-fr_tools.nim
-g_mine.nim
-g_options.nim
-jo_htmlgen.nim
-loadgui.nim
-process_text.nim
-source_files.nim
-stringstuff.nim
-webgui_def.nim
 >----------------------------------<

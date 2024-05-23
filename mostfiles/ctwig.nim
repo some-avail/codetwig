@@ -18,7 +18,7 @@ import std/[os, strutils, paths, dirs, tables, parseopt]
 
 
 var 
-  versionfl: float = 0.3
+  versionfl: float = 0.31
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -52,7 +52,7 @@ proc addSourceFilesToProject(proj_def_pathst: string): string =
     blockseparatorst = ">----------------------------------<"
     projectpathst: string
     source_filesq: seq[string]
-    blocklineit, source_file_posit: int
+    blocklineit, source_file_posit, countit: int
 
 
   try:
@@ -76,6 +76,7 @@ proc addSourceFilesToProject(proj_def_pathst: string): string =
             if linest != blockseparatorst:
               # read the project-path
               projectpathst = linest
+              echo "Project-path of the source-files: " & projectpathst
               source_filesq = writeFilePatternToSeq2("*.nim", projectpathst)
 
           elif blockphasest == "SOURCE_FILES":
@@ -83,10 +84,14 @@ proc addSourceFilesToProject(proj_def_pathst: string): string =
               if linest == blockseparatorst:
                 # read the file-names of the source-files and write them to the files-section
                 fileob.setFilePos(source_file_posit)
+                countit = 0
                 for filenamest in source_filesq:
+                  countit += 1
                   fileob.writeLine(filenamest)
+                  echo filenamest
+                echo "----------------------------------------------"
                 fileob.writeLine(blockseparatorst)
-                result = "Source-file-names have been added to the project-file: " & proj_def_pathst
+                result =  $countit &  " source-file-names have been added to the project-file: " & proj_def_pathst
               else:
                 result = "Source-files have been added previously; pre-clean section and try again.."
     else:
@@ -262,7 +267,8 @@ proc createDeclarationList(proj_def_pathst: string) =
     declare2st, module2st, declaretype2st: string
     linestartit, lineendit: int
     usagest, appendst: string
-    excluded_declaresq: seq[string] = @["log", "l1"]
+    excluded_declaresq: seq[string] = @["log", "l1", "else"]
+
     # to avoid doubles
     unique_decplusmodule2sq: seq[string]
     # must be unique
@@ -338,13 +344,14 @@ proc createDeclarationList(proj_def_pathst: string) =
                       echo "Line: " & $linecountit
 
 
-                if not dectypefoundbo:      # other-type declares relevant to determine declare-endings
+                if not dectypefoundbo:      # other-type declares are relevant to determine declare-endings
                   if linest.endswith(":") and not linest.contains(" "):
                     # probably a macro-implementation - you want these..
                     decnamest = linest[0..linest.len - 2]
-                    targlinest = dec_namest & sep1st & modulenamest & sep1st & "implementation" & sep1st & "ls:" & $linecountit & sep1st & "cs:" & "0" & sep1st & "ce:" & $decnamest.len
-                    phase1fileob.writeLine(targlinest)
-                    echo "Line: " & $linecountit
+                    if decnamest notin excluded_declaresq:
+                      targlinest = dec_namest & sep1st & modulenamest & sep1st & "implementation" & sep1st & "ls:" & $linecountit & sep1st & "cs:" & "0" & sep1st & "ce:" & $decnamest.len
+                      phase1fileob.writeLine(targlinest)
+                      echo "Line: " & $linecountit
                   else:
                     if linest.len > 15:
                       linepartst = linest[0..15]
@@ -461,6 +468,11 @@ proc createDeclarationList(proj_def_pathst: string) =
       echo "Could not open one or three files"
 
 
+    phase2fileob.close()
+    phase2file2ob.close()
+    phase3fileob.close()
+
+
     for filest in source_filesq:
       moduleta[filest].close()
 
@@ -548,6 +560,8 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
         modulest = decdatasq[1]
         dectypest = decdatasq[2]
         linestartst = decdatasq[3]
+        #if modulest == "g_html_json":
+        #  echo dlinesq
 
         if newmodulest != modulest:
           # write the new module
@@ -560,7 +574,6 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
             btfileob.writeLine(newmodulest & "--------------------------------------------------------------------")
 
         else:
-          #decdatalinest = "    " & decnamest & sep2st & dectypest & sep2st & "line: " & linestartst.split(":")[1]
           decdatalinest = "    " & decnamest.alignLeft(33) & dectypest.alignLeft(10) & "line: " & linestartst.split(":")[1]
           if viewtypeeu == viewBasic_OneLevel:
             bofileob.writeLine(decdatalinest)
@@ -876,34 +889,43 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
 proc echoHelpInfo() = 
 
   echo "Help for CodeTwig:"
-  echo "Command-structure: ctwig projects/someproject.pro -o -o:x --some_option --key:value"
-  echo "Most commands require a project-path."
+  echo "Command-structure long-style: ctwig projects/someproject.pro --command:somecommand --extrakey:somevalue" 
+  echo "Command-structure short-style: ctwig projects/someproject.pro -c:s -k:v" 
+  echo "Most commands require a project-path, but not help:"
+  echo "ctwig -h or ctwig --help"
+  echo "As option-separator one can use ':', '=' or none"
   echo "---------------------------------------------------"
   var allcommandst = """
-        case kind:
-      of cmdArgument:
+    for kind, key, val in optob.getopt():
+      case kind:
+      of cmdArgument:             # without hyphen(s); used here for project-definition-file-path
         projectpathst = key
       of cmdShortOption, cmdLongOption:
         case key:
-        of "t", "tree": 
-          procst = "showDeclarationBranch"
+        of "c", "command": 
+          case val:
+          of "a", "add_files":
+            procst = "addSourceFilesToProject"
+          of "d", "declarations":
+            procst =  "createDeclarationList"
+          of "v", "views":
+            procst = "createAllViewFiles"
+          of "g", "generate_all":
+            procst = "generate_all"
+          of "t", "tree":
+            procst = "showDeclarationBranch"
+        of "r", "direction":
           case val:
           of "u", "usage":
             directionst = "usage"
           of "b", "used-by":
-            directionst = "used-by"
-        of "a", "add_files":
-          procst = "addSourceFilesToProject"
-        of "c", "declarations":
-          procst =  "createDeclarationList"
-        of "v", "views":
-          procst = "createCodeViewFile"
-        of "g", "generate_all":
-          procst = "generate_all"
+            directionst = "used-by"          
         of "d", "depth":
           depthit = parseInt(val)
         of "h", "help":
           procst = "echoHelpInfo"
+      of cmdEnd: 
+        assert(false) # cannot happen
   """
   echo allcommandst
 
@@ -930,13 +952,12 @@ proc processCommandLine() =
   firstly load the args from the commandline and set the needed vars 
   then run the chosen procedures.
 
-
   test: string
 ]#
 
 
   var 
-    optob = initOptParser()
+    optob = initOptParser(shortNoVal = {'h'}, longNoVal = @["help"])
     #optob = initOptParser()
     projectpathst, procst: string = ""
     directionst = "usage"
@@ -951,21 +972,24 @@ proc processCommandLine() =
         projectpathst = key
       of cmdShortOption, cmdLongOption:
         case key:
-        of "t", "tree": 
-          procst = "showDeclarationBranch"
+        of "c", "command": 
+          case val:
+          of "a", "add_files":
+            procst = "addSourceFilesToProject"
+          of "d", "declarations":
+            procst =  "createDeclarationList"
+          of "v", "views":
+            procst = "createAllViewFiles"
+          of "g", "generate_all":
+            procst = "generate_all"
+          of "t", "tree":
+            procst = "showDeclarationBranch"
+        of "r", "direction":
           case val:
           of "u", "usage":
             directionst = "usage"
           of "b", "used-by":
-            directionst = "used-by"
-        of "a", "add_files":
-          procst = "addSourceFilesToProject"
-        of "c", "declarations":
-          procst =  "createDeclarationList"
-        of "v", "views":
-          procst = "createAllViewFiles"
-        of "g", "generate_all":
-          procst = "generate_all"
+            directionst = "used-by"          
         of "d", "depth":
           depthit = parseInt(val)
         of "h", "help":
@@ -974,14 +998,13 @@ proc processCommandLine() =
         assert(false) # cannot happen
 
 
+
     echo "----------------------------------------------------"
     echo "Thanks for using CodeTwig " & $versionfl
     echo "Project-path = " & projectpathst
     echo "Chosen procedure = " & procst
     echo "For help type: ctwig -h or ctwig --help"
     echo "----------------------------------------------------"
-    #echo directionst
-    #echo depthit
 
     if procst != "":
       if projectpathst != "" or procst == "echoHelpInfo":
@@ -1003,7 +1026,7 @@ proc processCommandLine() =
       else:
         echo "A project-file was not provided (like: projects/someproject.pro)"
     else:
-      echo "A command-option was not provided (like -a or -c)"
+      echo "A command-option was not provided (like -c=a or -c=t)"
 
 
   except IndexDefect:
