@@ -1,3 +1,6 @@
+When reading from Github, press button "Raw" to get line-wrapping.
+------------------------------------------------------------------
+
 Welcome to help for CodeTwig
 
 CodeTwig is terminal-program to view source-code and to show procedures as usage-trees or used-by-trees.

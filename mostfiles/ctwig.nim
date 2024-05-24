@@ -18,7 +18,7 @@ import std/[os, strutils, paths, dirs, tables, parseopt]
 
 
 var 
-  versionfl: float = 0.31
+  versionfl: float = 0.32
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -452,7 +452,7 @@ proc createDeclarationList(proj_def_pathst: string) =
                 if sline.strip().startswith("#"): singlecommentbo = true
 
                 if sline.len > 2 and not incommentblockbo and not commentclosingbo and not singlecommentbo:
-                  if sline.contains(declare2st):
+                  if sline.contains(declare2st) and not sline.contains("\"" & declare2st & "\""):
                     foundcountit += 1
                     if not (dec_plus_modulest in unique_decplusmodule2sq):
                       unique_decplusmodule2sq.add(dec_plus_modulest)
@@ -621,6 +621,13 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
 proc getSeqFromFileLines(filepathst, searchst, sep1st, sep2st: string, searchfieldar: array[0..1, int], substringbo: bool = true): seq[string] = 
 
   #[
+    Add lines to the sequence which match the search-filter.
+    Search with substring, string or wildcard * for search-value searchst on designated  search-field, which is indicated by the coordinates on the sep-divided line.
+    
+    Like so:
+    part-a1~~~parta2===partb1~~~partb2
+    part-b2 = [1,1]
+
     extra separator and sortfieldar may come later
   ]#
 
@@ -634,13 +641,16 @@ proc getSeqFromFileLines(filepathst, searchst, sep1st, sep2st: string, searchfie
 
     for linest in fileob.lines:
       searchfieldvalst = linest.split(sep1st)[searchfieldar[0]].split(sep2st)[searchfieldar[1]]
-      #echo searchfieldvalst & "-----" & searchst
-      if substringbo:        
-        if searchfieldvalst.toLowerAscii.contains(searchst.toLowerAscii):
-          outputsq.add(linest)
-      else:
-        if searchfieldvalst.toLowerAscii == searchst.toLowerAscii:
-          outputsq.add(linest)
+      if searchst == "*":     # get all decs
+        outputsq.add(linest)
+      else: 
+        #echo searchfieldvalst & "-----" & searchst
+        if substringbo:        
+          if searchfieldvalst.toLowerAscii.contains(searchst.toLowerAscii):
+            outputsq.add(linest)
+        else:
+          if searchfieldvalst.toLowerAscii == searchst.toLowerAscii:
+            outputsq.add(linest)
 
     fileob.close()
     result = outputsq
@@ -794,7 +804,6 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
 #[
   Show a tree of declarations; either a usage-tree or a used-by-tree.
 
-  Later: , declarationst, directionst: string, depthit: int
 ]#
 
   var 
@@ -823,7 +832,7 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
 
     echo "--------------------------------------------------------"
     echo "Direction (tree-type) = ", directionst, ", Maxdepth = ", maxdepthit
-    echo "Enter the declaration you want to view, or exit to exit: "
+    echo "Enter the declaration you want to view, * for all , or exit to exit: "
     decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
 
     decfilob = open(decfilepathst, fmRead)
@@ -832,9 +841,13 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
     while not(inputst in ["exit","quit"]):
       inputst = readline(stdin)
       foundlinesq = getSeqFromFileLines(decfilepathst, inputst, sep3st, sep1st, [0,0], false)
-      if foundlinesq.len == 0:
-        # maybe find something with substring-search
-        foundsublinesq = getSeqFromFileLines(decfilepathst, inputst, sep3st, sep1st, [0,0])
+      # if no match found or wildcard * used (all found):
+      if foundlinesq.len == 0 or foundlinesq.len > 1:
+        if foundlinesq.len == 0:
+          # maybe find something with substring-search
+          foundsublinesq = getSeqFromFileLines(decfilepathst, inputst, sep3st, sep1st, [0,0])
+        else:
+          foundsublinesq = foundlinesq
         if foundsublinesq.len > 1:
           #echo foundlinesq
           echo "========================================================================="
@@ -1082,7 +1095,9 @@ else:
   if false:
     createCodeViewFile(filepathst, viewBasic_OneLevel)
     createCodeViewFile(filepathst, viewBasic_TwoLevels)
-  if true:
+  if false:
+    echo getSeqFromFileLines(filepathst, "*", "===" , "~~~", [0,0], true).len
+  if false:
     showDeclarationBranch(filepathst, "usage", 3)
     #showDeclarationBranch(filepathst, "used-by", 5)
 

@@ -22,12 +22,13 @@ nim
 
 
 PROJECT_PATH
-the/path/to/your/project-source-files
+/media/OnsSpul/1klein/1joris/k1-onderwerpen/computer/Programmeren/nimtaal/codetwig/mostfiles
 >----------------------------------<
 
 
 
 SOURCE_FILES
+ctwig.nim
+g_disk2nim.nim
+g_templates.nim
 >----------------------------------<
-
-

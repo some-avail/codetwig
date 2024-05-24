@@ -1,0 +1,28 @@
+ctwig---------------------------------------------------
+    extractFileSectionToSequence     proc      line: 114
+    getSliceFromAnchor               proc      line: 137
+    countLinesOfFile                 proc      line: 211
+    createDeclarationList            proc      line: 224
+    createCodeViewFile               proc      line: 504
+    getSeqFromFileLines              proc      line: 621
+    getSeqFromLinesSpecial           proc      line: 680
+    writeFamily                      proc      line: 727
+    showDeclarationBranch            proc      line: 802
+    echoHelpInfo                     proc      line: 902
+    createAllViewFiles               proc      line: 948
+    generate_all                     proc      line: 955
+    processCommandLine               proc      line: 963
+g_disk2nim---------------------------------------------------
+    writeFilePatternToSeq            proc      line: 18
+    getPatternLocation               proc      line: 40
+    writeFilePatternToSeq2           proc      line: 66
+    addShowValuesToSeq               proc      line: 116
+    convertFileToSequence            proc      line: 136
+    convertMultFilesToSeq            proc      line: 159
+g_templates---------------------------------------------------
+    withFileAdvanced                 template  line: 18
+    doWork                           proc      line: 45
+    timeStuff                        template  line: 51
+    timeThings                       template  line: 57
+    timeNeatly                       template  line: 65
+    timeCop                          template  line: 71
