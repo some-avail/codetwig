@@ -22,6 +22,15 @@ The command-key needs as values the actual commands.
 
 
 
+PROJECTS
+
+CodeTwig has its own project-directory "projects" in which you must place your codetwig-projects. It may sound complicated but it is very easy. The starting-point of a project is the project-definition-file. You can copy the template to get started. You rename the copied template to yourproject.pro.
+You just have to paste the path to the source-files of your project, and the rest goes (mostly) automatically. You can perform below-standing command to add the source-files programmatically. Just check the results and remove potential backups or earlier versions of your source-files. Off course you can also manually add the source-files.
+All codetwig-genererated files are placed in a newly created folder: projects/yourproject
+So the folder-name is based on the basename of your project-def-file.
+
+
+
 ALL COMMANDS
 
 -c:a or --command:add_files
@@ -31,7 +40,7 @@ Full example:
 ctwig projects/yourproject.pro -c:a
 
 After you have copied the project-template, renamed it and adjusted the path to the source-files, you can run above command. All it does for now is adding the names of the source-files (.nim) from the source-path to project-def-file (yourproject.pro).
-
+---------------------------------------------------------------------------
 
 -c:d or --command:declarations
 no options
@@ -42,7 +51,7 @@ ctwig projects/yourproject.pro -c:d
 Running this command will create a list of declarations. Declarations are the various procs, template, macros and functions. The file is not very readable, but will be used to create addtional views. Also it is parsed to generate the proc-trees on the fly. (see later). The list contains:
 - declarations (like procs) for all source-files
 - declarations that are used in above declarations (these are appended to above line)
-
+---------------------------------------------------------------------------
 
 -c:v or --command:views
 no options
@@ -50,8 +59,17 @@ no options
 Full example:
 ctwig projects/yourproject.pro -c:v
 
-Running this command will create some views of the source-code. Currently two views are available, basic view with one level or two levels. The first one shows the source-files and the declarations only (usually mostly procs), and the second shows the usages of each declaration (used procs).
+Running this command will create some views of the source-code. Currently four views are available, basic and extended view with one level or two levels. The one-level-files show the source-files and the declarations only (usually mostly procs), and the two-level-files shows the usages of each declaration (used procs). The extended provide also the paramaters of function and the added comment.
+---------------------------------------------------------------------------
 
+-c:g or --command:generate_all
+no options
+
+Full example:
+ctwig projects/yourproject.pro -c:g
+
+This command generates both the declaration-list and all of the views. Us it if you want tu update your project and are not interested in the output screen-notification.
+---------------------------------------------------------------------------
 
 -c:t or --command:tree
 options:
@@ -69,15 +87,6 @@ Seps can be ommitted:
 ctwig projects/yourproject.pro -ct -ru -d2
 
 Lastly above command starts with a box in which a substring can be entered to search for a declaration. Then  a list of declarations is displayed which have the substring in them. If the entered substring matches only one declaration, a tree is shown based on the parameters direction and depth. The direction usage refers to the calls to other procs that are made in the proc, where used-by stands for all the procs that are using the declaration (so the reverse process). The depths stands for the number of levels that are shown.
-
-
-
-FUTURE FEATURES
-
-Both in the views and in the tree-function the following will be retrievable:
-- procedural arguments
-- initial comments
-
 
 
 

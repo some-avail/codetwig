@@ -18,7 +18,7 @@ import std/[os, strutils, paths, dirs, tables, parseopt]
 
 
 var 
-  versionfl: float = 0.32
+  versionfl: float = 0.34
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -30,6 +30,17 @@ type
     viewExtended_OneLevel
     viewExtended_TwoLevels
     viewAll
+
+
+# var debugbo: bool = true
+var debugbo: bool = false
+
+
+template log(messagest: string) =
+  # replacement for echo that is only evaluated when debugbo = true
+  if debugbo: 
+    echo messagest
+
 
 
 proc addSourceFilesToProject(proj_def_pathst: string): string = 
@@ -349,7 +360,7 @@ proc createDeclarationList(proj_def_pathst: string) =
                     # probably a macro-implementation - you want these..
                     decnamest = linest[0..linest.len - 2]
                     if decnamest notin excluded_declaresq:
-                      targlinest = dec_namest & sep1st & modulenamest & sep1st & "implementation" & sep1st & "ls:" & $linecountit & sep1st & "cs:" & "0" & sep1st & "ce:" & $decnamest.len
+                      targlinest = dec_namest & sep1st & modulenamest & sep1st & "implement" & sep1st & "ls:" & $linecountit & sep1st & "cs:" & "0" & sep1st & "ce:" & $decnamest.len
                       phase1fileob.writeLine(targlinest)
                       echo "Line: " & $linecountit
                   else:
@@ -499,6 +510,110 @@ proc createDeclarationList(proj_def_pathst: string) =
 
 
 
+proc getSliceFromLines(fileob: var File, linestartit, lineendit: int, starttagst, endtagst: string, samelinebo: bool = false): array[0..1, int] = 
+  #[
+    Looping thru the lines, starting at linestart, retrieve the starting and ending point 
+    as integers of the text between the startag and endtag, and put them in an array.
+    
+    samelinebo = true means that the starttag and endtag must be on the same line.
+  ]#
+
+  var 
+    fileposfromlineit, startit, endit, filestartit, fileendit, countit: int
+    startfoundbo, endfoundbo, stopsearchingbo: bool
+
+  fileob.setFilePos(0)
+  startfoundbo = false
+  endfoundbo = false
+  stopsearchingbo = false
+
+  countit = 0
+  for linest in fileob.lines:
+    startit = 0
+    endit = 0
+    countit += 1
+    if countit >= linestartit and countit <= lineendit:
+
+      if not (startfoundbo and endfoundbo):
+        fileposfromlineit = fileob.getFilePos()
+        log($countit & " - " & $fileposfromlineit)
+        if not startfoundbo:
+          startit = linest.find(starttagst)
+          if startit >= 0:
+            startfoundbo = true
+            filestartit = fileposfromlineit - linest.len + startit + starttagst.len - 1
+            #echo "filestartit ", filestartit
+            #echo "startit ", startit
+            log($countit)
+            log($fileposfromlineit)
+            log($startit)
+            log($filestartit)
+
+        if not endfoundbo and not stopsearchingbo:
+          # geval1: starttag is ) en eindtag is =
+          # geval2: starttag is ( en eindtag is )
+
+          endit = linest.find(endtagst)
+          if endit >= 0: 
+            fileendit = fileposfromlineit - linest.len + endit - 2
+
+          if startfoundbo:
+            while not endfoundbo:
+              if fileendit >= filestartit - 1:
+                  endfoundbo = true
+                  #echo "fileendit ", fileendit
+                  #echo "endit ", endit
+
+              else:
+                # search the next occurence of starttagst
+                endit = linest.find(endtagst, endit + 1)
+                if endit >= 0:
+                  fileendit = fileposfromlineit - linest.len + endit - 2
+                  #echo "fileendit ", fileendit
+                  #echo "endit ", endit
+                else:
+                  if samelinebo:
+                    stopsearchingbo = true
+                  break
+            log($countit)
+            log($fileposfromlineit)
+            log($endit)
+            log($fileendit)
+
+
+  fileob.setFilePos(0)
+  if not startfoundbo:
+    filestartit = -1
+  if not endfoundbo:
+    fileendit = -1        
+  result = [filestartit, fileendit]
+
+
+proc getXLinesWithSubstring(fileob: var File, subst: string, linestartit, lineendit, numberit: int): seq[string] = 
+
+  # Retrieve numberit lines from fileob based on the substring in them 
+  # starting from linestartit and put them in a sequence. Lines are prestripped for comparison
+
+  var 
+    countit, addcountit: int = 0
+    outputsq: seq[string]
+    strippedlinest: string
+
+  fileob.setFilePos(0)
+  for linest in fileob.lines:
+    countit += 1
+    strippedlinest = linest.strip()
+    if countit >= linestartit and countit <= lineendit:
+      if addcountit <= numberit:
+        if strippedlinest.startsWith(subst):
+          outputsq.add(linest)
+          addcountit += 1
+      else:
+        break
+
+  result = outputsq
+
+
 
 
 proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) = 
@@ -511,17 +626,22 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
 
 
   var 
-    decfilob, bofileob, btfileob: File 
-    decfilepathst, boview_filepathst, btview_filepathst: string
+    decfilob, bofileob, btfileob, eofileob, etfileob, fob: File 
+    decfilepathst, boview_filepathst, btview_filepathst, eoview_filepathst, etview_filepathst: string
     sourceprojectpathst, reltargetprojectpathst: string
     source_filesq, dlinesq, decdatasq, uselinesq: seq[string]
     sep1st = "~~~"
     #sep1st = "___"
     sep2st = "___"
     sep3st = "==="
-    decnamest, modulest, dectypest, linestartst, newmodulest, decdatalinest: string
+    decnamest, modulest, dectypest, linestartst, lineendst, newmodulest, decdatalinest, decdata_ekst: string
     usedatalinest: string
-
+    moduleta = initOrderedTable[string, File]()
+    filestringta = initOrderedTable[string, string]()
+    interpointar, betweenpointar: array[0..1, int]
+    filepathst, modfilest, slicest, nextslicest: string
+    linestartit, lineendit: int
+    commentlinesq: seq[string]
 
   try:
     # retrieve project-data from project-def-file
@@ -538,6 +658,8 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
     decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
     boview_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_basic_one-level_view.txt"))
     btview_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_basic_two-level_view.txt"))
+    eoview_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_extended_one-level_view.txt"))
+    etview_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_extended_two-level_view.txt"))
 
 
     decfilob = open(decfilepathst, fmRead)
@@ -547,10 +669,24 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
     elif viewtypeeu == viewBasic_TwoLevels:
       btfileob = open(btview_filepathst, fmWrite)
       echo "Creating file: " & btview_filepathst
+    elif viewtypeeu == viewExtended_OneLevel:
+      eofileob = open(eoview_filepathst, fmWrite)
+      echo "Creating file: " & eoview_filepathst
+    elif viewtypeeu == viewExtended_TwoLevels:
+      etfileob = open(etview_filepathst, fmWrite)
+      echo "Creating file: " & etview_filepathst
+
+
+    # create the source-file-table
+    for filest in source_filesq:
+      filepathst = string(Path(sourceprojectpathst) / Path(filest))
+      moduleta[filest] = open(filepathst, fmRead)
+      filestringta[filest] = readAll(moduleta[filest])
 
 
     # create view-types
-    if viewtypeeu == viewBasic_OneLevel or viewtypeeu == viewBasic_TwoLevels:
+    #if viewtypeeu == viewBasic_OneLevel or viewtypeeu == viewBasic_TwoLevels:
+    if true:
       newmodulest = ""
       # basic one level
       for dlinest in decfilob.lines:
@@ -560,6 +696,7 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
         modulest = decdatasq[1]
         dectypest = decdatasq[2]
         linestartst = decdatasq[3]
+        lineendst = decdatasq[6]
         #if modulest == "g_html_json":
         #  echo dlinesq
 
@@ -572,19 +709,102 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
             bofileob.writeLine(newmodulest & "---------------------------------------------------")
           elif viewtypeeu == viewBasic_TwoLevels:
             btfileob.writeLine(newmodulest & "--------------------------------------------------------------------")
+          elif viewtypeeu == viewExtended_OneLevel:
+            eofileob.writeLine("\p\p****************    " & newmodulest & "   ***********************************************************************\p")
+          elif viewtypeeu == viewExtended_TwoLevels:
+            etfileob.writeLine("\p\p****************    " & newmodulest & "   ***********************************************************************\p")
 
         else:
           decdatalinest = "    " & decnamest.alignLeft(33) & dectypest.alignLeft(10) & "line: " & linestartst.split(":")[1]
+          decdata_ekst = "    " & decnamest.alignLeft(33) & modulest.alignLeft(15) & dectypest.alignLeft(10) & "line: " & linestartst.split(":")[1]
+          
           if viewtypeeu == viewBasic_OneLevel:
             bofileob.writeLine(decdatalinest)
+
           elif viewtypeeu == viewBasic_TwoLevels:
             btfileob.writeLine(decdatalinest)
-
             for it, uselinest in dlinesq:
               if it > 0:
                 uselinesq = uselinest.split(sep1st)
                 usedatalinest = uselinesq[0].alignLeft(33) & uselinesq[1].alignLeft(20) & uselinesq[2].alignLeft(10) & uselinesq[3]
                 btfileob.writeLine("        " & usedatalinest)
+
+
+          elif viewtypeeu == viewExtended_OneLevel:
+            eofileob.writeLine("----------------------------------------------------------------------")            
+            eofileob.writeLine(decdata_ekst)          
+          elif viewtypeeu == viewExtended_TwoLevels:
+            etfileob.writeLine("----------------------------------------------------------------------")            
+            etfileob.writeLine(decdata_ekst)
+
+
+          if viewtypeeu == viewExtended_OneLevel or viewtypeeu == viewExtended_TwoLevels:
+            linestartit = parseInt(linestartst.split(":")[1])
+            lineendit = parseInt(lineendst.split(":")[1])
+            modfilest = modulest & ".nim"
+            fob = moduleta[modfilest]
+
+            # add the parameters
+            interpointar = getSliceFromLines(fob, linestartit, lineendit, "(", ")")
+            #moduleta[modfilest].setFilePos(0)
+            if interpointar[0] != -1 and interpointar[1] != -1 and interpointar[1] >= interpointar[0]:
+              slicest = filestringta[modfilest][interpointar[0]..interpointar[1]]
+            else:
+              slicest = ""
+              echo "    ", "missing inter ", decnamest, " - ",  $interpointar, " - ", modulest
+
+            betweenpointar = getSliceFromLines(fob, linestartit, lineendit, ")", "=")
+            #moduleta[modfilest].setFilePos(0)
+            if betweenpointar[0] != -1 and betweenpointar[1] != -1 and betweenpointar[1] >= betweenpointar[0]:
+              nextslicest = filestringta[modfilest][betweenpointar[0]..betweenpointar[1]]
+            else:
+              nextslicest = ""
+              echo  "    ", "missing between ", decnamest, " - ",  $betweenpointar, " - ", modulest
+
+
+            if viewtypeeu == viewExtended_OneLevel:
+              eofileob.writeLine("        (" & slicest & ")" & nextslicest)
+            elif viewtypeeu == viewExtended_TwoLevels:
+              etfileob.writeLine("        (" & slicest & ")" & nextslicest)
+
+            #else:
+
+
+            # add the comment-blocks
+            interpointar = getSliceFromLines(fob, linestartit, lineendit, "#[", "]#")
+            #moduleta[modfilest].setFilePos(0)
+            if interpointar[0] != -1 and interpointar[1] != -1 and interpointar[1] >= interpointar[0]:
+              slicest = filestringta[modfilest][interpointar[0]..interpointar[1]]
+              if viewtypeeu == viewExtended_OneLevel:
+                eofileob.writeLine("        " & slicest)
+              elif viewtypeeu == viewExtended_TwoLevels:
+                etfileob.writeLine("        " & slicest)
+
+
+            ## add separate commandlines if present
+            #interpointar = getSliceFromLines(fob, linestartit, lineendit, " # ", " var")
+            ##moduleta[modfilest].setFilePos(0)
+            #if interpointar[0] != -1 and interpointar[1] != -1 and interpointar[1] >= interpointar[0]:
+            #  slicest = filestringta[modfilest][interpointar[0]..interpointar[1]]
+            #  if slicest.len > 200:
+            #    slicest = slicest[0..200]
+
+
+            # add separate commandlines if present
+            commentlinesq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
+            for commentlinest in commentlinesq:
+              if viewtypeeu == viewExtended_OneLevel:              
+                eofileob.writeLine(commentlinest)
+              elif viewtypeeu == viewExtended_TwoLevels:
+                etfileob.writeLine(commentlinest)
+
+
+            if viewtypeeu == viewExtended_TwoLevels:
+              for it, uselinest in dlinesq:
+                if it > 0:
+                  uselinesq = uselinest.split(sep1st)
+                  usedatalinest = uselinesq[0].alignLeft(33) & uselinesq[1].alignLeft(20) & uselinesq[2].alignLeft(10) & uselinesq[3]
+                  etfileob.writeLine("        " & usedatalinest)
 
 
     decfilob.close()
@@ -593,7 +813,14 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
       bofileob.close()
     elif viewtypeeu == viewBasic_TwoLevels:
       btfileob.close()
+    elif viewtypeeu == viewExtended_OneLevel:
+      eofileob.close()
+    elif viewtypeeu == viewExtended_TwoLevels:
+      etfileob.close()
 
+
+    for filest in source_filesq:
+      moduleta[filest].close()
 
 
   except IndexDefect:
@@ -1072,7 +1299,9 @@ else:
     filepathst: string = "projects/readibl_test.pro"
     #mytekst = "proc crazyname(var)"
     mytekst = "proc new("
+    filest: string
     myarray: array[0..1, int]
+    fileob: File
   if false:
     echo addSourceFilesToProject(filepathst)
   if false:
@@ -1091,10 +1320,25 @@ else:
     else:
       echo "anchor not found"
   if false:
-    createDeclarationList(filepathst)
+    fileob = open(filepathst, fmRead)
+    myarray = getSliceFromLines(fileob, 0, 40, "(", ")")
+    echo myarray
+
+    fileob.setFilePos(0)
+    filest = readAll(fileob)
+    fileob.close()
+    echo filest.len
+    echo filest[myarray[0]..myarray[1]]
+
+
   if false:
+    createDeclarationList(filepathst)
+  if true:
     createCodeViewFile(filepathst, viewBasic_OneLevel)
     createCodeViewFile(filepathst, viewBasic_TwoLevels)
+    createCodeViewFile(filepathst, viewExtended_OneLevel)
+    createCodeViewFile(filepathst, viewExtended_TwoLevels)
+
   if false:
     echo getSeqFromFileLines(filepathst, "*", "===" , "~~~", [0,0], true).len
   if false:

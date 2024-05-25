@@ -7,7 +7,8 @@ import g_templates
 
 var versionfl: float = 0.12
 var debugbo: bool = false
-  
+
+
 template log(messagest: string) =
   # replacement for echo that is only evaluated when debugbo = true
   if debugbo: 
