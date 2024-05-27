@@ -1,7 +1,4 @@
 flashread--------------------------------------------------------------------
-    settings                         implementationline: 90
-        readOptionFromFile               fr_tools            proc      92
-        readOptionFromFile               g_options           proc      92
     getWebTitle                      proc      line: 97
         getTitleFromWebsite              process_text        proc      110
     jump_to_end_step                 proc      line: 144
@@ -12,7 +9,7 @@ flashread--------------------------------------------------------------------
         formatText                       process_text        proc      160
         replaceInPastedText              process_text        proc      166
     showPage                         proc      line: 171
-    routes                           implementationline: 187
+    routes                           implement line: 187
         getWebTitle                      flashread           proc      349
         jump_to_end_step                 flashread           proc      354
         showPage                         flashread           proc      247
@@ -34,9 +31,8 @@ flashread--------------------------------------------------------------------
         evaluateDataFiles                source_files        proc      233
         compareDataFiles                 source_files        proc      231
 fr_tools--------------------------------------------------------------------
-    sequenceFromValueList            proc      line: 31
     readOptionFromFile               proc      line: 35
-        settings                         flashread           implementation40
+        settings                         flashread           implement 40
     newlang                          proc      line: 99
         readOptionFromFile               fr_tools            proc      114
         readOptionFromFile               g_options           proc      114
@@ -44,7 +40,6 @@ fr_tools--------------------------------------------------------------------
     timeStuff                        template  line: 181
     timeNeatly                       template  line: 187
 g_mine--------------------------------------------------------------------
-    getWebSite                       proc      line: 36
     getWebSiteAsync                  proc      line: 82
     getSubstringPositions            proc      line: 90
     pairChainsAreValid               proc      line: 122
@@ -126,10 +121,8 @@ g_mine--------------------------------------------------------------------
         getDataSequence                  g_mine              proc      1110
         getInnerText                     process_text        proc      1131
 g_options--------------------------------------------------------------------
-    readOptionFromFile_fut           proc      line: 44
-        settings                         flashread           implementation57
     readOptionFromFile               proc      line: 118
-        settings                         flashread           implementation131
+        settings                         flashread           implement 131
     getValList                       proc      line: 190
     newlang                          proc      line: 196
         readOptionFromFile               fr_tools            proc      211
@@ -142,9 +135,6 @@ jo_htmlgen--------------------------------------------------------------------
         newlang                          fr_tools            proc      156
         newlang                          g_options           proc      156
 loadgui--------------------------------------------------------------------
-    loadTextLangsFromConfig          proc      line: 31
-        readOptionFromFile               fr_tools            proc      43
-        readOptionFromFile               g_options           proc      43
     loadComboFromDir_Old             proc      line: 63
     loadComboFromDir                 proc      line: 93
     setCheckboxSetFromConfig         proc      line: 129
@@ -152,7 +142,6 @@ loadgui--------------------------------------------------------------------
         readOptionFromFile               g_options           proc      144
     testWalkdir                      proc      line: 159
 process_text--------------------------------------------------------------------
-    testWebSite                      proc      line: 109
     getSubstringPositions            proc      line: 126
     getDataBetweenTags               proc      line: 159
         getSubstringPositions            g_mine              proc      186
@@ -197,6 +186,7 @@ source_files--------------------------------------------------------------------
     withFile                         template  line: 68
     allFilesExist                    proc      line: 82
     getSeqFromFileSection            proc      line: 99
+        l1                               source_files        template  111
     createCombinedSummaryFile        proc      line: 138
         allFilesExist                    source_files        proc      170
         getSeqFromFileSection            source_files        proc      168
@@ -211,7 +201,6 @@ source_files--------------------------------------------------------------------
     compareDataFiles                 proc      line: 398
         withFile                         source_files        template  422
 stringstuff--------------------------------------------------------------------
-    stripSymbolsFromList             proc      line: 22
     countOccurencesInContext         proc      line: 40
     customReplace                    proc      line: 86
         countOccurencesInContext         stringstuff         proc      126

@@ -1,0 +1,316 @@
+
+
+****************    ctwig   ***********************************************************************
+
+----------------------------------------------------------------------
+    addSourceFilesToProject          ctwig          proc      line: 46
+        (proj_def_pathst: string): string 
+        
+  Based on the project-path in the project-def-file, the source-files
+  from that project are added to the project-def-file.
+
+  ADAP FUT
+  -add param overwritebo to overwrite / update the current sf-list
+  -exclusion-list to auto-exclude certain files that are probably copies
+  of originals, with numbers and words like bak or copy.
+  
+    # open the project-file for read-write access
+        # check for block-header
+              # read the project-path
+ 
+        writeFilePatternToSeq            g_disk2nim          proc      91
+        writeFilePatternToSeq2           g_disk2nim          proc      91
+----------------------------------------------------------------------
+    extractFileSectionToSequence     ctwig          proc      line: 125
+        (filepathst, start_separst, end_separst: string): seq[string] 
+        
+    Extract the lines of a file that are located between the starting and ending separator and 
+    put them in a sequence.
+  
+ 
+        withFile                         g_templates         template  136
+        withFileAdvanced                 g_templates         template  136
+----------------------------------------------------------------------
+    getSliceFromAnchor               ctwig          proc      line: 148
+        (tekst, anchorst: string, possib_endmarksq: seq[string], appendspacebo: bool): array[0..1, int] 
+        
+    Searching in the tekst, return a target-string indicated as slice [start,end] located after an anchor-string.
+    If the target-string must be a separate word, then set appendspacebo = true
+    The end of the target-string is the first one of the possible end-markers.
+
+    if myarray != [-1, -1]:
+      if myarray[1] != 99999999:
+        echo mytekst[myarray[0]..myarray[1]]
+      else:
+        echo "no target-string or end-string found"
+    else:
+      echo "anchor not found"
+
+    ADAP MAYBE
+    -add orientation; target can be located next to an anchor-string with a certain orientation (before or after).
+  
+ 
+----------------------------------------------------------------------
+    countLinesOfFile                 ctwig          proc      line: 222
+        (filepathst: string): int 
+ 
+----------------------------------------------------------------------
+    createDeclarationList            ctwig          proc      line: 235
+        (proj_def_pathst: string) 
+        
+  proj_def_pathst = path to the file in which the codetwig-project for a source-project is defined
+
+  Firstly scan all source-files to create a basic declaration-list
+  (that is without the underlying declarations)
+  Then, for each proc / declaration, one can scan for the used procs /decs and append them after earch dec-line.
+
+  dec_module_dec-type_linestart_colstart_colend_line-end
+
+  ADAP HIS
+  -unificeren op dec_module, niet alleen op dec
+
+  ADAP FUT
+  -add special type of declarations like "route:""
+  
+    # declaration-types
+    # to avoid doubles
+    # must be unique
+ 
+        extractFileSectionToSequence     ctwig               proc      292
+        getSliceFromAnchor               ctwig               proc      344
+        countLinesOfFile                 ctwig               proc      401
+----------------------------------------------------------------------
+    getSliceFromLines                ctwig          proc      line: 513
+        (fileob: var File, linestartit, lineendit: int, starttagst, endtagst: string, samelinebo: bool = false): array[0..1, int] 
+        
+    Looping thru the lines, starting at linestart, retrieve the starting and ending point 
+    as integers of the text between the startag and endtag, and put them in an array.
+    
+    samelinebo = true means that the starttag and endtag must be on the same line.
+  
+          # geval1: starttag is ) en eindtag is =
+          # geval2: starttag is ( en eindtag is )
+                # search the next occurence of starttagst
+ 
+----------------------------------------------------------------------
+    getXLinesWithSubstring           ctwig          proc      line: 592
+        (fileob: var File, subst: string, linestartit, lineendit, numberit: int): seq[string] 
+  # Retrieve numberit lines from fileob based on the substring in them 
+  # starting from linestartit and put them in a sequence. Lines are prestripped for comparison
+ 
+----------------------------------------------------------------------
+    createCodeViewFile               ctwig          proc      line: 619
+        (proj_def_pathst: string, viewtypeeu: ViewType) 
+        
+  Create view-files of the enum-type
+
+  ADAP FUT
+  ??- sort second-level decs on line-nr.
+
+    # retrieve project-data from project-def-file
+    # set the target-dir and declaration-file
+    # create the source-file-table
+ 
+        extractFileSectionToSequence     ctwig               proc      648
+        getSliceFromLines                ctwig               proc      748
+        getXLinesWithSubstring           ctwig               proc      785
+----------------------------------------------------------------------
+    getSeqFromFileLines              ctwig          proc      line: 840
+        (filepathst, searchst, sep1st, sep2st: string, searchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
+        
+    Add lines to the sequence which match the search-filter.
+    Search with substring, string or wildcard * for search-value searchst on designated  search-field, which is indicated by the coordinates on the sep-divided line.
+    
+    Like so:
+    part-a1~~~parta2===partb1~~~partb2
+    part-b2 = [1,1]
+
+    extra separator and sortfieldar may come later
+  
+ 
+----------------------------------------------------------------------
+    getSeqFromFileLines2             ctwig          proc      line: 899
+        (filepathst, fstsearchst, secsearchst, sep1st, sep2st: string, fstsearchfieldar, secsearchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
+        
+    Add lines to the sequence which match the search-filter.
+    In this extended proc first and second search-value and -field can be used.
+
+    Search with substring, string or wildcard * for search-values *searchst on designated  *search-field, which is indicated by the coordinates on the sep-divided line.
+    
+    Like so:
+    part-a1~~~parta2===partb1~~~partb2
+    part-b2 = [1,1]
+
+    extra separator and sortfieldar may come later
+  
+ 
+----------------------------------------------------------------------
+    getSeqFromLinesSpecial           ctwig          proc      line: 978
+        (filepathst, searchst, sep1st, sep2st: string): seq[string] 
+        
+    Search-function specific for the dec-list phase-3.
+    It searches in all the used declarations for each line.
+    It returns the line if one of the used declarations matches substringwise.
+
+    MAYBE:
+    extra separator and sortfieldar may come later
+  
+ 
+----------------------------------------------------------------------
+    writeFamily                      ctwig          proc      line: 1030
+        (proj_def_pathst, declarationst, directionst: string, curdepthit, maxdepthit: int) 
+        
+  Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
+
+    # set the target-dir and declaration-file
+    # retrieve project-data from project-def-file
+    # set the target-dir and declaration-file
+ 
+        getXLinesWithSubstring           ctwig               proc      1204
+        getSeqFromFileLines              ctwig               proc      1060
+        getSeqFromLinesSpecial           ctwig               proc      1075
+        writeFamily                      ctwig               proc      1071
+----------------------------------------------------------------------
+    showDeclarationBranch            ctwig          proc      line: 1213
+        (proj_def_pathst, directionst: string, maxdepthit: int) 
+        
+  Show a tree of declarations; either a usage-tree or a used-by-tree.
+
+
+    # retrieve project-data from project-def-file
+    # set the target-dir and declaration-file
+      # if no exact match found or wildcard * used (all found):
+ 
+        extractFileSectionToSequence     ctwig               proc      1237
+        getSeqFromFileLines              ctwig               proc      1256
+        getSeqFromFileLines2             ctwig               proc      1258
+        writeFamily                      ctwig               proc      1281
+----------------------------------------------------------------------
+    echoHelpInfo                     ctwig          proc      line: 1316
+        () 
+ 
+----------------------------------------------------------------------
+    createAllViewFiles               ctwig          proc      line: 1362
+        (filepathst: string) 
+ 
+        createCodeViewFile               ctwig               proc      1364
+----------------------------------------------------------------------
+    generate_all                     ctwig          proc      line: 1371
+        (projectpathst: string) 
+ 
+        createDeclarationList            ctwig               proc      1373
+        createAllViewFiles               ctwig               proc      1374
+----------------------------------------------------------------------
+    processCommandLine               ctwig          proc      line: 1379
+        () 
+        
+  firstly load the args from the commandline and set the needed vars 
+  then run the chosen procedures.
+
+  test: string
+
+    # firstly load the args from the commandline and set the needed vars 
+ 
+        addSourceFilesToProject          ctwig               proc      1443
+        createDeclarationList            ctwig               proc      1445
+        showDeclarationBranch            ctwig               proc      1451
+        echoHelpInfo                     ctwig               proc      1453
+        createAllViewFiles               ctwig               proc      1447
+        generate_all                     ctwig               proc      1449
+
+
+****************    g_disk2nim   ***********************************************************************
+
+----------------------------------------------------------------------
+    writeFilePatternToSeq            g_disk2nim     proc      line: 19
+        (filestartwithst: string): seq[string] 
+         Write the files from pattern in the current dir to the sequence and
+ return that
+  # walk thru the file-iterator and sequence the right file(names)
+ 
+----------------------------------------------------------------------
+    getPatternLocation               g_disk2nim     proc      line: 41
+        (starred_patternst: string): string 
+         
+  determine the location of the wordpattern with regard to 
+  the location of the star
+  
+ 
+----------------------------------------------------------------------
+    writeFilePatternToSeq2           g_disk2nim     proc      line: 67
+        (starred_patternst, source_dirst: string): seq[string] 
+         Write the files from a *-pattern in the current dir to the sequence and
+ return that; options:
+  -start with / left-part: pattern*
+  -end with / right-part: *pattern
+  -in the middle: *pattern*
+
+  UNDER CONSTRUCTION
+ 
+  # walk thru the file-iterator and sequence the right file(names)
+ 
+        getPatternLocation               g_disk2nim          proc      82
+----------------------------------------------------------------------
+    addShowValuesToSeq               g_disk2nim     proc      line: 117
+        (listsq: seq[string], startingclipst, substitutionst: string): 
+                                        seq[array[2, string]] 
+        
+  From the real file-names-seq create a second seq with adjusted names to show in the 
+  select-control and zip them into a double array
+  
+ 
+----------------------------------------------------------------------
+    convertFileToSequence            g_disk2nim     proc      line: 137
+        (filepathst, skipst: string): seq[string] 
+         
+  Convert a file to a Nim-sequence.
+  Skip lines with the value skipst.
+ 
+ 
+        withFile                         g_templates         template  145
+----------------------------------------------------------------------
+    convertMultFilesToSeq            g_disk2nim     proc      line: 160
+        (filepathsq: seq[string], skipst: string): seq[string] 
+         
+  Convert a file to a Nim-sequence.
+  Skip lines with the value skipst.
+ 
+ 
+        withFile                         g_templates         template  170
+
+
+****************    g_templates   ***********************************************************************
+
+----------------------------------------------------------------------
+    withFileAdvanced                 g_templates    template  line: 18
+        (f, fn, mode, actions: untyped): untyped 
+         
+Below are some timing-functions that may or may not
+work. I find the cpuTime function unreliable, for example
+it doesnt register a sleep-function. 
+Finally in timeCop i revert to the now-function, which seems
+accurate.
+ 
+ 
+----------------------------------------------------------------------
+    doWork                           g_templates    proc      line: 45
+        (x: int) 
+ 
+----------------------------------------------------------------------
+    timeStuff                        g_templates    template  line: 51
+        (statement: untyped): string 
+ 
+----------------------------------------------------------------------
+    timeThings                       g_templates    template  line: 57
+        (statement: untyped) 
+  # easiest to use
+ 
+----------------------------------------------------------------------
+    timeNeatly                       g_templates    template  line: 65
+        (statement: untyped): float 
+ 
+----------------------------------------------------------------------
+    timeCop                          g_templates    template  line: 71
+        (statement: untyped) 
+  # measures real-time instead of cpu-time
+ 

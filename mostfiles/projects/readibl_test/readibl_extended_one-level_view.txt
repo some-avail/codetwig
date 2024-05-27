@@ -3,11 +3,6 @@
 ****************    flashread   ***********************************************************************
 
 ----------------------------------------------------------------------
-    settings                         flashread      implementationline: 90
-        (5003)   # personal
-  port 
-  # port = Port(5003)   # personal
-----------------------------------------------------------------------
     getWebTitle                      flashread      proc      line: 97
         ():string 
     # Maybe future: advanced parsing to better strip
@@ -24,7 +19,7 @@
         (par_innervarob, par_outervarob: var Context, 
                 custominnerhtmlst:string=""): string 
 ----------------------------------------------------------------------
-    routes                           flashread      implementationline: 187
+    routes                           flashread      implement line: 187
         ()  # inner html insertions
       outervarob: Context 
     # check if thru source_files.nim if all files are loaded successfully
@@ -34,9 +29,6 @@
 
 ****************    fr_tools   ***********************************************************************
 
-----------------------------------------------------------------------
-    sequenceFromValueList            fr_tools       proc      line: 31
-        (valuelist: string): seq[string] 
 ----------------------------------------------------------------------
     readOptionFromFile               fr_tools       proc      line: 35
         (optnamest, typest: string):string 
@@ -65,9 +57,6 @@
 
 ****************    g_mine   ***********************************************************************
 
-----------------------------------------------------------------------
-    getWebSite                       g_mine         proc      line: 36
-        (addresst: string): string 
 ----------------------------------------------------------------------
     getWebSiteAsync                  g_mine         proc      line: 82
         (addresst: string): string 
@@ -356,22 +345,6 @@
 ****************    g_options   ***********************************************************************
 
 ----------------------------------------------------------------------
-    readOptionFromFile_fut           g_options      proc      line: 44
-        (optnamest: string, optiontype: OptionType): T 
-        
-  Read from the settings-file based on the option-data, which are ordered 
-  per line containing:
-  option-name___value___some description here___list-item1,,list-item2,,list-item3,,ect...
-
-  The option-name is the first part of the line, the others are retrieved thru the 
-  optiontype-enum.
-
-  Expects settings-file as projectprefix_settings.conf"
- 
-      # walk thru the lines of the file
-        # echo line
-              # new cluster found
-----------------------------------------------------------------------
     readOptionFromFile               g_options      proc      line: 118
         (optnamest: string, optiontype: OptionType): string 
         
@@ -446,12 +419,6 @@ Sample output:
 ****************    loadgui   ***********************************************************************
 
 ----------------------------------------------------------------------
-    loadTextLangsFromConfig          loadgui        proc      line: 31
-        () 
-# Load the processing-languages of the dropdown "dropdownsta" of 
-# webgui_def.nim from the config-file
-  # get the processing-languages from the config-file
-----------------------------------------------------------------------
     loadComboFromDir_Old             loadgui        proc      line: 63
         (combobokst, filenamepartst: string) 
 # proc loadComboFromDir() =  
@@ -476,9 +443,6 @@ Sample output:
 
 ****************    process_text   ***********************************************************************
 
-----------------------------------------------------------------------
-    testWebSite                      process_text   proc      line: 109
-        () 
 ----------------------------------------------------------------------
     getSubstringPositions            process_text   proc      line: 126
         (stringst, subst: string):seq[int] 
@@ -803,13 +767,6 @@ Sample output:
 
 ****************    stringstuff   ***********************************************************************
 
-----------------------------------------------------------------------
-    stripSymbolsFromList             stringstuff    proc      line: 22
-        (inputtekst: string, listsq: seq[string], symbolst: string): string 
-         
-  For all the words in the list that are present in inputtekst 
-  strip symbolst (like U.S. > US)
-  
 ----------------------------------------------------------------------
     countOccurencesInContext         stringstuff    proc      line: 40
         (stringst, subst, contexttypest:string, 

@@ -2,35 +2,40 @@ other_declaration~~~ctwig~~~import g_disk2ni~~~ls:15
 other_declaration~~~ctwig~~~import std/[os, ~~~ls:17
 other_declaration~~~ctwig~~~var ~~~ls:20
 other_declaration~~~ctwig~~~type ~~~ls:26
-addSourceFilesToProject~~~ctwig~~~proc~~~ls:35~~~cs:5~~~ce:27
-extractFileSectionToSequence~~~ctwig~~~proc~~~ls:114~~~cs:5~~~ce:32
-getSliceFromAnchor~~~ctwig~~~proc~~~ls:137~~~cs:5~~~ce:22
-countLinesOfFile~~~ctwig~~~proc~~~ls:211~~~cs:5~~~ce:20
-createDeclarationList~~~ctwig~~~proc~~~ls:224~~~cs:5~~~ce:25
-createCodeViewFile~~~ctwig~~~proc~~~ls:504~~~cs:5~~~ce:22
-getSeqFromFileLines~~~ctwig~~~proc~~~ls:621~~~cs:5~~~ce:23
-getSeqFromLinesSpecial~~~ctwig~~~proc~~~ls:680~~~cs:5~~~ce:26
-writeFamily~~~ctwig~~~proc~~~ls:727~~~cs:5~~~ce:15
-showDeclarationBranch~~~ctwig~~~proc~~~ls:802~~~cs:5~~~ce:25
-echoHelpInfo~~~ctwig~~~proc~~~ls:902~~~cs:5~~~ce:16
-createAllViewFiles~~~ctwig~~~proc~~~ls:948~~~cs:5~~~ce:22
-generate_all~~~ctwig~~~proc~~~ls:955~~~cs:5~~~ce:16
-processCommandLine~~~ctwig~~~proc~~~ls:963~~~cs:5~~~ce:22
-other_declaration~~~ctwig~~~var for_realbo: ~~~ls:1066
-other_declaration~~~ctwig~~~if for_realbo:~~~ls:1067
+other_declaration~~~ctwig~~~var debugbo: boo~~~ls:36
+log~~~ctwig~~~template~~~ls:39~~~cs:9~~~ce:11
+addSourceFilesToProject~~~ctwig~~~proc~~~ls:46~~~cs:5~~~ce:27
+extractFileSectionToSequence~~~ctwig~~~proc~~~ls:125~~~cs:5~~~ce:32
+getSliceFromAnchor~~~ctwig~~~proc~~~ls:148~~~cs:5~~~ce:22
+countLinesOfFile~~~ctwig~~~proc~~~ls:222~~~cs:5~~~ce:20
+createDeclarationList~~~ctwig~~~proc~~~ls:235~~~cs:5~~~ce:25
+getSliceFromLines~~~ctwig~~~proc~~~ls:513~~~cs:5~~~ce:21
+getXLinesWithSubstring~~~ctwig~~~proc~~~ls:592~~~cs:5~~~ce:26
+createCodeViewFile~~~ctwig~~~proc~~~ls:619~~~cs:5~~~ce:22
+getSeqFromFileLines~~~ctwig~~~proc~~~ls:840~~~cs:5~~~ce:23
+getSeqFromFileLines2~~~ctwig~~~proc~~~ls:899~~~cs:5~~~ce:24
+getSeqFromLinesSpecial~~~ctwig~~~proc~~~ls:978~~~cs:5~~~ce:26
+writeFamily~~~ctwig~~~proc~~~ls:1030~~~cs:5~~~ce:15
+showDeclarationBranch~~~ctwig~~~proc~~~ls:1213~~~cs:5~~~ce:25
+echoHelpInfo~~~ctwig~~~proc~~~ls:1316~~~cs:5~~~ce:16
+createAllViewFiles~~~ctwig~~~proc~~~ls:1362~~~cs:5~~~ce:22
+generate_all~~~ctwig~~~proc~~~ls:1371~~~cs:5~~~ce:16
+processCommandLine~~~ctwig~~~proc~~~ls:1379~~~cs:5~~~ce:22
+other_declaration~~~ctwig~~~var for_realbo: ~~~ls:1482
+other_declaration~~~ctwig~~~if for_realbo:~~~ls:1483
 other_declaration~~~g_disk2nim~~~import strutils,~~~ls:4
 other_declaration~~~g_disk2nim~~~import os~~~ls:5
 other_declaration~~~g_disk2nim~~~import g_templat~~~ls:6
 other_declaration~~~g_disk2nim~~~var versionfl: f~~~ls:8
 other_declaration~~~g_disk2nim~~~var debugbo: boo~~~ls:9
-log~~~g_disk2nim~~~template~~~ls:11~~~cs:9~~~ce:11
-writeFilePatternToSeq~~~g_disk2nim~~~proc~~~ls:18~~~cs:5~~~ce:25
-getPatternLocation~~~g_disk2nim~~~proc~~~ls:40~~~cs:5~~~ce:22
-writeFilePatternToSeq2~~~g_disk2nim~~~proc~~~ls:66~~~cs:5~~~ce:26
-addShowValuesToSeq~~~g_disk2nim~~~proc~~~ls:116~~~cs:5~~~ce:22
-convertFileToSequence~~~g_disk2nim~~~proc~~~ls:136~~~cs:5~~~ce:25
-convertMultFilesToSeq~~~g_disk2nim~~~proc~~~ls:159~~~cs:5~~~ce:25
-other_declaration~~~g_disk2nim~~~when isMainModul~~~ls:183
+log~~~g_disk2nim~~~template~~~ls:12~~~cs:9~~~ce:11
+writeFilePatternToSeq~~~g_disk2nim~~~proc~~~ls:19~~~cs:5~~~ce:25
+getPatternLocation~~~g_disk2nim~~~proc~~~ls:41~~~cs:5~~~ce:22
+writeFilePatternToSeq2~~~g_disk2nim~~~proc~~~ls:67~~~cs:5~~~ce:26
+addShowValuesToSeq~~~g_disk2nim~~~proc~~~ls:117~~~cs:5~~~ce:22
+convertFileToSequence~~~g_disk2nim~~~proc~~~ls:137~~~cs:5~~~ce:25
+convertMultFilesToSeq~~~g_disk2nim~~~proc~~~ls:160~~~cs:5~~~ce:25
+other_declaration~~~g_disk2nim~~~when isMainModul~~~ls:184
 other_declaration~~~g_templates~~~import std/[time~~~ls:1
 other_declaration~~~g_templates~~~var versionfl: f~~~ls:3
 withFile~~~g_templates~~~template~~~ls:6~~~cs:9~~~ce:16

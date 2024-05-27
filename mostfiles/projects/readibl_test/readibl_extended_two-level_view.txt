@@ -3,18 +3,12 @@
 ****************    flashread   ***********************************************************************
 
 ----------------------------------------------------------------------
-    settings                         flashread      implementationline: 90
-        (5003)   # personal
-  port 
-  # port = Port(5003)   # personal
-        readOptionFromFile               fr_tools            proc      92
-        readOptionFromFile               g_options           proc      92
-----------------------------------------------------------------------
     getWebTitle                      flashread      proc      line: 97
         ():string 
     # Maybe future: advanced parsing to better strip
     # whitespace and/or line-endings
       # if past.len > parselenghtit:
+ 
         getTitleFromWebsite              process_text        proc      110
 ----------------------------------------------------------------------
     jump_to_end_step                 flashread      proc      line: 144
@@ -22,6 +16,7 @@
                           gencontentst: string, use_multi_summarybo: bool): string 
   # Skip the gradual steps from the radio-buttons and go to processing immediately
   # typest determines if text-extraction or insite text-replacement is done
+ 
         sequenceFromValueList            fr_tools            proc      155
         readOptionFromFile               fr_tools            proc      155
         readOptionFromFile               g_options           proc      155
@@ -32,13 +27,15 @@
     showPage                         flashread      proc      line: 171
         (par_innervarob, par_outervarob: var Context, 
                 custominnerhtmlst:string=""): string 
+ 
 ----------------------------------------------------------------------
-    routes                           flashread      implementationline: 187
+    routes                           flashread      implement line: 187
         ()  # inner html insertions
       outervarob: Context 
     # check if thru source_files.nim if all files are loaded successfully
     # load initial form
   # get "/flashread-form/@errorst":
+ 
         getWebTitle                      flashread           proc      349
         jump_to_end_step                 flashread           proc      354
         showPage                         flashread           proc      247
@@ -64,46 +61,46 @@
 ****************    fr_tools   ***********************************************************************
 
 ----------------------------------------------------------------------
-    sequenceFromValueList            fr_tools       proc      line: 31
-        (valuelist: string): seq[string] 
-----------------------------------------------------------------------
     readOptionFromFile               fr_tools       proc      line: 35
         (optnamest, typest: string):string 
   # Read from the settings-file based on the option-name either:
   # value, description or value-list
       # walk thru the lines of the file
-        settings                         flashread           implementation40
+ 
+        settings                         flashread           implement 40
 ----------------------------------------------------------------------
     newlang                          fr_tools       proc      line: 99
         (englishtekst:string):string 
   # Read from the language-translation-file (*.tra) the
   # appropriate translation for the target-language 
   # and return that.
+ 
         readOptionFromFile               fr_tools            proc      114
         readOptionFromFile               g_options           proc      114
 ----------------------------------------------------------------------
     doWork                           fr_tools       proc      line: 175
         (x: int) 
+ 
 ----------------------------------------------------------------------
     timeStuff                        fr_tools       template  line: 181
         (statement: untyped): string 
+ 
 ----------------------------------------------------------------------
     timeNeatly                       fr_tools       template  line: 187
         (statement: untyped): float 
 # template log_experim*(messagest: untyped) =
 #   # replacement for echo that is only evaluated when debugbo = true
 #   if debugbo:
+ 
 
 
 ****************    g_mine   ***********************************************************************
 
 ----------------------------------------------------------------------
-    getWebSite                       g_mine         proc      line: 36
-        (addresst: string): string 
-----------------------------------------------------------------------
     getWebSiteAsync                  g_mine         proc      line: 82
         (addresst: string): string 
   # experimental - in progress
+ 
 ----------------------------------------------------------------------
     getSubstringPositions            g_mine         proc      line: 90
         (stringst, subst: string):seq[int] 
@@ -114,6 +111,7 @@
 #  echo stringst
 #  echo subst
 #  echo fragmentsq
+ 
 ----------------------------------------------------------------------
     pairChainsAreValid               g_mine         proc      line: 122
         (startchainsq, endchainsq: seq[int]): bool 
@@ -126,6 +124,7 @@
         b(n+1) > e(n)
    
     # continue second validation
+ 
 ----------------------------------------------------------------------
     getDataSeqClean                  g_mine         proc      line: 155
         (tekst, starttagst, endtagst:string): seq[string] 
@@ -139,6 +138,7 @@
   Call like: getDataSeqClean(sometext, "<tr>", "</tr>")
    
       # build the data-sequence
+ 
         getSubstringPositions            g_mine              proc      177
         pairChainsAreValid               g_mine              proc      182
         getSubstringPositions            process_text        proc      177
@@ -157,6 +157,7 @@
   Call like: getDataSeqDirty(sometext, "<tr>", "</tr>")
    
     # search if endtag exists before next starttag
+ 
         getSubstringPositions            g_mine              proc      221
         getSubstringPositions            process_text        proc      221
 ----------------------------------------------------------------------
@@ -170,6 +171,7 @@
   # firstly chop the address up on the slashes
   # if tbo: echo addressq
       # then restore it for the first 3 parts
+ 
 ----------------------------------------------------------------------
     getBaseFromWebAddress2           g_mine         proc      line: 302
         (webaddresst: string, expandparentbo: bool = false): string 
@@ -180,6 +182,7 @@
   # firstly chop the address up on the slashes
   # if tbo: echo addressq
     # then restore it for the first 3 parts
+ 
 ----------------------------------------------------------------------
     convertWebLinksToAbsolute        g_mine         proc      line: 337
         (childweblinkst, parentweblinkst: string): string 
@@ -187,6 +190,7 @@
   Convert the relative child-weblink to absolute based on the given
   parent-link and the relativity-type.
    
+ 
         getBaseFromWebAddress2           g_mine              proc      346
         getBaseFromWebAddress2           process_text        proc      346
         getBaseFromWebAddress            process_text        proc      346
@@ -201,24 +205,29 @@
 
   requires strutils / sequtils ??
  
+ 
 ----------------------------------------------------------------------
     linkIsPresent                    g_mine         proc      line: 400
         (childlinkst: string, weblinksq: var seq[array[5, string]]): bool 
+ 
 ----------------------------------------------------------------------
     multiplyString                   g_mine         proc      line: 409
         (stringst: string, timesit: int): string 
   # m times 3 becomes mmm  
+ 
 ----------------------------------------------------------------------
     removeSingleStrings              g_mine         proc      line: 421
         (tekst: string, removablesq: seq[string]): string 
         
   Remove all occurences of the strings in removablesq from the tekst.
 
+ 
 ----------------------------------------------------------------------
     removeDuplicateStrings           g_mine         proc      line: 436
         (tekst: string, removablesq: seq[string]): string 
          
    In the tekst do replace all multiples of a string with its single, for each string in removablesq.
+ 
  
         multiplyString                   g_mine              proc      447
 ----------------------------------------------------------------------
@@ -227,6 +236,7 @@
          remove long words
   ADAP FUT:
   ?- choplongwordsbo: chop them up
+ 
  
 ----------------------------------------------------------------------
     getInnerText3                    g_mine         proc      line: 484
@@ -253,6 +263,7 @@
     # interpunction_reachedbo: bool = false
   # filter and concatenate elems
         # if interpunction_reachedbo == false:
+ 
         getDataSeqDirty                  g_mine              proc      517
         substringsInString               g_mine              proc      544
         removeSingleStrings              g_mine              proc      524
@@ -272,6 +283,7 @@
   -better clean up of page-breaks etc.
    
   # filter and concatenate elems
+ 
         getDataSeqDirty                  g_mine              proc      591
         removeSingleStrings              g_mine              proc      597
         removeDuplicateStrings           g_mine              proc      605
@@ -290,6 +302,7 @@
   -better clean up of page-breaks etc.
    
   # filter and concatenate elems
+ 
         getDataSeqDirty                  g_mine              proc      631
         removeSingleStrings              g_mine              proc      644
         removeDuplicateStrings           g_mine              proc      645
@@ -302,6 +315,7 @@
   Only add words with a length > wordlenghit
   Limit the list-length to topcountit (like top 10)
    
+ 
         removeSingleStrings              g_mine              proc      667
 ----------------------------------------------------------------------
     calcWordFrequencies              g_mine         proc      line: 678
@@ -321,6 +335,7 @@
   # using template for performance 
     # walk thru the words to add words under certain conditions to allwordssq
   # implement template depending of type of freq-counting
+ 
         removeSingleStrings              g_mine              proc      707
 ----------------------------------------------------------------------
     calcCumulFrequencies             g_mine         proc      line: 798
@@ -332,6 +347,7 @@
   # for wordst in wordsq:
   #   tempst = removeSingleStrings(wordst, @["\p", "\t", "\c"])
   #   if len(tempst) >= wordlengthit:
+ 
         removeSingleStrings              g_mine              proc      824
 ----------------------------------------------------------------------
     calcCumulFrequencies_old         g_mine         proc      line: 847
@@ -340,6 +356,7 @@
          
   Only add words with a length > wordlenghit
    
+ 
         removeSingleStrings              g_mine              proc      861
 ----------------------------------------------------------------------
     getDataSequence                  g_mine         proc      line: 868
@@ -352,6 +369,7 @@
 
    
   # if the website is mal-formed get the data dirtyly..
+ 
         getWebSite                       g_mine              proc      883
         getDataSeqClean                  g_mine              proc      888
         getDataSeqDirty                  g_mine              proc      893
@@ -363,10 +381,12 @@
   Get the data between the tag-pair starttag and endtag for 
   the occurit-th occurrence of the pair. (ONE-BASED)
  
+ 
         getDataSequence                  g_mine              proc      910
 ----------------------------------------------------------------------
     getTitleFromWebsite2             g_mine         proc      line: 924
         (webaddresst:string): string 
+ 
         getDataBetweenTags2              g_mine              proc      927
         getDataBetweenTags               process_text        proc      927
 ----------------------------------------------------------------------
@@ -393,6 +413,7 @@
   # if the website is mal-formed get the data dirtyly..
   # future-approach? Then can also get weblink directly
       # parse the data-sequence for title and link2
+ 
         getWebSite                       g_mine              proc      958
         getDataSeqClean                  g_mine              proc      964
         getDataSeqDirty                  g_mine              proc      969
@@ -408,6 +429,7 @@
 ----------------------------------------------------------------------
     countWords                       g_mine         proc      line: 1029
         (tekst: string): int 
+ 
 ----------------------------------------------------------------------
     getTagContent                    g_mine         proc      line: 1036
         (link_or_tekst, startpartst, endpartst: string): seq[string] 
@@ -416,6 +438,7 @@
     and endpartst. 
    
       # parse the data-sequence for the content between > and <
+ 
         getInnerText2                    g_mine              proc      1060
         getDataSequence                  g_mine              proc      1045
         getInnerText                     process_text        proc      1060
@@ -425,11 +448,13 @@
                           maxlineit: int, widthmakerbo: bool = true): string 
   # Create a listing-doc from a sequence of string in the desired format DocType
   # with maximum line-size maxlineit.
+ 
 ----------------------------------------------------------------------
     getHtmlHeaders                   g_mine         proc      line: 1102
         (link_or_tekst: string, output_doc: DocType, 
                   maxlineit: int, widthmakerbo: bool = true): string 
             # parse the data-sequence for the content between > and <
+ 
         multiplyString                   g_mine              proc      1139
         getInnerText2                    g_mine              proc      1131
         getDataSequence                  g_mine              proc      1110
@@ -438,23 +463,6 @@
 
 ****************    g_options   ***********************************************************************
 
-----------------------------------------------------------------------
-    readOptionFromFile_fut           g_options      proc      line: 44
-        (optnamest: string, optiontype: OptionType): T 
-        
-  Read from the settings-file based on the option-data, which are ordered 
-  per line containing:
-  option-name___value___some description here___list-item1,,list-item2,,list-item3,,ect...
-
-  The option-name is the first part of the line, the others are retrieved thru the 
-  optiontype-enum.
-
-  Expects settings-file as projectprefix_settings.conf"
- 
-      # walk thru the lines of the file
-        # echo line
-              # new cluster found
-        settings                         flashread           implementation57
 ----------------------------------------------------------------------
     readOptionFromFile               g_options      proc      line: 118
         (optnamest: string, optiontype: OptionType): string 
@@ -471,16 +479,19 @@
       # walk thru the lines of the file
         # echo line
               # new cluster found
-        settings                         flashread           implementation131
+ 
+        settings                         flashread           implement 131
 ----------------------------------------------------------------------
     getValList                       g_options      proc      line: 190
         (valuelist: string): seq[string] 
+ 
 ----------------------------------------------------------------------
     newlang                          g_options      proc      line: 196
         (englishtekst:string):string 
   # Read from the language-translation-file (*.tra) the
   # appropriate translation for the target-language 
   # and return that.
+ 
         readOptionFromFile               fr_tools            proc      211
         readOptionFromFile               g_options           proc      211
 
@@ -507,6 +518,7 @@ Returns for sample-def (default):
 <input type="checkbox" id="id_mies" name="mies" checked>
 <label for="id_mies">mies-bouwman</label><br>
  
+ 
         newlang                          fr_tools            proc      108
         newlang                          g_options           proc      108
 ----------------------------------------------------------------------
@@ -530,6 +542,7 @@ Sample output:
   # <span style="font-size:small"><label for="language">Language</label></span>
   # <select id="language" name="language">
   # {{{text_language}}}
+ 
         newlang                          fr_tools            proc      156
         newlang                          g_options           proc      156
 
@@ -537,43 +550,36 @@ Sample output:
 ****************    loadgui   ***********************************************************************
 
 ----------------------------------------------------------------------
-    loadTextLangsFromConfig          loadgui        proc      line: 31
-        () 
-# Load the processing-languages of the dropdown "dropdownsta" of 
-# webgui_def.nim from the config-file
-  # get the processing-languages from the config-file
-        readOptionFromFile               fr_tools            proc      43
-        readOptionFromFile               g_options           proc      43
-----------------------------------------------------------------------
     loadComboFromDir_Old             loadgui        proc      line: 63
         (combobokst, filenamepartst: string) 
 # proc loadComboFromDir() =  
   # Load the combo/dropdown-definition named combobokst in "dropdownsta"
   # of webgui_def.nim with the file-names with namepart filenamepartst 
+ 
 ----------------------------------------------------------------------
     loadComboFromDir                 loadgui        proc      line: 93
         (combobokst, filenamepartst: string) 
 # proc loadComboFromDir() =  
   # Load the combo/dropdown-definition named combobokst in "dropdownsta"
   # of webgui_def.nim with the file-names with namepart filenamepartst 
+ 
 ----------------------------------------------------------------------
     setCheckboxSetFromConfig         loadgui        proc      line: 129
         (setnamest: string) 
   # Copy the default-values from the config file for checkboxset "setnamest" of webgui_def.nim
   # var buttonsq = checkboxesta[setnamest]
   # get default-values from config-file
+ 
         readOptionFromFile               fr_tools            proc      144
         readOptionFromFile               g_options           proc      144
 ----------------------------------------------------------------------
     testWalkdir                      loadgui        proc      line: 159
         () 
+ 
 
 
 ****************    process_text   ***********************************************************************
 
-----------------------------------------------------------------------
-    testWebSite                      process_text   proc      line: 109
-        () 
 ----------------------------------------------------------------------
     getSubstringPositions            process_text   proc      line: 126
         (stringst, subst: string):seq[int] 
@@ -584,6 +590,7 @@ Sample output:
 #  echo stringst
 #  echo subst
 #  echo fragmentsq
+ 
 ----------------------------------------------------------------------
     getDataBetweenTags               process_text   proc      line: 159
         (tekst, starttagst, endtagst:string,
@@ -605,6 +612,7 @@ Sample output:
    
 #    resultst = tekst[tekst.index(starttagst), tekst.index(endtagst)]
   # echo "resultst = " & resultst
+ 
         getSubstringPositions            g_mine              proc      186
         getSubstringPositions            process_text        proc      186
 ----------------------------------------------------------------------
@@ -612,10 +620,12 @@ Sample output:
         (tekst: string): string 
   # Concatenate all texts between ">" and "<" in
   # the string: "tekst"
+ 
         getDataBetweenTags               process_text        proc      234
 ----------------------------------------------------------------------
     myTest                           process_text   proc      line: 246
         ()
+ 
 ----------------------------------------------------------------------
     calculateWordFrequencies         process_text   proc      line: 252
         (input_tekst:string, wordlengthit:int,
@@ -623,6 +633,7 @@ Sample output:
   # echo sentencesq
   # echo "\p"
   # echo allwordssq
+ 
 ----------------------------------------------------------------------
     applyDefinitionFileToText        process_text   proc      line: 285
         (input_tekst, languagest: string, 
@@ -656,6 +667,7 @@ Sample output:
     # walk thru the lines of the def-file
       # check for block-header
         # for multiple signal-blocks:
+ 
         createCombinedSummaryFile        source_files        proc      352
         customReplace                    stringstuff         proc      386
 ----------------------------------------------------------------------
@@ -668,6 +680,7 @@ Sample output:
   # firstly chop the address up on the slashes
   # if tbo: echo addressq
     # then restore it for the first 3 parts
+ 
 ----------------------------------------------------------------------
     convertWebLinksToAbsolute        process_text   proc      line: 546
         (childweblinkst, parentweblinkst: string): string 
@@ -675,6 +688,7 @@ Sample output:
   Convert the relative child-weblink to absolute based on the given
   parent-link and the relativity-type.
    
+ 
         getBaseFromWebAddress2           g_mine              proc      555
         getBaseFromWebAddress2           process_text        proc      555
         getBaseFromWebAddress            process_text        proc      555
@@ -684,6 +698,7 @@ Sample output:
   # http://www.x.nl/a/b/c/blah.html  becomes  http://www.x.nl
   # firstly chop the address up on the slashes
   # if tbo: echo addressq
+ 
 ----------------------------------------------------------------------
     getPartFromWebAddress            process_text   proc      line: 604
         (webaddresst: string, addresspart: AddressPart): string 
@@ -695,6 +710,7 @@ Sample output:
   # firstly chop the address up on the slashes
   # if tbo: echo addressq
       # then restore it for the first 3 parts
+ 
 ----------------------------------------------------------------------
     convertRelPathsToAbsolute        process_text   proc      line: 661
         (inputtekst, cur_addresst: string): string 
@@ -707,6 +723,7 @@ Sample output:
     # the double slash for scheme-relatives
     # single slash for base-relatives
     # double dot for grand-parents
+ 
         getPartFromWebAddress            g_mine              proc      672
         getPartFromWebAddress            process_text        proc      672
 ----------------------------------------------------------------------
@@ -757,6 +774,7 @@ Sample output:
                     # @["desc-terms", "<dt", "</dt>", ""],
                     # @["desc-data", "<dd", "</dd>", ""],
                     # @["desc-terms", "<dt", "</dt>", ""],
+ 
         getInnerText                     process_text        proc      973
         applyDefinitionFileToText        process_text        proc      984
         getBaseFromWebAddress            process_text        proc      895
@@ -796,6 +814,7 @@ Sample output:
     # the number of lines always added from the introduction
   # Old approach - created to big chunks:
   # sentencesq = phasetekst.split(". ")
+ 
         readOptionFromFile               fr_tools            proc      1065
         readOptionFromFile               g_options           proc      1065
         createCombinedSummaryFile        source_files        proc      1071
@@ -807,6 +826,7 @@ Sample output:
   # To apply html-formatting (coloring and highlighting), 
   # possibly after summarization
   # r1 = replace(input_tekst, "\p", "<br>")
+ 
         applyDefinitionFileToText        process_text        proc      1404
         extractSentencesFromText         process_text        proc      1402
 ----------------------------------------------------------------------
@@ -831,10 +851,12 @@ Sample output:
   # dedot abbreviations
   # splitlines splits the text on the line-feeds
     # as basis for header-extraction; small lines are treated as headers
+ 
         stripSymbolsFromList             stringstuff         proc      1439
 ----------------------------------------------------------------------
     getTitleFromWebsite              process_text   proc      line: 1477
         (webaddresst:string): string 
+ 
         getDataBetweenTags               process_text        proc      1486
 ----------------------------------------------------------------------
     testConversion                   process_text   proc      line: 1496
@@ -842,6 +864,7 @@ Sample output:
   # # adjust paths so that resource-files can be loaded (like css and pics)
   # websitest = convertRelPathsToAbsolute(websitest, basewebaddresst)
 # proc funcWrapper() = 
+ 
         getBaseFromWebAddress            process_text        proc      1501
 
 
@@ -850,10 +873,12 @@ Sample output:
 ----------------------------------------------------------------------
     withFile                         source_files   template  line: 68
         (f, fn, mode, actions: untyped): untyped 
+ 
 ----------------------------------------------------------------------
     allFilesExist                    source_files   proc      line: 82
         (filelisq: seq[string]): bool 
   # return true if all files in the listsequence do exist, otherwise false
+ 
 ----------------------------------------------------------------------
     getSeqFromFileSection            source_files   proc      line: 99
         (filepathst, startlinest, endlinest: string): seq[string] 
@@ -861,6 +886,8 @@ Sample output:
   Retrieve the lines between the startline and endline (not including), and
   put them into a sequence.
   
+ 
+        l1                               source_files        template  111
 ----------------------------------------------------------------------
     createCombinedSummaryFile        source_files   proc      line: 138
         (combinationtypest, languagest: string): bool 
@@ -879,6 +906,7 @@ Sample output:
   # read the sum-list-file
       # concatenate the summaries to one new file
           # extract the relevant section
+ 
         allFilesExist                    source_files        proc      170
         getSeqFromFileSection            source_files        proc      168
 ----------------------------------------------------------------------
@@ -887,11 +915,13 @@ Sample output:
   # Dynamicly add the parse_language.dat files from the config-file 
   # to the list textsourcefilesq
   # get the processing-languages from the config-file
+ 
         readOptionFromFile               fr_tools            proc      215
         readOptionFromFile               g_options           proc      215
 ----------------------------------------------------------------------
     loadTextSourceFiles              source_files   proc      line: 228
         () 
+ 
 ----------------------------------------------------------------------
     writeFilePatternToSeq            source_files   proc      line: 250
         (filestartwithst: string): seq[string] 
@@ -899,6 +929,7 @@ Sample output:
  return that
   # walk thru the file-iterator and sequence the right file(names)
           # log(filenamest)
+ 
 ----------------------------------------------------------------------
     evaluateDataFiles                source_files   proc      line: 274
         (verbosebo: bool = false): string 
@@ -910,6 +941,7 @@ Sample output:
   # write the eval to a table (file_reportta) of objects (FilePhase)
       # select correct phase-sequence
         # preset objects for file
+ 
         withFile                         source_files        template  322
         writeFilePatternToSeq            source_files        proc      292
 ----------------------------------------------------------------------
@@ -923,18 +955,12 @@ Sample output:
   # create sorted seqs from the files
     # echo wordseqar[it]
   # compare the seqs; create comparison-lists
+ 
         withFile                         source_files        template  422
 
 
 ****************    stringstuff   ***********************************************************************
 
-----------------------------------------------------------------------
-    stripSymbolsFromList             stringstuff    proc      line: 22
-        (inputtekst: string, listsq: seq[string], symbolst: string): string 
-         
-  For all the words in the list that are present in inputtekst 
-  strip symbolst (like U.S. > US)
-  
 ----------------------------------------------------------------------
     countOccurencesInContext         stringstuff    proc      line: 40
         (stringst, subst, contexttypest:string, 
@@ -945,6 +971,7 @@ Sample output:
   around, contextsize determines how many forward or around
   positions are tested.
    
+ 
 ----------------------------------------------------------------------
     customReplace                    stringstuff    proc      line: 86
         (sourcetekst: string, searchst, insertst: string, stripextractbo: bool,
@@ -964,17 +991,21 @@ Sample output:
    
       # echo "posit = " & $posit
       # echo tekst
+ 
         countOccurencesInContext         stringstuff         proc      126
 ----------------------------------------------------------------------
     test_customReplace               stringstuff    proc      line: 158
         ()
+ 
         customReplace                    stringstuff         proc      165
 ----------------------------------------------------------------------
     outer_test_customReplace         stringstuff    proc      line: 169
         ()
+ 
         customReplace                    stringstuff         proc      176
         test_customReplace               stringstuff         proc      176
 ----------------------------------------------------------------------
     test_countOccurencesInContext    stringstuff    proc      line: 204
         ()
+ 
         countOccurencesInContext         stringstuff         proc      216

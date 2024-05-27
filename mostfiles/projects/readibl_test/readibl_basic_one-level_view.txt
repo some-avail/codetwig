@@ -1,18 +1,15 @@
 flashread---------------------------------------------------
-    settings                         implementationline: 90
     getWebTitle                      proc      line: 97
     jump_to_end_step                 proc      line: 144
     showPage                         proc      line: 171
-    routes                           implementationline: 187
+    routes                           implement line: 187
 fr_tools---------------------------------------------------
-    sequenceFromValueList            proc      line: 31
     readOptionFromFile               proc      line: 35
     newlang                          proc      line: 99
     doWork                           proc      line: 175
     timeStuff                        template  line: 181
     timeNeatly                       template  line: 187
 g_mine---------------------------------------------------
-    getWebSite                       proc      line: 36
     getWebSiteAsync                  proc      line: 82
     getSubstringPositions            proc      line: 90
     pairChainsAreValid               proc      line: 122
@@ -43,7 +40,6 @@ g_mine---------------------------------------------------
     enlistSequenceToDoc              proc      line: 1071
     getHtmlHeaders                   proc      line: 1102
 g_options---------------------------------------------------
-    readOptionFromFile_fut           proc      line: 44
     readOptionFromFile               proc      line: 118
     getValList                       proc      line: 190
     newlang                          proc      line: 196
@@ -51,13 +47,11 @@ jo_htmlgen---------------------------------------------------
     setCheckBoxSet                   proc      line: 79
     setDropDown                      proc      line: 129
 loadgui---------------------------------------------------
-    loadTextLangsFromConfig          proc      line: 31
     loadComboFromDir_Old             proc      line: 63
     loadComboFromDir                 proc      line: 93
     setCheckboxSetFromConfig         proc      line: 129
     testWalkdir                      proc      line: 159
 process_text---------------------------------------------------
-    testWebSite                      proc      line: 109
     getSubstringPositions            proc      line: 126
     getDataBetweenTags               proc      line: 159
     getInnerText                     proc      line: 219
@@ -86,7 +80,6 @@ source_files---------------------------------------------------
     evaluateDataFiles                proc      line: 274
     compareDataFiles                 proc      line: 398
 stringstuff---------------------------------------------------
-    stripSymbolsFromList             proc      line: 22
     countOccurencesInContext         proc      line: 40
     customReplace                    proc      line: 86
     test_customReplace               proc      line: 158

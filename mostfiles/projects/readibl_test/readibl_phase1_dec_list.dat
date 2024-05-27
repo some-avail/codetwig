@@ -12,17 +12,15 @@ other_declaration~~~flashread~~~import times~~~ls:66
 other_declaration~~~flashread~~~import g_mine~~~ls:67
 other_declaration~~~flashread~~~import loadgui~~~ls:70
 other_declaration~~~flashread~~~var debugbo: boo~~~ls:74
-log~~~flashread~~~template~~~ls:76~~~cs:9~~~ce:11
 other_declaration~~~flashread~~~const ~~~ls:82
-settings~~~flashread~~~implementation~~~ls:90~~~cs:0~~~ce:8
+settings~~~flashread~~~implement~~~ls:90~~~cs:0~~~ce:8
 getWebTitle~~~flashread~~~proc~~~ls:97~~~cs:5~~~ce:15
 jump_to_end_step~~~flashread~~~proc~~~ls:144~~~cs:5~~~ce:20
 showPage~~~flashread~~~proc~~~ls:171~~~cs:5~~~ce:12
-routes~~~flashread~~~implementation~~~ls:187~~~cs:0~~~ce:6
+routes~~~flashread~~~implement~~~ls:187~~~cs:0~~~ce:6
 other_declaration~~~fr_tools~~~import strutils,~~~ls:8
 other_declaration~~~fr_tools~~~var debugbo: boo~~~ls:10
 other_declaration~~~fr_tools~~~var ~~~ls:13
-log~~~fr_tools~~~template~~~ls:24~~~cs:9~~~ce:11
 sequenceFromValueList~~~fr_tools~~~proc~~~ls:31~~~cs:5~~~ce:25
 readOptionFromFile~~~fr_tools~~~proc~~~ls:35~~~cs:5~~~ce:22
 newlang~~~fr_tools~~~proc~~~ls:99~~~cs:5~~~ce:11
@@ -37,7 +35,6 @@ other_declaration~~~g_mine~~~import g_options~~~ls:9
 other_declaration~~~g_mine~~~const~~~ls:13
 other_declaration~~~g_mine~~~type~~~ls:16
 other_declaration~~~g_mine~~~var debugbo: boo~~~ls:28
-log~~~g_mine~~~template~~~ls:30~~~cs:9~~~ce:11
 getWebSite~~~g_mine~~~proc~~~ls:36~~~cs:5~~~ce:14
 getWebSiteAsync~~~g_mine~~~proc~~~ls:82~~~cs:5~~~ce:19
 getSubstringPositions~~~g_mine~~~proc~~~ls:90~~~cs:5~~~ce:25
@@ -74,7 +71,6 @@ other_declaration~~~g_options~~~var debugbo: boo~~~ls:14
 other_declaration~~~g_options~~~var ~~~ls:17
 other_declaration~~~g_options~~~const project_pr~~~ls:22
 other_declaration~~~g_options~~~type  ~~~ls:24
-log~~~g_options~~~template~~~ls:37~~~cs:9~~~ce:11
 readOptionFromFile_fut~~~g_options~~~proc~~~ls:44~~~cs:5~~~ce:26
 readOptionFromFile~~~g_options~~~proc~~~ls:118~~~cs:5~~~ce:22
 getValList~~~g_options~~~proc~~~ls:190~~~cs:5~~~ce:14
@@ -96,7 +92,6 @@ other_declaration~~~loadgui~~~import tables~~~ls:12
 other_declaration~~~loadgui~~~import algorithm~~~ls:13
 other_declaration~~~loadgui~~~const versionfl ~~~ls:16
 other_declaration~~~loadgui~~~var debugbo: boo~~~ls:18
-log~~~loadgui~~~template~~~ls:20~~~cs:9~~~ce:11
 loadTextLangsFromConfig~~~loadgui~~~proc~~~ls:31~~~cs:5~~~ce:27
 loadComboFromDir_Old~~~loadgui~~~proc~~~ls:63~~~cs:5~~~ce:24
 loadComboFromDir~~~loadgui~~~proc~~~ls:93~~~cs:5~~~ce:20
@@ -114,7 +109,6 @@ other_declaration~~~process_text~~~import source_fi~~~ls:44
 other_declaration~~~process_text~~~import fr_tools~~~ls:45
 other_declaration~~~process_text~~~type~~~ls:52
 other_declaration~~~process_text~~~var debugbo: boo~~~ls:60
-log~~~process_text~~~template~~~ls:62~~~cs:9~~~ce:11
 other_declaration~~~process_text~~~const ~~~ls:68
 other_declaration~~~process_text~~~Alle lelijke tre~~~ls:75
 other_declaration~~~process_text~~~the condition of~~~ls:80
@@ -180,7 +174,6 @@ other_declaration~~~source_files~~~loadTextSourceFi~~~ls:505
 other_declaration~~~source_files~~~when isMainModul~~~ls:509
 other_declaration~~~stringstuff~~~import strutils~~~ls:6
 other_declaration~~~stringstuff~~~var debugbo: boo~~~ls:8
-log~~~stringstuff~~~template~~~ls:10~~~cs:9~~~ce:11
 other_declaration~~~stringstuff~~~var~~~ls:15
 stripSymbolsFromList~~~stringstuff~~~proc~~~ls:22~~~cs:5~~~ce:24
 countOccurencesInContext~~~stringstuff~~~proc~~~ls:40~~~cs:5~~~ce:28
