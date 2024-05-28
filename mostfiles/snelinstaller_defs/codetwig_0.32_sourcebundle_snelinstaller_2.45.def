@@ -1,0 +1,77 @@
+snel_installer definition-file for 
+si-version===2.45
+
+
+This file contains installation-information for:
+project-name===codetwig-source-package
+def-version===1.0
+
+
+Project-specific remarks:
+Small to package the source-code of codetwig
+
+- put snelinstaller-exe in: /media/OnsSpul/1klein/1joris/k1-onderwerpen/computer/Programmeren/nimtaal/codetwig
+- Writes currently to above project-folder
+===================================================
+
+
+
+VARIABLES TO SET
+comment: defaultly call enclosed in # like #var#
+arguments---separator=#
+version=0.32
+target=./bundels_ct/codetwig_#version#
+archive=./bundels_ct/codetwig_#version#.tar.gz
+dirbasename=codetwig_#version#
+>----------------------------------<
+DIRECTORIES TO CREATE
+comment: from 2.3 onward all super-dirs are co-created
+arguments---none
+#target#/help_info
+#target#/projects
+>----------------------------------<
+TARGET-LOCATION AND SOURCE-FILES TO COPY
+comment
+arguments---none
+#target#
+./mostfiles
+ctwig.nim
+g_disk2nim.nim
+g_templates.nim
+>----------------------------------<
+TARGET-LOCATION AND SOURCE-FILES TO COPY
+comment
+arguments---none
+#target#/help_info
+.
+README.md
+>----------------------------------<
+TARGET-LOCATION AND SOURCE-FILES TO COPY
+your-comment-here
+arguments---none
+#target#/help_info
+./mostfiles
+manual_codetwig.txt
+>----------------------------------<
+TARGET-LOCATION AND SOURCE-FILES TO COPY
+your-comment-here
+arguments---none
+#target#/projects
+./mostfiles/projects
+codetwig.pro
+project_template_to_copy.pro
+>----------------------------------<
+TARGET-LOCATION AND SOURCE-FILES TO COPY
+your-comment-here
+arguments---copy_branch=1,,sample_permissions=0
+#target#/projects
+./mostfiles/projects/codetwig
+>----------------------------------<
+EXECUTE SHELL-COMMANDS - IN ORDER
+comment: create a tar.gz-archive; -C changes dir to avoid absolute paths
+arguments---none
+tar cfz #archive# -C #target#/.. #dirbasename#
+>----------------------------------<
+#END-OF-BLOCKS
+
+

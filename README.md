@@ -38,9 +38,11 @@ Or look at the commits.
 
 See below for main step stones.
 
+### Limitations (currently)
+- only one directory-level of source-files can be processed. No sub-dirs of source-files can be included  currently.
 
 #### Completed from future plans
--  ct 0.35 - Both in the views and in the tree-function the following information will be added:
+- ct 0.35 - Both in the views and in the tree-function the following information will be added:
   - procedural arguments
   - initial comments
 
