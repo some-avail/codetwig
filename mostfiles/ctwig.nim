@@ -18,7 +18,7 @@ import std/[os, strutils, paths, tables, parseopt]
 #import dirs
 
 var 
-  versionfl: float = 0.35
+  versionfl: float = 1.51
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
