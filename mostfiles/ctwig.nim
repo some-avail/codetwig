@@ -7,12 +7,17 @@ Firstly you must create a project.
 - user can prune the unneeded source-files
 
 Then you can show trees.
-For example for function myFunc you run:
-ctwig myfunc
+For example you run:
+ctwig projects/myproj.pro -ct
 
+ADAP NOW
+-CT version 2.0 will be multi-project and multi-level
+-design objects
+-design conversions
 ]#
 
-import g_disk2nim, g_templates
+
+import jolibs/generic/[g_disk2nim, g_templates]
 #import std/[os, strutils, paths, dirs, tables, unicode]
 import std/[os, strutils, paths, tables, parseopt]
 #import dirs
@@ -26,7 +31,42 @@ var
   excluded_declaresq: seq[string] = @["log", "else"]
 
 
-type 
+type
+  # below pathI and pathE are usually resp. including or excluding a filename
+  Project =  object of RootObj
+    proName: string
+    proDefPathI: Path            # where the def-file myproject.pro is located
+    proSourcePathE: Path         # where the sourcecode-project is located
+    proTargetPathE: Path         # where the codetwig-generated files are placed
+
+
+  ModuleOfCode =  object of RootObj
+    modName: string
+    modPathE: Path
+    modFileName: string
+    modProject: string
+
+
+  Declaration = object of RootObj
+    dName: string
+    dType: string
+    dModule: string
+    dModPathE: Path
+    dProject: string
+    dLineStart: int
+    dLineEnd: int
+    dColStart: int
+    dColEnd: int
+
+
+
+  UsageOfDecs = object of RootObj
+    usingDec: string
+    usedDec: string
+    usedCallLine: int
+
+
+
   ViewType = enum
     viewBasic_OneLevel
     viewBasic_TwoLevels
@@ -46,7 +86,7 @@ template log(messagest: string) =
 
 
 
-proc addSourceFilesToProject(proj_def_pathst: string): string = 
+proc addSourceFilesToProject_old(proj_def_pathst: string): string = 
   #[
   Based on the project-path in the project-def-file, the source-files
   from that project are added to the project-def-file.
@@ -92,6 +132,90 @@ proc addSourceFilesToProject(proj_def_pathst: string): string =
               projectpathst = linest
               echo "Project-path of the source-files: " & projectpathst
               source_filesq = writeFilePatternToSeq2("*.nim", projectpathst)
+
+          elif blockphasest == "SOURCE_FILES":
+            if blocklineit == 1:
+              if linest == blockseparatorst:
+                # read the file-names of the source-files and write them to the files-section
+                fileob.setFilePos(source_file_posit)
+                countit = 0
+                for filenamest in source_filesq:
+                  countit += 1
+                  fileob.writeLine(filenamest)
+                  echo filenamest
+                echo "----------------------------------------------"
+                fileob.writeLine(blockseparatorst)
+                result =  $countit &  " source-file-names have been added to the project-file: " & proj_def_pathst
+              else:
+                result = "Source-files have been added previously; pre-clean section and try again.."
+    else:
+      echo "Could not open file; you may have misspelled the name.."
+  
+  
+    #unanticipated errors come here
+  except:
+    let errob = getCurrentException()
+    echo "\p******* Unanticipated error *******" 
+    echo errob.name
+    echo errob.msg
+    #echo repr(errob) 
+    echo "\p****End exception****\p"
+  finally:
+    fileob.close()
+
+
+proc addSourceFilesToProject(proj_def_pathst: string): string = 
+  #[
+  Based on the project-path in the project-def-file, the source-files
+  from that project are added to the project-def-file.
+
+  ADAP NOW
+  - add recursive sub-dir-addition of source-files
+
+
+  ADAP FUT
+  -add param overwritebo to overwrite / update the current sf-list
+  -exclusion-list to auto-exclude certain files that are probably copies
+  of originals, with numbers and words like bak or copy.
+  ]#
+
+  var
+    fileob: File
+    blockphasest: string
+    blockheadar: array[0..1, string] = [
+        "PROJECT_PATH",
+        "SOURCE_FILES"]
+    blockseparatorst = ">----------------------------------<"
+    projectpathst: string
+    source_filesq: seq[string]
+    blocklineit, source_file_posit, countit: int
+
+
+  try:
+    echo "Trying to open: " & proj_def_pathst
+    # open the project-file for read-write access
+    if open(fileob, proj_def_pathst, fmReadWriteExisting):
+      for linest in fileob.lines:
+
+        # check for block-header
+        if linest in blockheadar:
+          blockphasest = linest
+          #echo "\p" & blockphasest
+          if blockphasest == "SOURCE_FILES":
+            source_file_posit = fileob.getFilePos()
+          blocklineit = 0
+        elif linest != "":
+        
+          blocklineit += 1
+
+          if blockphasest == "PROJECT_PATH":
+            if linest != blockseparatorst:
+              # read the project-path
+              projectpathst = linest
+              echo "Project-path of the source-files: " & projectpathst
+              source_filesq = writeFilePatternToSeq2("*.nim", projectpathst)
+            else:
+              blockphasest = ""
 
           elif blockphasest == "SOURCE_FILES":
             if blocklineit == 1:
@@ -448,6 +572,7 @@ proc createDeclarationList(proj_def_pathst: string) =
           foundcountit = 0
           linecount3it = 0
           if not (declare2st in excluded_declaresq) and not (dec_plus_modulest in unique_decplusmodule2sq):
+
             # if the source-code-range of dec1 contains dec2:
             moduleta[modulest & ".nim"].setFilePos(0)
             for sline in moduleta[modulest & ".nim"].lines:
@@ -516,6 +641,8 @@ proc getSliceFromLines(fileob: var File, linestartit, lineendit: int, starttagst
     as integers of the text between the startag and endtag, and put them in an array.
     
     samelinebo = true means that the starttag and endtag must be on the same line.
+    Call like:
+    interpointar = getSliceFromLines(fob, linestartit, lineendit, "(", ")")
   ]#
 
   var 
@@ -591,9 +718,12 @@ proc getSliceFromLines(fileob: var File, linestartit, lineendit: int, starttagst
 
 proc getXLinesWithSubstring(fileob: var File, subst: string, linestartit, lineendit, numberit: int): seq[string] = 
 
-  # Retrieve numberit lines from fileob based on the substring in them 
-  # starting from linestartit and put them in a sequence. Lines are prestripped for comparison
-
+  #[ Retrieve numberit lines from fileob based on the substring in them 
+     starting from linestartit and put them in a sequence. Lines are prestripped for comparison
+      
+      Call like:
+      commentlinesq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
+]#
   var 
     countit, addcountit: int = 0
     outputsq: seq[string]
@@ -847,7 +977,10 @@ proc getSeqFromFileLines(filepathst, searchst, sep1st, sep2st: string, searchfie
     part-a1~~~parta2===partb1~~~partb2
     part-b2 = [1,1]
 
-    extra separator and sortfieldar may come later
+    Call like:
+    foundlinesq = getSeqFromFileLines(decfilepathst, declarationst, sep3st, sep1st, [0,0])
+
+    extra separator and sortfieldar may come later    
   ]#
 
   var 
@@ -902,7 +1035,7 @@ proc getSeqFromFileLines2(filepathst, fstsearchst, secsearchst, sep1st, sep2st: 
     Add lines to the sequence which match the search-filter.
     In this extended proc first and second search-value and -field can be used.
 
-    Search with substring, string or wildcard * for search-values *searchst on designated  *search-field, which is indicated by the coordinates on the sep-divided line.
+    Search with substring, string or wildcard * for search-values fst/sec-searchst on designated  fst/sec-search-field, which is indicated by the coordinates on the sep-divided line.
     
     Like so:
     part-a1~~~parta2===partb1~~~partb2

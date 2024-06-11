@@ -5,10 +5,13 @@ import strutils, algorithm
 import os
 import g_templates
 
+
 var versionfl: float = 0.12
-var debugbo: bool = false
+var 
+  debugbo: bool = false
+  wispbo: bool = true
 
-
+  
 template log(messagest: string) =
   # replacement for echo that is only evaluated when debugbo = true
   if debugbo: 
@@ -26,12 +29,14 @@ proc writeFilePatternToSeq*(filestartwithst: string): seq[string] =
     filenamest: string
   
   # walk thru the file-iterator and sequence the right file(names)
+  wisp("getAppDir = ", getAppDir())
   for kind, path in walkDir(getAppDir()):
     if kind == pcFile:
       filenamest = extractFileName(path)
       if len(filenamest) > len(filestartwithst):
         if filenamest[0..len(filestartwithst) - 1] == filestartwithst:
-          log(filenamest)
+          #log(filenamest)
+          #wisp(filenamest)
           filelisq.add(filenamest)
 
   result = filelisq
@@ -107,9 +112,7 @@ proc writeFilePatternToSeq2*(starred_patternst, source_dirst: string): seq[strin
 
         else:
           log("else")
-
     sort(filelisq)
-
   result = filelisq
 
 
