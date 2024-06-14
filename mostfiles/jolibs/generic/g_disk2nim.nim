@@ -4,9 +4,10 @@
 import strutils, algorithm
 import os
 import g_templates
+import std/[paths,dirs]
 
 
-var versionfl: float = 0.12
+var versionfl: float = 0.15
 var 
   debugbo: bool = false
   wispbo: bool = true
@@ -70,13 +71,12 @@ proc getPatternLocation(starred_patternst: string): string =
 
 
 proc writeFilePatternToSeq2*(starred_patternst, source_dirst: string): seq[string] = 
-#[ Write the files from a *-pattern in the current dir to the sequence and
+#[ Write the files from a *-pattern in source_dirst to the sequence and
  return that; options:
   -start with / left-part: pattern*
   -end with / right-part: *pattern
   -in the middle: *pattern*
 
-  UNDER CONSTRUCTION
  ]#
 
   var
@@ -114,6 +114,109 @@ proc writeFilePatternToSeq2*(starred_patternst, source_dirst: string): seq[strin
           log("else")
     sort(filelisq)
   result = filelisq
+
+
+
+proc writeFilePatternToSeq3*(filelisq: var seq[string], starred_patternst: string, source_dirst,  first_source_dirst: string, recursebo: bool = true) = 
+
+#[ Write the files from a *-pattern in source_dirst recursively to an external sequence filelisq.
+
+  options:
+  -start with / left-part: pattern*
+  -end with / right-part: *pattern
+  -in the middle: *pattern*
+ ]#
+
+
+  var
+    filenamest, patternlocatst, strippedpatternst, relpathst: string
+  
+  patternlocatst = getPatternLocation(starred_patternst)
+  strippedpatternst = starred_patternst.strip(chars = {'*'})
+  #wisp("strippedpatternst = ", strippedpatternst)
+  #wisp(getAppDir())
+  #wisp(patternlocatst)
+  wisp("source_dirst = ", source_dirst)
+  wisp("first_source_dirst = ", source_dirst)
+
+  # walk thru the file-iterator and sequence the right file(names)
+  for kind, path in walkDir(source_dirst):
+    if kind == pcFile:
+      filenamest = extractFileName(path)
+      wisp("path = ", path)
+      wisp("filenamest = ", filenamest)
+      relpathst =  relativePath(path, first_source_dirst, '/')
+      wisp("relpathst = ", relpathst)
+      if len(filenamest) > len(strippedpatternst):
+        case patternlocatst:
+        of "left":
+          if filenamest.startswith(strippedpatternst):
+            filelisq.add(path)
+        of "right":
+          if filenamest.endswith(strippedpatternst):
+            #wisp(filenamest)
+            filelisq.add(path)
+        elif patternlocatst == "middle":
+          if filenamest.contains(strippedpatternst):
+            #wisp(filenamest)
+            filelisq.add(path)
+
+        else:
+          wisp("else")
+
+    elif kind == pcDir:
+      if recursebo:
+        writeFilePatternToSeq3(filelisq, starred_patternst, path, first_source_dirst, true)
+
+  sort(filelisq)
+
+
+proc writeFilePatternToSeqRec*(filelisq: var seq[string], starred_patternst: string, source_dirpa: Path,  relativebo: bool = true) = 
+
+#[ Write the files from a *-pattern in source_dirst recursively to an external sequence filelisq.
+
+  options:
+  -start with / left-part: pattern*
+  -end with / right-part: *pattern
+  -in the middle: *pattern*
+ ]#
+
+
+  var
+    filenamest, patternlocatst, strippedpatternst, relpathst: string
+  
+  patternlocatst = getPatternLocation(starred_patternst)
+  strippedpatternst = starred_patternst.strip(chars = {'*'})
+  #wisp("strippedpatternst = ", strippedpatternst)
+  #wisp(patternlocatst)
+  wisp("source_dirst = ", string(source_dirpa))
+  
+  # walk thru the file-iterator and sequence the right file(names)
+  for path in walkDirRec(source_dirpa, relative = relativebo):
+    filenamest = string(extractFileName(path))
+    relpathst = string(relativePath(path, source_dirpa, '/'))
+    wisp("relpathst = ", relpathst)
+    if len(filenamest) > len(strippedpatternst):
+      case patternlocatst:
+      of "left":
+        if filenamest.startswith(strippedpatternst):
+          filelisq.add(string(path))
+      of "right":
+        if filenamest.endswith(strippedpatternst):
+          #wisp(filenamest)
+          wisp("path = ", string(path))
+          wisp("filenamest = ", string(filenamest))
+
+          filelisq.add(string(path))
+      elif patternlocatst == "middle":
+        if filenamest.contains(strippedpatternst):
+          #wisp(filenamest)
+          filelisq.add(string(path))
+
+      else:
+        wisp("else")
+
+  sort(filelisq)
 
 
 
@@ -194,7 +297,12 @@ when isMainModule:
   #echo convertMultFilesToSeq(@["noise_words_dutch_generic.dat", "noise_words_english_generic.dat"], ">>>")
 
   #echo getPatternLocation("*pietje*")
-  echo writeFilePatternToSeq2("freek*", ".")
-  echo writeFilePatternToSeq2("*.dat", ".")
-  echo writeFilePatternToSeq2("*english*", ".")
+  #echo writeFilePatternToSeq2("freek*", ".")
+  #echo writeFilePatternToSeq2("*.dat", ".")
+  #echo writeFilePatternToSeq2("*english*", ".")
 
+  var listoffilesq: seq[string] = @[]
+  #writeFilePatternToSeq3(listoffilesq, "*.nim", ".", true)
+  writeFilePatternToSeq4(listoffilesq, "*.nim", Path("."), true)
+
+  echo listoffilesq

@@ -1,48 +1,197 @@
-other_declaration~~~ctwig~~~import g_disk2ni~~~ls:15
-other_declaration~~~ctwig~~~import std/[os, ~~~ls:17
-other_declaration~~~ctwig~~~var ~~~ls:20
-other_declaration~~~ctwig~~~type ~~~ls:26
-other_declaration~~~ctwig~~~var debugbo: boo~~~ls:36
-log~~~ctwig~~~template~~~ls:39~~~cs:9~~~ce:11
-addSourceFilesToProject~~~ctwig~~~proc~~~ls:46~~~cs:5~~~ce:27
-extractFileSectionToSequence~~~ctwig~~~proc~~~ls:125~~~cs:5~~~ce:32
-getSliceFromAnchor~~~ctwig~~~proc~~~ls:148~~~cs:5~~~ce:22
-countLinesOfFile~~~ctwig~~~proc~~~ls:222~~~cs:5~~~ce:20
-createDeclarationList~~~ctwig~~~proc~~~ls:235~~~cs:5~~~ce:25
-getSliceFromLines~~~ctwig~~~proc~~~ls:513~~~cs:5~~~ce:21
-getXLinesWithSubstring~~~ctwig~~~proc~~~ls:592~~~cs:5~~~ce:26
-createCodeViewFile~~~ctwig~~~proc~~~ls:619~~~cs:5~~~ce:22
-getSeqFromFileLines~~~ctwig~~~proc~~~ls:840~~~cs:5~~~ce:23
-getSeqFromFileLines2~~~ctwig~~~proc~~~ls:899~~~cs:5~~~ce:24
-getSeqFromLinesSpecial~~~ctwig~~~proc~~~ls:978~~~cs:5~~~ce:26
-writeFamily~~~ctwig~~~proc~~~ls:1030~~~cs:5~~~ce:15
-showDeclarationBranch~~~ctwig~~~proc~~~ls:1213~~~cs:5~~~ce:25
-echoHelpInfo~~~ctwig~~~proc~~~ls:1316~~~cs:5~~~ce:16
-createAllViewFiles~~~ctwig~~~proc~~~ls:1362~~~cs:5~~~ce:22
-generate_all~~~ctwig~~~proc~~~ls:1371~~~cs:5~~~ce:16
-processCommandLine~~~ctwig~~~proc~~~ls:1379~~~cs:5~~~ce:22
-other_declaration~~~ctwig~~~var for_realbo: ~~~ls:1482
-other_declaration~~~ctwig~~~if for_realbo:~~~ls:1483
-other_declaration~~~g_disk2nim~~~import strutils,~~~ls:4
-other_declaration~~~g_disk2nim~~~import os~~~ls:5
-other_declaration~~~g_disk2nim~~~import g_templat~~~ls:6
-other_declaration~~~g_disk2nim~~~var versionfl: f~~~ls:8
-other_declaration~~~g_disk2nim~~~var debugbo: boo~~~ls:9
-log~~~g_disk2nim~~~template~~~ls:12~~~cs:9~~~ce:11
-writeFilePatternToSeq~~~g_disk2nim~~~proc~~~ls:19~~~cs:5~~~ce:25
-getPatternLocation~~~g_disk2nim~~~proc~~~ls:41~~~cs:5~~~ce:22
-writeFilePatternToSeq2~~~g_disk2nim~~~proc~~~ls:67~~~cs:5~~~ce:26
-addShowValuesToSeq~~~g_disk2nim~~~proc~~~ls:117~~~cs:5~~~ce:22
-convertFileToSequence~~~g_disk2nim~~~proc~~~ls:137~~~cs:5~~~ce:25
-convertMultFilesToSeq~~~g_disk2nim~~~proc~~~ls:160~~~cs:5~~~ce:25
-other_declaration~~~g_disk2nim~~~when isMainModul~~~ls:184
-other_declaration~~~g_templates~~~import std/[time~~~ls:1
-other_declaration~~~g_templates~~~var versionfl: f~~~ls:3
-withFile~~~g_templates~~~template~~~ls:6~~~cs:9~~~ce:16
-withFileAdvanced~~~g_templates~~~template~~~ls:18~~~cs:9~~~ce:24
-doWork~~~g_templates~~~proc~~~ls:45~~~cs:5~~~ce:10
-timeStuff~~~g_templates~~~template~~~ls:51~~~cs:9~~~ce:17
-timeThings~~~g_templates~~~template~~~ls:57~~~cs:9~~~ce:18
-timeNeatly~~~g_templates~~~template~~~ls:65~~~cs:9~~~ce:18
-timeCop~~~g_templates~~~template~~~ls:71~~~cs:9~~~ce:15
-other_declaration~~~g_templates~~~when isMainModul~~~ls:81
+other_declaration~~~ctwig~~~import jolibs/ge~~~ls:20
+other_declaration~~~ctwig~~~import std/[os, ~~~ls:22
+other_declaration~~~ctwig~~~var ~~~ls:25
+other_declaration~~~ctwig~~~type~~~ls:34
+other_declaration~~~ctwig~~~var debugbo: boo~~~ls:79
+addSourceFilesToProject_old~~~ctwig~~~proc~~~ls:89~~~cs:5~~~ce:31
+addSourceFilesToProject~~~ctwig~~~proc~~~ls:167~~~cs:5~~~ce:27
+extractFileSectionToSequence~~~ctwig~~~proc~~~ls:252~~~cs:5~~~ce:32
+getSliceFromAnchor~~~ctwig~~~proc~~~ls:275~~~cs:5~~~ce:22
+countLinesOfFile~~~ctwig~~~proc~~~ls:349~~~cs:5~~~ce:20
+createDeclarationList~~~ctwig~~~proc~~~ls:362~~~cs:5~~~ce:25
+getSliceFromLines~~~ctwig~~~proc~~~ls:643~~~cs:5~~~ce:21
+getXLinesWithSubstring~~~ctwig~~~proc~~~ls:724~~~cs:5~~~ce:26
+createCodeViewFile~~~ctwig~~~proc~~~ls:754~~~cs:5~~~ce:22
+getSeqFromFileLines~~~ctwig~~~proc~~~ls:995~~~cs:5~~~ce:23
+getSeqFromFileLines2~~~ctwig~~~proc~~~ls:1057~~~cs:5~~~ce:24
+getSeqFromLinesSpecial~~~ctwig~~~proc~~~ls:1137~~~cs:5~~~ce:26
+writeFamily~~~ctwig~~~proc~~~ls:1189~~~cs:5~~~ce:15
+echoDeclarationData~~~ctwig~~~proc~~~ls:1275~~~cs:5~~~ce:23
+showDeclarationBranch~~~ctwig~~~proc~~~ls:1381~~~cs:5~~~ce:25
+echoHelpInfo~~~ctwig~~~proc~~~ls:1494~~~cs:5~~~ce:16
+createMultiProjectFiles~~~ctwig~~~proc~~~ls:1539~~~cs:5~~~ce:27
+createAllViewFiles~~~ctwig~~~proc~~~ls:1543~~~cs:5~~~ce:22
+generate_all~~~ctwig~~~proc~~~ls:1552~~~cs:5~~~ce:16
+processCommandLine~~~ctwig~~~proc~~~ls:1560~~~cs:5~~~ce:22
+other_declaration~~~ctwig~~~var for_realbo: ~~~ls:1666
+other_declaration~~~ctwig~~~if for_realbo:~~~ls:1667
+other_declaration~~~jolibs/generic/g_cookie~~~import tables, s~~~ls:8
+other_declaration~~~jolibs/generic/g_cookie~~~import g_json2ht~~~ls:9
+other_declaration~~~jolibs/generic/g_cookie~~~var versionfl: f~~~ls:11
+other_declaration~~~jolibs/generic/g_cookie~~~var debugbo: boo~~~ls:13
+dummyPass~~~jolibs/generic/g_cookie~~~proc~~~ls:25~~~cs:5~~~ce:13
+getFuncParts~~~jolibs/generic/g_cookie~~~proc~~~ls:29~~~cs:5~~~ce:16
+runFunctionFromClient~~~jolibs/generic/g_cookie~~~proc~~~ls:46~~~cs:5~~~ce:25
+other_declaration~~~jolibs/generic/g_cookie~~~when isMainModul~~~ls:68
+other_declaration~~~jolibs/generic/g_database~~~import std/[stru~~~ls:17
+other_declaration~~~jolibs/generic/g_database~~~import db_connec~~~ls:18
+other_declaration~~~jolibs/generic/g_database~~~import g_tools~~~ls:20
+other_declaration~~~jolibs/generic/g_database~~~type ~~~ls:24
+other_declaration~~~jolibs/generic/g_database~~~var~~~ls:50
+getDb~~~jolibs/generic/g_database~~~proc~~~ls:68~~~cs:5~~~ce:9
+withDb~~~jolibs/generic/g_database~~~template~~~ls:78~~~cs:9~~~ce:14
+enquote~~~jolibs/generic/g_database~~~proc~~~ls:88~~~cs:5~~~ce:11
+dequote~~~jolibs/generic/g_database~~~proc~~~ls:92~~~cs:5~~~ce:11
+convertChars~~~jolibs/generic/g_database~~~proc~~~ls:96~~~cs:5~~~ce:16
+old_getFieldAndTypeList~~~jolibs/generic/g_database~~~proc~~~ls:102~~~cs:5~~~ce:27
+getFieldAndTypeList~~~jolibs/generic/g_database~~~proc~~~ls:149~~~cs:5~~~ce:23
+readFromParams~~~jolibs/generic/g_database~~~proc~~~ls:252~~~cs:5~~~ce:18
+Old_readFromParams~~~jolibs/generic/g_database~~~proc~~~ls:344~~~cs:5~~~ce:22
+addNewFromParams~~~jolibs/generic/g_database~~~proc~~~ls:430~~~cs:5~~~ce:20
+deleteFromParams~~~jolibs/generic/g_database~~~proc~~~ls:476~~~cs:5~~~ce:20
+updateFromParams~~~jolibs/generic/g_database~~~proc~~~ls:523~~~cs:5~~~ce:20
+getAllUserTables~~~jolibs/generic/g_database~~~proc~~~ls:575~~~cs:5~~~ce:20
+rowCount~~~jolibs/generic/g_database~~~proc~~~ls:593~~~cs:5~~~ce:12
+getColumnCount~~~jolibs/generic/g_database~~~proc~~~ls:603~~~cs:5~~~ce:18
+getKeyFieldStatus~~~jolibs/generic/g_database~~~proc~~~ls:610~~~cs:5~~~ce:21
+idValueExists~~~jolibs/generic/g_database~~~proc~~~ls:627~~~cs:5~~~ce:17
+other_declaration~~~jolibs/generic/g_database~~~when isMainModul~~~ls:638
+other_declaration~~~jolibs/generic/g_db2json~~~import std/[json~~~ls:8
+other_declaration~~~jolibs/generic/g_db2json~~~import db_connec~~~ls:9
+other_declaration~~~jolibs/generic/g_db2json~~~import g_databas~~~ls:10
+other_declaration~~~jolibs/generic/g_db2json~~~var~~~ls:12
+other_declaration~~~jolibs/generic/g_db2json~~~const~~~ls:16
+createHtmlTableNodeFromDB~~~jolibs/generic/g_db2json~~~proc~~~ls:35~~~cs:5~~~ce:29
+createDropdownNodeFromDb~~~jolibs/generic/g_db2json~~~proc~~~ls:82~~~cs:5~~~ce:28
+other_declaration~~~jolibs/generic/g_db2json~~~when isMainModul~~~ls:124
+other_declaration~~~jolibs/generic/g_disk2nim~~~import strutils,~~~ls:4
+other_declaration~~~jolibs/generic/g_disk2nim~~~import os~~~ls:5
+other_declaration~~~jolibs/generic/g_disk2nim~~~import g_templat~~~ls:6
+other_declaration~~~jolibs/generic/g_disk2nim~~~import std/[path~~~ls:7
+other_declaration~~~jolibs/generic/g_disk2nim~~~var versionfl: f~~~ls:10
+other_declaration~~~jolibs/generic/g_disk2nim~~~var ~~~ls:11
+writeFilePatternToSeq~~~jolibs/generic/g_disk2nim~~~proc~~~ls:23~~~cs:5~~~ce:25
+getPatternLocation~~~jolibs/generic/g_disk2nim~~~proc~~~ls:47~~~cs:5~~~ce:22
+writeFilePatternToSeq2~~~jolibs/generic/g_disk2nim~~~proc~~~ls:73~~~cs:5~~~ce:26
+writeFilePatternToSeq3~~~jolibs/generic/g_disk2nim~~~proc~~~ls:120~~~cs:5~~~ce:26
+writeFilePatternToSeqRec~~~jolibs/generic/g_disk2nim~~~proc~~~ls:174~~~cs:5~~~ce:28
+addShowValuesToSeq~~~jolibs/generic/g_disk2nim~~~proc~~~ls:223~~~cs:5~~~ce:22
+convertFileToSequence~~~jolibs/generic/g_disk2nim~~~proc~~~ls:243~~~cs:5~~~ce:25
+convertMultFilesToSeq~~~jolibs/generic/g_disk2nim~~~proc~~~ls:266~~~cs:5~~~ce:25
+other_declaration~~~jolibs/generic/g_disk2nim~~~when isMainModul~~~ls:290
+other_declaration~~~jolibs/generic/g_json2html~~~import json~~~ls:25
+other_declaration~~~jolibs/generic/g_json2html~~~import g_json_pl~~~ls:27
+other_declaration~~~jolibs/generic/g_json2html~~~var ~~~ls:32
+other_declaration~~~jolibs/generic/g_json2html~~~type ~~~ls:36
+newlang~~~jolibs/generic/g_json2html~~~proc~~~ls:48~~~cs:5~~~ce:11
+setRadioButtons~~~jolibs/generic/g_json2html~~~proc~~~ls:54~~~cs:5~~~ce:19
+setCheckBoxSet~~~jolibs/generic/g_json2html~~~proc~~~ls:108~~~cs:5~~~ce:18
+setDropDown~~~jolibs/generic/g_json2html~~~proc~~~ls:171~~~cs:5~~~ce:15
+setTableBasic~~~jolibs/generic/g_json2html~~~proc~~~ls:249~~~cs:5~~~ce:17
+setTableFromDb~~~jolibs/generic/g_json2html~~~proc~~~ls:311~~~cs:5~~~ce:18
+setTableDbOpt~~~jolibs/generic/g_json2html~~~proc~~~ls:419~~~cs:5~~~ce:17
+OLD_setTableFromDb~~~jolibs/generic/g_json2html~~~proc~~~ls:551~~~cs:5~~~ce:22
+setDatalist~~~jolibs/generic/g_json2html~~~proc~~~ls:647~~~cs:5~~~ce:15
+other_declaration~~~jolibs/generic/g_json2html~~~when isMainModul~~~ls:722
+other_declaration~~~jolibs/generic/g_json_plus~~~import json, tab~~~ls:8
+other_declaration~~~jolibs/generic/g_json_plus~~~var versionfl: f~~~ls:10
+other_declaration~~~jolibs/generic/g_json_plus~~~when isMainModul~~~ls:13
+testIter01~~~jolibs/generic/g_json_plus~~~proc~~~ls:25~~~cs:5~~~ce:14
+testDeepNodeFromKey~~~jolibs/generic/g_json_plus~~~proc~~~ls:50~~~cs:5~~~ce:23
+getDeepNodeFromKey~~~jolibs/generic/g_json_plus~~~proc~~~ls:89~~~cs:5~~~ce:22
+listKeysFromNode~~~jolibs/generic/g_json_plus~~~proc~~~ls:130~~~cs:5~~~ce:20
+findDoubleKeys~~~jolibs/generic/g_json_plus~~~proc~~~ls:152~~~cs:5~~~ce:18
+pruneJnodesFromTree~~~jolibs/generic/g_json_plus~~~proc~~~ls:166~~~cs:5~~~ce:23
+graftJObjectToTree~~~jolibs/generic/g_json_plus~~~proc~~~ls:179~~~cs:5~~~ce:22
+replaceLastItemOfSeq~~~jolibs/generic/g_json_plus~~~proc~~~ls:198~~~cs:5~~~ce:24
+other_declaration~~~jolibs/generic/g_json_plus~~~when isMainModul~~~ls:211
+other_declaration~~~jolibs/generic/g_mine~~~import strutils,~~~ls:6
+other_declaration~~~jolibs/generic/g_mine~~~import tables~~~ls:7
+other_declaration~~~jolibs/generic/g_mine~~~import unicode~~~ls:8
+other_declaration~~~jolibs/generic/g_mine~~~import g_tools~~~ls:10
+other_declaration~~~jolibs/generic/g_mine~~~const~~~ls:13
+other_declaration~~~jolibs/generic/g_mine~~~type~~~ls:16
+other_declaration~~~jolibs/generic/g_mine~~~var debugbo: boo~~~ls:28
+l1~~~jolibs/generic/g_mine~~~template~~~ls:36~~~cs:9~~~ce:10
+getWebSite~~~jolibs/generic/g_mine~~~proc~~~ls:42~~~cs:5~~~ce:14
+getWebSiteAsync~~~jolibs/generic/g_mine~~~proc~~~ls:88~~~cs:5~~~ce:19
+getSubstringPositions~~~jolibs/generic/g_mine~~~proc~~~ls:96~~~cs:5~~~ce:25
+pairChainsAreValid~~~jolibs/generic/g_mine~~~proc~~~ls:128~~~cs:5~~~ce:22
+getDataSeqClean~~~jolibs/generic/g_mine~~~proc~~~ls:161~~~cs:5~~~ce:19
+getDataSeqDirty~~~jolibs/generic/g_mine~~~proc~~~ls:203~~~cs:5~~~ce:19
+getPartFromWebAddress~~~jolibs/generic/g_mine~~~proc~~~ls:251~~~cs:5~~~ce:25
+getBaseFromWebAddress2~~~jolibs/generic/g_mine~~~proc~~~ls:308~~~cs:5~~~ce:26
+convertWebLinksToAbsolute~~~jolibs/generic/g_mine~~~proc~~~ls:343~~~cs:5~~~ce:29
+substringsInString~~~jolibs/generic/g_mine~~~proc~~~ls:373~~~cs:5~~~ce:22
+linkIsPresent~~~jolibs/generic/g_mine~~~proc~~~ls:406~~~cs:5~~~ce:17
+multiplyString~~~jolibs/generic/g_mine~~~proc~~~ls:415~~~cs:5~~~ce:18
+removeSingleStrings~~~jolibs/generic/g_mine~~~proc~~~ls:427~~~cs:5~~~ce:23
+removeDuplicateStrings~~~jolibs/generic/g_mine~~~proc~~~ls:442~~~cs:5~~~ce:26
+removeLongWords~~~jolibs/generic/g_mine~~~proc~~~ls:468~~~cs:5~~~ce:19
+getInnerText3~~~jolibs/generic/g_mine~~~proc~~~ls:490~~~cs:5~~~ce:17
+getInnerText3_old~~~jolibs/generic/g_mine~~~proc~~~ls:578~~~cs:5~~~ce:21
+getInnerText2~~~jolibs/generic/g_mine~~~proc~~~ls:618~~~cs:5~~~ce:17
+createSeqOfUniqueWords~~~jolibs/generic/g_mine~~~proc~~~ls:658~~~cs:5~~~ce:26
+calcWordFrequencies~~~jolibs/generic/g_mine~~~proc~~~ls:684~~~cs:5~~~ce:23
+calcCumulFrequencies~~~jolibs/generic/g_mine~~~proc~~~ls:804~~~cs:5~~~ce:24
+calcCumulFrequencies_old~~~jolibs/generic/g_mine~~~proc~~~ls:853~~~cs:5~~~ce:28
+getDataSequence~~~jolibs/generic/g_mine~~~proc~~~ls:874~~~cs:5~~~ce:19
+getDataBetweenTags2~~~jolibs/generic/g_mine~~~proc~~~ls:905~~~cs:5~~~ce:23
+getTitleFromWebsite2~~~jolibs/generic/g_mine~~~proc~~~ls:930~~~cs:5~~~ce:24
+getChildLinks~~~jolibs/generic/g_mine~~~proc~~~ls:942~~~cs:5~~~ce:17
+countWords~~~jolibs/generic/g_mine~~~proc~~~ls:1042~~~cs:5~~~ce:14
+getTagContent~~~jolibs/generic/g_mine~~~proc~~~ls:1049~~~cs:5~~~ce:17
+enlistSequenceToDoc~~~jolibs/generic/g_mine~~~proc~~~ls:1084~~~cs:5~~~ce:23
+getHtmlHeaders~~~jolibs/generic/g_mine~~~proc~~~ls:1115~~~cs:5~~~ce:18
+other_declaration~~~jolibs/generic/g_mine~~~when isMainModul~~~ls:1171
+other_declaration~~~jolibs/generic/g_nim2json~~~import std/[json~~~ls:4
+other_declaration~~~jolibs/generic/g_nim2json~~~type~~~ls:6
+createDropdownNodeFromSeq~~~jolibs/generic/g_nim2json~~~proc~~~ls:13~~~cs:5~~~ce:29
+createPicklistNodeFromSeq~~~jolibs/generic/g_nim2json~~~proc~~~ls:40~~~cs:5~~~ce:29
+other_declaration~~~jolibs/generic/g_nim2json~~~when isMainModul~~~ls:78
+other_declaration~~~jolibs/generic/g_options~~~import strutils,~~~ls:12
+other_declaration~~~jolibs/generic/g_options~~~import std/paths~~~ls:13
+other_declaration~~~jolibs/generic/g_options~~~import ../../app~~~ls:14
+other_declaration~~~jolibs/generic/g_options~~~var debugbo: boo~~~ls:17
+other_declaration~~~jolibs/generic/g_options~~~var ~~~ls:20
+other_declaration~~~jolibs/generic/g_options~~~type  ~~~ls:29
+readOptionFromFile_fut~~~jolibs/generic/g_options~~~proc~~~ls:49~~~cs:5~~~ce:26
+readOptionFromFile~~~jolibs/generic/g_options~~~proc~~~ls:124~~~cs:5~~~ce:22
+getValList~~~jolibs/generic/g_options~~~proc~~~ls:198~~~cs:5~~~ce:14
+newlang~~~jolibs/generic/g_options~~~proc~~~ls:204~~~cs:5~~~ce:11
+other_declaration~~~jolibs/generic/g_options~~~when isMainModul~~~ls:282
+other_declaration~~~jolibs/generic/g_stringdata~~~import strutils~~~ls:1
+other_declaration~~~jolibs/generic/g_stringdata~~~import g_templat~~~ls:2
+other_declaration~~~jolibs/generic/g_stringdata~~~var~~~ls:5
+other_declaration~~~jolibs/generic/g_stringdata~~~wispbo = false~~~ls:8
+other_declaration~~~jolibs/generic/g_stringdata~~~type~~~ls:10
+zoomIntoFragments~~~jolibs/generic/g_stringdata~~~proc~~~ls:24~~~cs:5~~~ce:21
+readFromSeparatedString~~~jolibs/generic/g_stringdata~~~proc~~~ls:67~~~cs:5~~~ce:27
+writeToSeparatedString~~~jolibs/generic/g_stringdata~~~proc~~~ls:178~~~cs:5~~~ce:26
+other_declaration~~~jolibs/generic/g_stringdata~~~when isMainModul~~~ls:191
+other_declaration~~~jolibs/generic/g_templates~~~import std/[time~~~ls:1
+other_declaration~~~jolibs/generic/g_templates~~~var versionfl: f~~~ls:3
+other_declaration~~~jolibs/generic/g_templates~~~var wispbo* = tr~~~ls:6
+wisp_old~~~jolibs/generic/g_templates~~~template~~~ls:10~~~cs:9~~~ce:16
+getTrace~~~jolibs/generic/g_templates~~~template~~~ls:29~~~cs:9~~~ce:16
+wisp~~~jolibs/generic/g_templates~~~template~~~ls:53~~~cs:9~~~ce:12
+withFile~~~jolibs/generic/g_templates~~~template~~~ls:85~~~cs:9~~~ce:16
+withFileAdvanced~~~jolibs/generic/g_templates~~~template~~~ls:97~~~cs:9~~~ce:24
+doWork~~~jolibs/generic/g_templates~~~proc~~~ls:125~~~cs:5~~~ce:10
+timeStuff~~~jolibs/generic/g_templates~~~template~~~ls:131~~~cs:9~~~ce:17
+timeThings~~~jolibs/generic/g_templates~~~template~~~ls:137~~~cs:9~~~ce:18
+timeNeatly~~~jolibs/generic/g_templates~~~template~~~ls:145~~~cs:9~~~ce:18
+timeCop~~~jolibs/generic/g_templates~~~template~~~ls:151~~~cs:9~~~ce:15
+other_declaration~~~jolibs/generic/g_templates~~~when isMainModul~~~ls:161
+other_declaration~~~jolibs/generic/g_tools~~~import strutils,~~~ls:8
+other_declaration~~~jolibs/generic/g_tools~~~import g_templat~~~ls:9
+other_declaration~~~jolibs/generic/g_tools~~~var versionfl: f~~~ls:11
+other_declaration~~~jolibs/generic/g_tools~~~var debugbo: boo~~~ls:13
+split2~~~jolibs/generic/g_tools~~~proc~~~ls:25~~~cs:5~~~ce:10
+convertSequenceToFile~~~jolibs/generic/g_tools~~~proc~~~ls:48~~~cs:5~~~ce:25
+convertSequenceToText~~~jolibs/generic/g_tools~~~proc~~~ls:56~~~cs:5~~~ce:25
+zipTwoSeqsToOne~~~jolibs/generic/g_tools~~~proc~~~ls:67~~~cs:5~~~ce:19
+filterIsMatching~~~jolibs/generic/g_tools~~~proc~~~ls:84~~~cs:5~~~ce:20
+countIsFactorOf~~~jolibs/generic/g_tools~~~proc~~~ls:182~~~cs:5~~~ce:19
+concatenateFiles~~~jolibs/generic/g_tools~~~proc~~~ls:198~~~cs:5~~~ce:20
+other_declaration~~~jolibs/generic/g_tools~~~when isMainModul~~~ls:226

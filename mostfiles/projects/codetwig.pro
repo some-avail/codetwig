@@ -29,6 +29,16 @@ PROJECT_PATH
 
 SOURCE_FILES
 ctwig.nim
-g_disk2nim.nim
-g_templates.nim
+jolibs/generic/g_cookie.nim
+jolibs/generic/g_database.nim
+jolibs/generic/g_db2json.nim
+jolibs/generic/g_disk2nim.nim
+jolibs/generic/g_json2html.nim
+jolibs/generic/g_json_plus.nim
+jolibs/generic/g_mine.nim
+jolibs/generic/g_nim2json.nim
+jolibs/generic/g_options.nim
+jolibs/generic/g_stringdata.nim
+jolibs/generic/g_templates.nim
+jolibs/generic/g_tools.nim
 >----------------------------------<

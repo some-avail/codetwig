@@ -1,0 +1,21 @@
+CodeTwig can create special views of your programming-projects.
+
+This is a multi-project-definition.
+Multi-project-definitions have the extension .mul
+
+After you have defined some projects in project-files (.pro),
+you can create a multi-project-definition that enables you to show 
+more projects at once; that is trees of usage and used-by.
+
+
+
+
+PROJECTS_LIST
+codetwig.pro
+snel_installer.pro
+>----------------------------------<
+
+
+
+
+

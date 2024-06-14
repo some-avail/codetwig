@@ -213,7 +213,7 @@ proc addSourceFilesToProject(proj_def_pathst: string): string =
               # read the project-path
               projectpathst = linest
               echo "Project-path of the source-files: " & projectpathst
-              source_filesq = writeFilePatternToSeq2("*.nim", projectpathst)
+              writeFilePatternToSeqRec(source_filesq, "*.nim", Path(projectpathst), true)
             else:
               blockphasest = ""
 
@@ -411,6 +411,7 @@ proc createDeclarationList(proj_def_pathst: string) =
     # must be unique
     dec_plus_modulest, previous_modulest: string
 
+    projectnamest, fullmodpathst, modfilest, submodulest: string
 
   try:
 
@@ -421,6 +422,7 @@ proc createDeclarationList(proj_def_pathst: string) =
     # create a target-dir and -file, ie the dec-list
     var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
     reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
+    projectnamest = string(pd_filebasepa)
 
     if not dirExists(reltargetprojectpathst):   
       createDir(reltargetprojectpathst)     # proc creates subdirs also
@@ -438,16 +440,18 @@ proc createDeclarationList(proj_def_pathst: string) =
     # per line: declaration, module, declaration-type, dec.line-start, col.start, col.end, dec.line-end
     echo "-------------first phase----------------"
     if phase1fileob.open(phase1_dec_list_filepathst, fmWrite):
-      for filest in source_filesq:
-        filepathst = string(Path(sourceprojectpathst) / Path(filest))
-        modulenamest = filest[0 .. filest.len - 1 - langekst.len - 1]
-        moduletitlest = moduledecorst & " " & modulenamest & " " & moduledecorst
+      for relmodpathst in source_filesq:
+        fullmodpathst = string(Path(sourceprojectpathst) / Path(relmodpathst))
+        modfilest = extractFilename(fullmodpathst)
+
+        submodulest = relmodpathst[0 .. relmodpathst.len - 1 - langekst.len - 1]
+        moduletitlest = moduledecorst & " " & submodulest & " " & moduledecorst
 
         # below line no longer possible since addition of phase 2
         #phase1fileob.writeLine(moduletitlest)
-        echo "-------- Processing file ----------- " & filest & "---------------"
+        echo "-------- Processing file ----------- " & relmodpathst & "---------------"
         # open file for reading
-        if fileob.open(filepathst, fmRead):
+        if fileob.open(fullmodpathst, fmRead):
           linecountit = 0
           for linest in fileob.lines:
             linecountit += 1
@@ -474,7 +478,7 @@ proc createDeclarationList(proj_def_pathst: string) =
                       dectypefoundbo = true
                       dec_namest = linest[dec_namear[0]..dec_namear[1]]
                       if decnamest notin excluded_declaresq:
-                        targlinest = dec_namest & sep1st & modulenamest & sep1st & dectypest & sep1st & "ls:" & $linecountit & sep1st & "cs:" & $dec_namear[0] & sep1st & "ce:" & $dec_namear[1]
+                        targlinest = dec_namest & sep1st & submodulest & sep1st & dectypest & sep1st & "ls:" & $linecountit & sep1st & "cs:" & $dec_namear[0] & sep1st & "ce:" & $dec_namear[1]
                         phase1fileob.writeLine(targlinest)
                       echo "Line: " & $linecountit
 
@@ -484,7 +488,7 @@ proc createDeclarationList(proj_def_pathst: string) =
                     # probably a macro-implementation - you want these..
                     decnamest = linest[0..linest.len - 2]
                     if decnamest notin excluded_declaresq:
-                      targlinest = dec_namest & sep1st & modulenamest & sep1st & "implement" & sep1st & "ls:" & $linecountit & sep1st & "cs:" & "0" & sep1st & "ce:" & $decnamest.len
+                      targlinest = dec_namest & sep1st & submodulest & sep1st & "implement" & sep1st & "ls:" & $linecountit & sep1st & "cs:" & "0" & sep1st & "ce:" & $decnamest.len
                       phase1fileob.writeLine(targlinest)
                       echo "Line: " & $linecountit
                   else:
@@ -492,20 +496,21 @@ proc createDeclarationList(proj_def_pathst: string) =
                       linepartst = linest[0..15]
                     else:
                       linepartst = linest[0..linest.len - 1]
-                    targlinest = "other_declaration" & sep1st & modulenamest & sep1st  & linepartst & sep1st & "ls:" & $linecountit
+                    targlinest = "other_declaration" & sep1st & submodulest & sep1st  & linepartst & sep1st & "ls:" & $linecountit
                     phase1fileob.writeLine(targlinest)
 
           fileob.close()
 
         else:
-          echo ">>>>>>>>>>>Could not open " & filepathst
+          echo ">>>>>>>>>>>Could not open " & fullmodpathst
     else: 
       echo ">>>>>>>>>>>Could not open " & phase1_dec_list_filepathst
 
     phase1fileob.close()    # close writable file
 
 
-    # phase two; create new file and append declaration-endings to each line, called line-ends le, that is the last line of the declare
+    # phase two; create new file and append declaration-endings to each line, called line-ends le, that is the last line of the declare;
+    # after that append the project-name (for multi-project-functions)
     echo "-------------second phase----------------"
 
     # work with one file-object of phase one and one of phase two
@@ -524,7 +529,7 @@ proc createDeclarationList(proj_def_pathst: string) =
             filepathst = string(Path(sourceprojectpathst) / Path(previous_modulest & ".nim"))
             line_endst = "le:" & $(countLinesOfFile(filepathst))
           if previous_linest.split(sep1st)[0] != "other_declaration":
-            newlinest = previous_linest & sep1st & line_endst
+            newlinest = previous_linest & sep1st & line_endst & sep1st & projectnamest
             phase2fileob.writeLine(newlinest)
         previous_linest = linest
     else:
@@ -747,6 +752,7 @@ proc getXLinesWithSubstring(fileob: var File, subst: string, linestartit, lineen
 
 
 proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) = 
+
 #[
   Create view-files of the enum-type
 
@@ -772,6 +778,7 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
     filepathst, modfilest, slicest, nextslicest: string
     linestartit, lineendit: int
     commentlinesq: seq[string]
+    choppedmodulest, projectnamest, toptitlest: string
 
   try:
     # retrieve project-data from project-def-file
@@ -781,6 +788,7 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
     # set the target-dir and declaration-file
     var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
     reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
+    projectnamest = string(pd_filebasepa)
 
     echo "--------------------------------------------------------"
     echo "Using target-directory for your " & codetwigst & "-project: " & reltargetprojectpathst
@@ -818,7 +826,18 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
     #if viewtypeeu == viewBasic_OneLevel or viewtypeeu == viewBasic_TwoLevels:
     if true:
       newmodulest = ""
-      # basic one level
+      toptitlest = "\p ~~~~~~~~~~~~~~~~~  Project = " & projectnamest & "  ~~~~~~~~~~~~~~~~~~~~\p"
+      if viewtypeeu == viewBasic_OneLevel:
+        bofileob.writeLine(toptitlest)
+      elif viewtypeeu == viewBasic_TwoLevels:
+        btfileob.writeLine(toptitlest)
+      elif viewtypeeu == viewExtended_OneLevel:
+        eofileob.writeLine(toptitlest)
+      elif viewtypeeu == viewExtended_TwoLevels:
+        etfileob.writeLine(toptitlest)
+
+
+      # walk thru the dec-list
       for dlinest in decfilob.lines:
         dlinesq = dlinest.split(sep3st)
         decdatasq = dlinesq[0].split(sep1st)
@@ -847,7 +866,7 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
         else:
           decdatalinest = "    " & decnamest.alignLeft(33) & dectypest.alignLeft(10) & "line: " & linestartst.split(":")[1]
           decdata_ekst = "    " & decnamest.alignLeft(33) & modulest.alignLeft(15) & dectypest.alignLeft(10) & "line: " & linestartst.split(":")[1]
-          
+      
           if viewtypeeu == viewBasic_OneLevel:
             bofileob.writeLine(decdatalinest)
 
@@ -856,7 +875,10 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
             for it, uselinest in dlinesq:
               if it > 0:
                 uselinesq = uselinest.split(sep1st)
-                usedatalinest = uselinesq[0].alignLeft(33) & uselinesq[1].alignLeft(20) & uselinesq[2].alignLeft(10) & uselinesq[3]
+                choppedmodulest = extractFilename(uselinesq[1])
+                if choppedmodulest != uselinesq[1]:
+                  choppedmodulest = ".../" & string(extractFilename(uselinesq[1]))
+                usedatalinest = uselinesq[0].alignLeft(33) & choppedmodulest.alignLeft(23) & uselinesq[2].alignLeft(10) & uselinesq[3]
                 btfileob.writeLine("        " & usedatalinest)
 
 
@@ -925,7 +947,10 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
               for it, uselinest in dlinesq:
                 if it > 0:
                   uselinesq = uselinest.split(sep1st)
-                  usedatalinest = uselinesq[0].alignLeft(33) & uselinesq[1].alignLeft(20) & uselinesq[2].alignLeft(10) & uselinesq[3]
+                  choppedmodulest = extractFilename(uselinesq[1])
+                  if choppedmodulest != uselinesq[1]:
+                    choppedmodulest = ".../" & string(extractFilename(uselinesq[1]))
+                  usedatalinest = uselinesq[0].alignLeft(33) & choppedmodulest.alignLeft(23) & uselinesq[2].alignLeft(10) & uselinesq[3]
                   etfileob.writeLine("        " & usedatalinest)
 
 
@@ -1179,6 +1204,7 @@ proc writeFamily(proj_def_pathst, declarationst, modulest, directionst: string, 
     sep3st = "==="
     inputst, outputst: string
     onelinest, declarest, usedatalinest, indentationst, decdatalinest: string
+    choppedmodulest: string
 
 
   try:
@@ -1200,18 +1226,25 @@ proc writeFamily(proj_def_pathst, declarationst, modulest, directionst: string, 
       for it, uselinest in dlinesq:
         if it > 0:
           uselinesq = uselinest.split(sep1st)
-          usedatalinest = uselinesq[0].alignLeft(33) & uselinesq[1].alignLeft(20) & uselinesq[2].alignLeft(15) & uselinesq[3]
+          choppedmodulest = extractFilename(uselinesq[1])
+          if choppedmodulest != uselinesq[1]:
+            choppedmodulest = ".../" & string(extractFilename(uselinesq[1]))
+          usedatalinest = uselinesq[0].alignLeft(33) & choppedmodulest.alignLeft(23) & uselinesq[2].alignLeft(15) & uselinesq[3]
           indentationst = "    ".repeat(curdepthit)
           echo indentationst & usedatalinest
           if curdepthit <= maxdepthit:
             writeFamily(proj_def_pathst, uselinesq[0],"" ,directionst, curdepthit + 1 , maxdepthit)
+
 
     elif directionst == "used-by":
 
       foundlinesq = getSeqFromLinesSpecial(decfilepathst, declarationst, sep3st, sep1st)
       for linest in foundlinesq:
         dlinesq = linest.split(sep3st)[0].split(sep1st)
-        decdatalinest = dlinesq[0].alignLeft(33) & dlinesq[1].alignLeft(20) & dlinesq[2].alignLeft(15) & dlinesq[3]
+        choppedmodulest = extractFilename(dlinesq[1])
+        if choppedmodulest != dlinesq[1]:
+          choppedmodulest = ".../" & string(extractFilename(dlinesq[1]))
+        decdatalinest = dlinesq[0].alignLeft(33) & choppedmodulest.alignLeft(23) & dlinesq[2].alignLeft(15) & dlinesq[3]
         indentationst = "    ".repeat(curdepthit)
         echo indentationst & decdatalinest
         if curdepthit <= maxdepthit:
@@ -1349,7 +1382,6 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
 
 #[
   Show a tree of declarations; either a usage-tree or a used-by-tree.
-
 ]#
 
   var 
@@ -1403,7 +1435,7 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
           echo "========================================================================="
           for linest in foundsublinesq:
             wordsq = linest.split(sep3st)[0].split(sep1st)
-            outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(20) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10)
+            outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10)
             echo outputst
           echo "-------------------------------------------------------------------------"
         elif foundsublinesq.len == 1:
@@ -1412,7 +1444,7 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
           wordsq = onelinest.split(sep3st)[0].split(sep1st)
           declarest = wordsq[0]
           modulest = wordsq[1]
-          outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(20) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10)
+          outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10)
           echo declarest, " - ", modulest, "\p"
           echoDeclarationData(proj_def_pathst, declarest, modulest)
           echo outputst
@@ -1428,7 +1460,7 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
         wordsq = onelinest.split(sep3st)[0].split(sep1st)
         declarest = wordsq[0] 
         modulest = wordsq[1]
-        outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(20) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10)
+        outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10)
         echo declarest, " - ", modulest, "\p"
         echoDeclarationData(proj_def_pathst, declarest, modulest)
         echo outputst
@@ -1501,6 +1533,16 @@ proc echoHelpInfo() =
         assert(false) # cannot happen
   """
   echo allcommandst
+
+
+
+proc createMultiProjectFiles(multiprojectdefst: string) = 
+
+#[
+  
+]#
+  discard()
+
 
 
 

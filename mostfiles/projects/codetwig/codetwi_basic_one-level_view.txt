@@ -1,32 +1,127 @@
+
+ ~~~~~~~~~~~~~~~~~  Project = codetwig  ~~~~~~~~~~~~~~~~~~~~
+
 ctwig---------------------------------------------------
-    addSourceFilesToProject          proc      line: 46
-    extractFileSectionToSequence     proc      line: 125
-    getSliceFromAnchor               proc      line: 148
-    countLinesOfFile                 proc      line: 222
-    createDeclarationList            proc      line: 235
-    getSliceFromLines                proc      line: 513
-    getXLinesWithSubstring           proc      line: 592
-    createCodeViewFile               proc      line: 619
-    getSeqFromFileLines              proc      line: 840
-    getSeqFromFileLines2             proc      line: 899
-    getSeqFromLinesSpecial           proc      line: 978
-    writeFamily                      proc      line: 1030
-    showDeclarationBranch            proc      line: 1213
-    echoHelpInfo                     proc      line: 1316
-    createAllViewFiles               proc      line: 1362
-    generate_all                     proc      line: 1371
-    processCommandLine               proc      line: 1379
-g_disk2nim---------------------------------------------------
-    writeFilePatternToSeq            proc      line: 19
-    getPatternLocation               proc      line: 41
-    writeFilePatternToSeq2           proc      line: 67
-    addShowValuesToSeq               proc      line: 117
-    convertFileToSequence            proc      line: 137
-    convertMultFilesToSeq            proc      line: 160
-g_templates---------------------------------------------------
-    withFileAdvanced                 template  line: 18
-    doWork                           proc      line: 45
-    timeStuff                        template  line: 51
-    timeThings                       template  line: 57
-    timeNeatly                       template  line: 65
-    timeCop                          template  line: 71
+    addSourceFilesToProject          proc      line: 167
+    extractFileSectionToSequence     proc      line: 252
+    getSliceFromAnchor               proc      line: 275
+    countLinesOfFile                 proc      line: 349
+    createDeclarationList            proc      line: 362
+    getSliceFromLines                proc      line: 643
+    getXLinesWithSubstring           proc      line: 724
+    createCodeViewFile               proc      line: 754
+    getSeqFromFileLines              proc      line: 995
+    getSeqFromFileLines2             proc      line: 1057
+    getSeqFromLinesSpecial           proc      line: 1137
+    writeFamily                      proc      line: 1189
+    echoDeclarationData              proc      line: 1275
+    showDeclarationBranch            proc      line: 1381
+    echoHelpInfo                     proc      line: 1494
+    createMultiProjectFiles          proc      line: 1539
+    createAllViewFiles               proc      line: 1543
+    generate_all                     proc      line: 1552
+    processCommandLine               proc      line: 1560
+jolibs/generic/g_cookie---------------------------------------------------
+    getFuncParts                     proc      line: 29
+    runFunctionFromClient            proc      line: 46
+jolibs/generic/g_database---------------------------------------------------
+    withDb                           template  line: 78
+    enquote                          proc      line: 88
+    dequote                          proc      line: 92
+    convertChars                     proc      line: 96
+    old_getFieldAndTypeList          proc      line: 102
+    getFieldAndTypeList              proc      line: 149
+    readFromParams                   proc      line: 252
+    Old_readFromParams               proc      line: 344
+    addNewFromParams                 proc      line: 430
+    deleteFromParams                 proc      line: 476
+    updateFromParams                 proc      line: 523
+    getAllUserTables                 proc      line: 575
+    rowCount                         proc      line: 593
+    getColumnCount                   proc      line: 603
+    getKeyFieldStatus                proc      line: 610
+    idValueExists                    proc      line: 627
+jolibs/generic/g_db2json---------------------------------------------------
+    createDropdownNodeFromDb         proc      line: 82
+jolibs/generic/g_disk2nim---------------------------------------------------
+    getPatternLocation               proc      line: 47
+    writeFilePatternToSeq2           proc      line: 73
+    writeFilePatternToSeq3           proc      line: 120
+    writeFilePatternToSeqRec         proc      line: 174
+    addShowValuesToSeq               proc      line: 223
+    convertFileToSequence            proc      line: 243
+    convertMultFilesToSeq            proc      line: 266
+jolibs/generic/g_json2html---------------------------------------------------
+    setRadioButtons                  proc      line: 54
+    setCheckBoxSet                   proc      line: 108
+    setDropDown                      proc      line: 171
+    setTableBasic                    proc      line: 249
+    setTableFromDb                   proc      line: 311
+    setTableDbOpt                    proc      line: 419
+    OLD_setTableFromDb               proc      line: 551
+    setDatalist                      proc      line: 647
+jolibs/generic/g_json_plus---------------------------------------------------
+    testDeepNodeFromKey              proc      line: 50
+    getDeepNodeFromKey               proc      line: 89
+    listKeysFromNode                 proc      line: 130
+    findDoubleKeys                   proc      line: 152
+    pruneJnodesFromTree              proc      line: 166
+    graftJObjectToTree               proc      line: 179
+    replaceLastItemOfSeq             proc      line: 198
+jolibs/generic/g_mine---------------------------------------------------
+    getWebSite                       proc      line: 42
+    getWebSiteAsync                  proc      line: 88
+    getSubstringPositions            proc      line: 96
+    pairChainsAreValid               proc      line: 128
+    getDataSeqClean                  proc      line: 161
+    getDataSeqDirty                  proc      line: 203
+    getPartFromWebAddress            proc      line: 251
+    getBaseFromWebAddress2           proc      line: 308
+    convertWebLinksToAbsolute        proc      line: 343
+    substringsInString               proc      line: 373
+    linkIsPresent                    proc      line: 406
+    multiplyString                   proc      line: 415
+    removeSingleStrings              proc      line: 427
+    removeDuplicateStrings           proc      line: 442
+    removeLongWords                  proc      line: 468
+    getInnerText3                    proc      line: 490
+    getInnerText3_old                proc      line: 578
+    getInnerText2                    proc      line: 618
+    createSeqOfUniqueWords           proc      line: 658
+    calcWordFrequencies              proc      line: 684
+    calcCumulFrequencies             proc      line: 804
+    calcCumulFrequencies_old         proc      line: 853
+    getDataSequence                  proc      line: 874
+    getDataBetweenTags2              proc      line: 905
+    getTitleFromWebsite2             proc      line: 930
+    getChildLinks                    proc      line: 942
+    countWords                       proc      line: 1042
+    getTagContent                    proc      line: 1049
+    enlistSequenceToDoc              proc      line: 1084
+    getHtmlHeaders                   proc      line: 1115
+jolibs/generic/g_nim2json---------------------------------------------------
+    createPicklistNodeFromSeq        proc      line: 40
+jolibs/generic/g_options---------------------------------------------------
+    readOptionFromFile               proc      line: 124
+    getValList                       proc      line: 198
+    newlang                          proc      line: 204
+jolibs/generic/g_stringdata---------------------------------------------------
+    readFromSeparatedString          proc      line: 67
+    writeToSeparatedString           proc      line: 178
+jolibs/generic/g_templates---------------------------------------------------
+    getTrace                         template  line: 29
+    wisp                             template  line: 53
+    withFile                         template  line: 85
+    withFileAdvanced                 template  line: 97
+    doWork                           proc      line: 125
+    timeStuff                        template  line: 131
+    timeThings                       template  line: 137
+    timeNeatly                       template  line: 145
+    timeCop                          template  line: 151
+jolibs/generic/g_tools---------------------------------------------------
+    convertSequenceToFile            proc      line: 48
+    convertSequenceToText            proc      line: 56
+    zipTwoSeqsToOne                  proc      line: 67
+    filterIsMatching                 proc      line: 84
+    countIsFactorOf                  proc      line: 182
+    concatenateFiles                 proc      line: 198

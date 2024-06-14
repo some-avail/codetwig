@@ -1,13 +1,20 @@
 
+ ~~~~~~~~~~~~~~~~~  Project = codetwig  ~~~~~~~~~~~~~~~~~~~~
+
+
 
 ****************    ctwig   ***********************************************************************
 
 ----------------------------------------------------------------------
-    addSourceFilesToProject          ctwig          proc      line: 46
+    addSourceFilesToProject          ctwig          proc      line: 167
         (proj_def_pathst: string): string 
         
   Based on the project-path in the project-def-file, the source-files
   from that project are added to the project-def-file.
+
+  ADAP NOW
+  - add recursive sub-dir-addition of source-files
+
 
   ADAP FUT
   -add param overwritebo to overwrite / update the current sf-list
@@ -18,20 +25,20 @@
         # check for block-header
               # read the project-path
  
-        writeFilePatternToSeq            g_disk2nim          proc      91
-        writeFilePatternToSeq2           g_disk2nim          proc      91
+        writeFilePatternToSeq            .../g_disk2nim         proc      216
+        writeFilePatternToSeqRec         .../g_disk2nim         proc      216
 ----------------------------------------------------------------------
-    extractFileSectionToSequence     ctwig          proc      line: 125
+    extractFileSectionToSequence     ctwig          proc      line: 252
         (filepathst, start_separst, end_separst: string): seq[string] 
         
     Extract the lines of a file that are located between the starting and ending separator and 
     put them in a sequence.
   
  
-        withFile                         g_templates         template  136
-        withFileAdvanced                 g_templates         template  136
+        withFile                         .../g_templates        template  263
+        withFileAdvanced                 .../g_templates        template  263
 ----------------------------------------------------------------------
-    getSliceFromAnchor               ctwig          proc      line: 148
+    getSliceFromAnchor               ctwig          proc      line: 275
         (tekst, anchorst: string, possib_endmarksq: seq[string], appendspacebo: bool): array[0..1, int] 
         
     Searching in the tekst, return a target-string indicated as slice [start,end] located after an anchor-string.
@@ -51,11 +58,11 @@
   
  
 ----------------------------------------------------------------------
-    countLinesOfFile                 ctwig          proc      line: 222
+    countLinesOfFile                 ctwig          proc      line: 349
         (filepathst: string): int 
  
 ----------------------------------------------------------------------
-    createDeclarationList            ctwig          proc      line: 235
+    createDeclarationList            ctwig          proc      line: 362
         (proj_def_pathst: string) 
         
   proj_def_pathst = path to the file in which the codetwig-project for a source-project is defined
@@ -76,30 +83,36 @@
     # to avoid doubles
     # must be unique
  
-        extractFileSectionToSequence     ctwig               proc      292
-        getSliceFromAnchor               ctwig               proc      344
-        countLinesOfFile                 ctwig               proc      401
+        extractFileSectionToSequence     ctwig                  proc      419
+        getSliceFromAnchor               ctwig                  proc      474
+        countLinesOfFile                 ctwig                  proc      530
 ----------------------------------------------------------------------
-    getSliceFromLines                ctwig          proc      line: 513
+    getSliceFromLines                ctwig          proc      line: 643
         (fileob: var File, linestartit, lineendit: int, starttagst, endtagst: string, samelinebo: bool = false): array[0..1, int] 
         
     Looping thru the lines, starting at linestart, retrieve the starting and ending point 
     as integers of the text between the startag and endtag, and put them in an array.
     
     samelinebo = true means that the starttag and endtag must be on the same line.
+    Call like:
+    interpointar = getSliceFromLines(fob, linestartit, lineendit, "(", ")")
   
           # geval1: starttag is ) en eindtag is =
           # geval2: starttag is ( en eindtag is )
                 # search the next occurence of starttagst
  
 ----------------------------------------------------------------------
-    getXLinesWithSubstring           ctwig          proc      line: 592
+    getXLinesWithSubstring           ctwig          proc      line: 724
         (fileob: var File, subst: string, linestartit, lineendit, numberit: int): seq[string] 
-  # Retrieve numberit lines from fileob based on the substring in them 
-  # starting from linestartit and put them in a sequence. Lines are prestripped for comparison
+         Retrieve numberit lines from fileob based on the substring in them 
+     starting from linestartit and put them in a sequence. Lines are prestripped for comparison
+      
+      Call like:
+      commentlinesq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
+
  
 ----------------------------------------------------------------------
-    createCodeViewFile               ctwig          proc      line: 619
+    createCodeViewFile               ctwig          proc      line: 754
         (proj_def_pathst: string, viewtypeeu: ViewType) 
         
   Create view-files of the enum-type
@@ -111,11 +124,11 @@
     # set the target-dir and declaration-file
     # create the source-file-table
  
-        extractFileSectionToSequence     ctwig               proc      648
-        getSliceFromLines                ctwig               proc      748
-        getXLinesWithSubstring           ctwig               proc      785
+        extractFileSectionToSequence     ctwig                  proc      785
+        getSliceFromLines                ctwig                  proc      900
+        getXLinesWithSubstring           ctwig                  proc      937
 ----------------------------------------------------------------------
-    getSeqFromFileLines              ctwig          proc      line: 840
+    getSeqFromFileLines              ctwig          proc      line: 995
         (filepathst, searchst, sep1st, sep2st: string, searchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
         
     Add lines to the sequence which match the search-filter.
@@ -125,17 +138,20 @@
     part-a1~~~parta2===partb1~~~partb2
     part-b2 = [1,1]
 
-    extra separator and sortfieldar may come later
+    Call like:
+    foundlinesq = getSeqFromFileLines(decfilepathst, declarationst, sep3st, sep1st, [0,0])
+
+    extra separator and sortfieldar may come later    
   
  
 ----------------------------------------------------------------------
-    getSeqFromFileLines2             ctwig          proc      line: 899
+    getSeqFromFileLines2             ctwig          proc      line: 1057
         (filepathst, fstsearchst, secsearchst, sep1st, sep2st: string, fstsearchfieldar, secsearchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
         
     Add lines to the sequence which match the search-filter.
     In this extended proc first and second search-value and -field can be used.
 
-    Search with substring, string or wildcard * for search-values *searchst on designated  *search-field, which is indicated by the coordinates on the sep-divided line.
+    Search with substring, string or wildcard * for search-values fst/sec-searchst on designated  fst/sec-search-field, which is indicated by the coordinates on the sep-divided line.
     
     Like so:
     part-a1~~~parta2===partb1~~~partb2
@@ -145,7 +161,7 @@
   
  
 ----------------------------------------------------------------------
-    getSeqFromLinesSpecial           ctwig          proc      line: 978
+    getSeqFromLinesSpecial           ctwig          proc      line: 1137
         (filepathst, searchst, sep1st, sep2st: string): seq[string] 
         
     Search-function specific for the dec-list phase-3.
@@ -157,51 +173,66 @@
   
  
 ----------------------------------------------------------------------
-    writeFamily                      ctwig          proc      line: 1030
-        (proj_def_pathst, declarationst, directionst: string, curdepthit, maxdepthit: int) 
+    writeFamily                      ctwig          proc      line: 1189
+        (proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int) 
         
   Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
 
     # set the target-dir and declaration-file
+ 
+        getSeqFromFileLines              ctwig                  proc      1220
+        getSeqFromFileLines2             ctwig                  proc      1220
+        getSeqFromLinesSpecial           ctwig                  proc      1241
+        writeFamily                      ctwig                  proc      1236
+----------------------------------------------------------------------
+    echoDeclarationData              ctwig          proc      line: 1275
+        (proj_def_pathst, declarationst, modulest: string) 
+        ", "
     # retrieve project-data from project-def-file
     # set the target-dir and declaration-file
+    # add the parameter-declares (inputs)
  
-        getXLinesWithSubstring           ctwig               proc      1204
-        getSeqFromFileLines              ctwig               proc      1060
-        getSeqFromLinesSpecial           ctwig               proc      1075
-        writeFamily                      ctwig               proc      1071
+        extractFileSectionToSequence     ctwig                  proc      1296
+        getSliceFromLines                ctwig                  proc      1327
+        getXLinesWithSubstring           ctwig                  proc      1352
+        getSeqFromFileLines              ctwig                  proc      1309
+        getSeqFromFileLines2             ctwig                  proc      1309
 ----------------------------------------------------------------------
-    showDeclarationBranch            ctwig          proc      line: 1213
+    showDeclarationBranch            ctwig          proc      line: 1381
         (proj_def_pathst, directionst: string, maxdepthit: int) 
         
   Show a tree of declarations; either a usage-tree or a used-by-tree.
-
 
     # retrieve project-data from project-def-file
     # set the target-dir and declaration-file
       # if no exact match found or wildcard * used (all found):
  
-        extractFileSectionToSequence     ctwig               proc      1237
-        getSeqFromFileLines              ctwig               proc      1256
-        getSeqFromFileLines2             ctwig               proc      1258
-        writeFamily                      ctwig               proc      1281
+        extractFileSectionToSequence     ctwig                  proc      1404
+        getSeqFromFileLines              ctwig                  proc      1423
+        getSeqFromFileLines2             ctwig                  proc      1425
+        writeFamily                      ctwig                  proc      1452
+        echoDeclarationData              ctwig                  proc      1449
 ----------------------------------------------------------------------
-    echoHelpInfo                     ctwig          proc      line: 1316
+    echoHelpInfo                     ctwig          proc      line: 1494
         () 
  
 ----------------------------------------------------------------------
-    createAllViewFiles               ctwig          proc      line: 1362
+    createMultiProjectFiles          ctwig          proc      line: 1539
+        (multiprojectdefst: string) 
+ 
+----------------------------------------------------------------------
+    createAllViewFiles               ctwig          proc      line: 1543
         (filepathst: string) 
  
-        createCodeViewFile               ctwig               proc      1364
+        createCodeViewFile               ctwig                  proc      1545
 ----------------------------------------------------------------------
-    generate_all                     ctwig          proc      line: 1371
+    generate_all                     ctwig          proc      line: 1552
         (projectpathst: string) 
  
-        createDeclarationList            ctwig               proc      1373
-        createAllViewFiles               ctwig               proc      1374
+        createDeclarationList            ctwig                  proc      1554
+        createAllViewFiles               ctwig                  proc      1555
 ----------------------------------------------------------------------
-    processCommandLine               ctwig          proc      line: 1379
+    processCommandLine               ctwig          proc      line: 1560
         () 
         
   firstly load the args from the commandline and set the needed vars 
@@ -211,25 +242,268 @@
 
     # firstly load the args from the commandline and set the needed vars 
  
-        addSourceFilesToProject          ctwig               proc      1443
-        createDeclarationList            ctwig               proc      1445
-        showDeclarationBranch            ctwig               proc      1451
-        echoHelpInfo                     ctwig               proc      1453
-        createAllViewFiles               ctwig               proc      1447
-        generate_all                     ctwig               proc      1449
+        addSourceFilesToProject          ctwig                  proc      1624
+        createDeclarationList            ctwig                  proc      1626
+        showDeclarationBranch            ctwig                  proc      1632
+        echoHelpInfo                     ctwig                  proc      1634
+        createAllViewFiles               ctwig                  proc      1628
+        generate_all                     ctwig                  proc      1630
 
 
-****************    g_disk2nim   ***********************************************************************
+****************    jolibs/generic/g_cookie   ***********************************************************************
 
 ----------------------------------------------------------------------
-    writeFilePatternToSeq            g_disk2nim     proc      line: 19
-        (filestartwithst: string): seq[string] 
-         Write the files from pattern in the current dir to the sequence and
- return that
-  # walk thru the file-iterator and sequence the right file(names)
+    getFuncParts                     jolibs/generic/g_cookieproc      line: 29
+        (functionpartst: string): OrderedTable[string, string] 
+  # parse the function-parts
+  # sample: "funcname::g_cookie.dummyPass++location::inner++varname:statustext++param1::nieuwe statustekst"
+  # log($functa)
  
 ----------------------------------------------------------------------
-    getPatternLocation               g_disk2nim     proc      line: 41
+    runFunctionFromClient            jolibs/generic/g_cookieproc      line: 46
+        (funcPartsta: OrderedTable[string, string], jnob: JsonNode): string 
+  # run the function
+#     "funcname:setDropDown++location:inner++varname:dropdown1++param2:dropdownname_01++param3:third realvalue++param4:1", 60);
+# proc setDropDown*(jnob: JsonNode, dropdownnamest, selected_valuest: string, 
+ 
+        dummyPass                        .../g_cookie           proc      49
+        setDropDown                      .../g_json2html        proc      52
+
+
+****************    jolibs/generic/g_database   ***********************************************************************
+
+----------------------------------------------------------------------
+    withDb                           jolibs/generic/g_databasetemplate  line: 78
+        (body: untyped): untyped 
+  # perform db-ops with automatic opening and closing of the db
+ 
+        getDb                            .../g_database         proc      81
+----------------------------------------------------------------------
+    enquote                          jolibs/generic/g_databaseproc      line: 88
+        (unquoted_namest: string): string 
+  # to be implemented
+ 
+----------------------------------------------------------------------
+    dequote                          jolibs/generic/g_databaseproc      line: 92
+        (quoted_namest: string): string 
+  # to be implemented
+ 
+----------------------------------------------------------------------
+    convertChars                     jolibs/generic/g_databaseproc      line: 96
+        () 
+  # to be implemented
+  # convert special characters, like apostrophe
+ 
+----------------------------------------------------------------------
+    old_getFieldAndTypeList          jolibs/generic/g_databaseproc      line: 102
+        (tablenamest: string): seq[array[2, string]] 
+        
+  Get fields and types for the desired table from the system-table "sqlite_master"
+  by means of the create-string (views not supported here).
+  Limits till now: cannot yet handle spaces or hyphens in field-names
+
+  ADAP NOW:
+  -support parsing of bracketed fields
+
+sample-create-string:
+ CREATE TABLE mr_data 
+(anID INTEGER CONSTRAINT auto_inc PRIMARY KEY ASC AUTOINCREMENT, Droidname TEXT UNIQUE, 
+Type TEXT, Builder STRING, Date_of_build DATE, Weight REAL, Cost NUMERIC, 
+Purpose STRING, Modelnr TEXT)
+ 
+    # firstly strip surrounding spaces and then split on spaces
+    # strip possible brackets
+ 
+        withDb                           .../g_database         template  125
+----------------------------------------------------------------------
+    getFieldAndTypeList              jolibs/generic/g_databaseproc      line: 149
+        (tablenamest: string, 
+                viewtype: ViewFieldMethod = viewAuto): seq[array[2, string]] 
+        
+  Get fields and types for the desired table or view from the system-table "sqlite_master"
+  by means of the create-string.
+  Limits till now: cannot yet handle spaces or hyphens in field-names
+  See the enum ViewFieldMethod on top of module.
+
+  ADAP NOW:
+  - enable the parsing of views
+
+sample-create-string for a table:
+ CREATE TABLE mr_data 
+(anID INTEGER CONSTRAINT auto_inc PRIMARY KEY ASC AUTOINCREMENT, Droidname TEXT UNIQUE, 
+Type TEXT, Builder STRING, Date_of_build DATE, Weight REAL, Cost NUMERIC, 
+Purpose STRING, Modelnr TEXT)
+
+sample for a view:
+CREATE VIEW FDQ_RELATIONS_CHANGE AS
+SELECT Relations.RelID, Relations.Change, Relations.Subject, Relations.Object1, Relations.Relation, Relations.Object2, Relations.Selected
+FROM Relations
+WHERE ((Not (Relations.Change) Is Null))
+ORDER BY Relations.Change
+ 
+      # firstly strip surrounding spaces and then split on spaces
+      # strip possible brackets
+      # firstly strip surrounding spaces and then split on spaces
+ 
+        withDb                           .../g_database         template  185
+        split2                           .../g_tools            proc      218
+----------------------------------------------------------------------
+    readFromParams                   jolibs/generic/g_databaseproc      line: 252
+        (tablenamest: string, fieldsq: seq[string] = @[], 
+      comparetype: Comparetype = compString, fieldvaluesq: seq[array[2, string]] = @[],
+      ordersq: seq[string] = @[], ordertypest: string = "", limit: int = 0): seq[Row] 
+         Retrieve a sequence of rows based on the entered parameters. 
+    Comparetype-enum see top of file. 
+    fieldsq = @[]  means empty sequence and return all fields
+    fieldvaluesq = @[] means empty and thus all records are returned
+    ordersq - creating ordered fields
+    ordertypest - ASC or DESC, for ascending or descending
+
+    You can either sequentially enter params without varnames, or when one param
+    is omitted, you must use the varnames in the following ones (var = value).
+    Generally, parameter-omission results in the defaults.
+
+
+    Call like: 
+      readFromParams("mr_data", @[], compString, @[["Weight", "58"]])     > no(=all) fields, one cond.
+      readFromParams("mr_data", @["anID", "Droidname"], compSubstr, @[["Weight", "58"]])
+      readFromParams("mr_data", @[], ordersq = @["Droidname"], ordertypest = "ASC")    > all fields, no conditions, do order
+
+    ADAP HIS:
+    - add substring-search
+    - add an order-option
+
+    ADAP FUT:
+   
+  # which fields to query
+  # prepare the where-clause / row-filter
+  # prep order-strings
+ 
+        withDb                           .../g_database         template  338
+----------------------------------------------------------------------
+    Old_readFromParams               jolibs/generic/g_databaseproc      line: 344
+        (tablenamest: string, fieldsq: seq[string] = @[], 
+      comparetype: Comparetype = compString, fieldvaluesq: seq[array[2, string]] = @[],
+      ordersq: seq[string] = @[], ordertypest: string = ""): seq[Row] 
+         Retrieve a sequence of rows based on the entered parameters. 
+    Comparetype-enum see top of file. 
+    fieldsq = @[]  means empty sequence and return all fields
+    fieldvaluesq = @[] means empty and thus all records are returned
+    ordersq - creating ordered fields
+    ordertypest - ASC or DESC, for ascending or descending
+
+    You can either sequentially enter params without varnames, or when one param
+    is omitted, you must use the varnames in the following ones (var = value).
+    Generally, parameter-omission results in the defaults.
+
+
+    Call like: 
+      readFromParams("mr_data", @[], compString, @[["Weight", "58"]])     > no(=all) fields, one cond.
+      readFromParams("mr_data", @["anID", "Droidname"], compSubstr, @[["Weight", "58"]])
+      readFromParams("mr_data", @[], ordersq = @["Droidname"], ordertypest = "ASC")    > all fields, no conditions, do order
+
+    ADAP HIS:
+    - add substring-search
+    - add an order-option
+
+    ADAP FUT:
+   
+  # which fields to query
+  # prepare the where-clause / row-filter
+  # prep order-strings
+ 
+        withDb                           .../g_database         template  426
+----------------------------------------------------------------------
+    addNewFromParams                 jolibs/generic/g_databaseproc      line: 430
+        (tablenamest: string, fieldvaluesq: seq[array[2, string]]) 
+         
+  Base on sql: "INSERT INTO my_table (id, name) VALUES (0, jack)"
+  Apostrophes-possibs:
+    *Apostrophes can be added by prefixing another apostrophe in sql, thus ''
+    *replace apostrs by some sequence like _-_-_-_and then back for showing 
+    purposes.
+  Call like:
+    addNewFromParams("mr_data", @[["Droidname", "Koid"], ["Type","neutronic"]])
+    addNewFromParams("mr_data", @[["Weight", "63"]])
+   
+ 
+        withDb                           .../g_database         template  471
+----------------------------------------------------------------------
+    deleteFromParams                 jolibs/generic/g_databaseproc      line: 476
+        (tablenamest: string, comparetype: Comparetype = compString, 
+                        fieldvaluesq: seq[array[2, string]] = @[]) 
+         Delete a sequence of rows based on the entered parameters. 
+    Comparetype-enum see top of file. 
+    fieldvaluesq = @[] must have at least one array-pair
+
+   
+  # prepare the where-clause / row-filter
+  # get the row-sequence
+ 
+        withDb                           .../g_database         template  517
+----------------------------------------------------------------------
+    updateFromParams                 jolibs/generic/g_databaseproc      line: 523
+        (tablenamest: string, setfieldvaluesq: seq[array[2, string]],
+                           comparetype: Comparetype = compString, 
+                        wherefieldvaluesq: seq[array[2, string]] = @[]) 
+  # starting-sql-statement
+  # prepare the set-clause
+  # prepare the where-clause / row-filter
+ 
+        withDb                           .../g_database         template  570
+----------------------------------------------------------------------
+    getAllUserTables                 jolibs/generic/g_databaseproc      line: 575
+        (): seq[string] 
+ 
+        readFromParams                   .../g_database         proc      581
+----------------------------------------------------------------------
+    rowCount                         jolibs/generic/g_databaseproc      line: 593
+        (tablenamest: string, comparetype: Comparetype = compString, 
+                            fieldvaluesq: seq[array[2, string]] = @[]): int 
+  # get the number of records in the record-set given the criteria
+ 
+        readFromParams                   .../g_database         proc      598
+----------------------------------------------------------------------
+    getColumnCount                   jolibs/generic/g_databaseproc      line: 603
+        (tablenamest: string): int 
+  # get the number of columns of the table
+ 
+        getFieldAndTypeList              .../g_database         proc      605
+----------------------------------------------------------------------
+    getKeyFieldStatus                jolibs/generic/g_databaseproc      line: 610
+        (tablenamest: string): IdGenerationType 
+  # Determine how the ID-field is generated culminating in the 
+  # enum IdGenerationType (for now only two types supported)
+ 
+        readFromParams                   .../g_database         proc      618
+----------------------------------------------------------------------
+    idValueExists                    jolibs/generic/g_databaseproc      line: 627
+        (tablenamest, id_fieldst, id_valuest: string): bool 
+  # Determine if the passed id-value exists for given table
+ 
+        rowCount                         .../g_database         proc      630
+
+
+****************    jolibs/generic/g_db2json   ***********************************************************************
+
+----------------------------------------------------------------------
+    createDropdownNodeFromDb         jolibs/generic/g_db2jsonproc      line: 82
+        (dropdownnamest, db_tablenamest: string, fieldpairsq: seq[string], 
+      mycomparison: Comparetype = compString, fieldvaluesq: seq[array[2, string]] = @[],
+      ordersq: seq[string] = @[], ordertypest: string = ""):JsonNode 
+         Create a json-object for the select-element (dropdown (dd) or picklist)
+    The fieldpairsq-param first elem is the real-value, the second one the shown value.
+    If they the same put the same names in.
+   
+  # get a table-query to provide the data for the select
+ 
+        readFromParams                   .../g_database         proc      99
+
+
+****************    jolibs/generic/g_disk2nim   ***********************************************************************
+
+----------------------------------------------------------------------
+    getPatternLocation               jolibs/generic/g_disk2nimproc      line: 47
         (starred_patternst: string): string 
          
   determine the location of the wordpattern with regard to 
@@ -237,21 +511,50 @@
   
  
 ----------------------------------------------------------------------
-    writeFilePatternToSeq2           g_disk2nim     proc      line: 67
+    writeFilePatternToSeq2           jolibs/generic/g_disk2nimproc      line: 73
         (starred_patternst, source_dirst: string): seq[string] 
-         Write the files from a *-pattern in the current dir to the sequence and
+         Write the files from a *-pattern in source_dirst to the sequence and
  return that; options:
   -start with / left-part: pattern*
   -end with / right-part: *pattern
   -in the middle: *pattern*
 
-  UNDER CONSTRUCTION
  
   # walk thru the file-iterator and sequence the right file(names)
  
-        getPatternLocation               g_disk2nim          proc      82
+        getPatternLocation               .../g_disk2nim         proc      87
 ----------------------------------------------------------------------
-    addShowValuesToSeq               g_disk2nim     proc      line: 117
+    writeFilePatternToSeq3           jolibs/generic/g_disk2nimproc      line: 120
+        (filelisq: var seq[string], starred_patternst: string, source_dirst,  first_source_dirst: string, recursebo: bool = true) 
+         Write the files from a *-pattern in source_dirst recursively to an external sequence filelisq.
+
+  options:
+  -start with / left-part: pattern*
+  -end with / right-part: *pattern
+  -in the middle: *pattern*
+ 
+  # walk thru the file-iterator and sequence the right file(names)
+ 
+        writeFilePatternToSeq            .../g_disk2nim         proc      169
+        getPatternLocation               .../g_disk2nim         proc      134
+        writeFilePatternToSeq3           .../g_disk2nim         proc      169
+        wisp                             .../g_templates        template  139
+----------------------------------------------------------------------
+    writeFilePatternToSeqRec         jolibs/generic/g_disk2nimproc      line: 174
+        (filelisq: var seq[string], starred_patternst: string, source_dirpa: Path,  relativebo: bool = true) 
+         Write the files from a *-pattern in source_dirst recursively to an external sequence filelisq.
+
+  options:
+  -start with / left-part: pattern*
+  -end with / right-part: *pattern
+  -in the middle: *pattern*
+ 
+  # walk thru the file-iterator and sequence the right file(names)
+ 
+        getPatternLocation               .../g_disk2nim         proc      188
+        wisp                             .../g_templates        template  192
+----------------------------------------------------------------------
+    addShowValuesToSeq               jolibs/generic/g_disk2nimproc      line: 223
         (listsq: seq[string], startingclipst, substitutionst: string): 
                                         seq[array[2, string]] 
         
@@ -260,29 +563,794 @@
   
  
 ----------------------------------------------------------------------
-    convertFileToSequence            g_disk2nim     proc      line: 137
+    convertFileToSequence            jolibs/generic/g_disk2nimproc      line: 243
         (filepathst, skipst: string): seq[string] 
          
   Convert a file to a Nim-sequence.
   Skip lines with the value skipst.
  
  
-        withFile                         g_templates         template  145
+        withFile                         .../g_templates        template  251
 ----------------------------------------------------------------------
-    convertMultFilesToSeq            g_disk2nim     proc      line: 160
+    convertMultFilesToSeq            jolibs/generic/g_disk2nimproc      line: 266
         (filepathsq: seq[string], skipst: string): seq[string] 
          
   Convert a file to a Nim-sequence.
   Skip lines with the value skipst.
  
  
-        withFile                         g_templates         template  170
+        withFile                         .../g_templates        template  276
 
 
-****************    g_templates   ***********************************************************************
+****************    jolibs/generic/g_json2html   ***********************************************************************
 
 ----------------------------------------------------------------------
-    withFileAdvanced                 g_templates    template  line: 18
+    setRadioButtons                  jolibs/generic/g_json2htmlproc      line: 54
+        (jnob: JsonNode, setnamest, value_selectst:string): string 
+         
+  UNIT INFO:
+  Generate code for radio-buttons based on an json-gui-def
+  for radio-buttons.
+
+  Returns for sample-def:
+
+<input type="radio" id="id_rbut1" name="radio-set-example" onchange="radio-set-example_onchange()" value="rbut1">
+<label for="id_rbut1">this is button one</label><br>
+<input type="radio" id="id_rbut2" name="radio-set-example" onchange="radio-set-example_onchange()" value="rbut2">
+<label for="id_rbut2">this is button two</label><br>
+<input type="radio" id="id_rbut3" name="radio-set-example" onchange="radio-set-example_onchange()" value="rbut3" checked>
+<label for="id_rbut3">and here nr. 3</label><br>
+   
+  # every item in the array is a Jobject
+#        "\" onchange=\"" & setnamest & "_onchange()" &
+ 
+        newlang                          .../g_json2html        proc      82
+        getDeepNodeFromKey               .../g_json_plus        proc      72
+        newlang                          .../g_options          proc      82
+----------------------------------------------------------------------
+    setCheckBoxSet                   jolibs/generic/g_json2htmlproc      line: 108
+        (jnob: JsonNode, setnamest:string, checked_onesq:seq[string], 
+                        align_horizontal: bool = false): string 
+         
+UNIT INFO:
+Generate code for a set of checkboxes with setnamest,
+based on an external gui-def (project_gui.json)
+Fill in the checked ones (checked_onesq) with the names 
+for checkboxes you want to check,
+or fill in "default" to read the default-values from webgui_def.
+align_horizontal means to align the checkbox horizontally and not vertically.
+
+Returns for sample-def (default):
+<input type="checkbox" id="id_aap" name="aap">
+<label for="id_aap">grote aap</label><br>
+<input type="checkbox" id="id_noot" name="noot" checked>
+<label for="id_noot">notenboom</label><br>
+<input type="checkbox" id="id_mies" name="mies" checked>
+<label for="id_mies">mies-bouwman</label><br>
+ 
+    # every item in the array is a Jobject
+ 
+        newlang                          .../g_json2html        proc      147
+        getDeepNodeFromKey               .../g_json_plus        proc      131
+        newlang                          .../g_options          proc      147
+----------------------------------------------------------------------
+    setDropDown                      jolibs/generic/g_json2htmlproc      line: 171
+        (jnob: JsonNode, dropdownnamest, selected_valuest: string, 
+                    sizeit: int):string 
+         
+UNIT INFO:
+Generate code for a dropdown-control/ select-element,
+based on an external json-based gui-def.
+In this procedure you can only set one control per call.
+The first string-item of the def is dropdownnamest, and you must choose 
+a selected value that is to be shown after loading. Lastly with sizeit 
+you define the number of visible options in a drop-down list;
+that is 1 for normal dropdown, n for an n-sized picklist.
+
+ADAP HIS:
+-simplified json-def and the slightly (removed unneedy brackets)
+
+
+Sample output:
+<span ><label for="dropdownname_01">Some label:</label></span>
+<select id="dropdownname_01" name="dropdownname_01" size="1" onchange="dropdownname_01_onchange">
+<option value="some realvalue">this value is shown</option>
+<option value="second realvalue">second value is shown</option>
+<option value="third realvalue">third value is shown</option>
+</select>
+ 
+  # dropdown_html &= "<select id=\"" & namest & "\" name=\"" & namest & "\">\p"
+# <span ><label for="dropdownname_01">Some label:</label></span>
+# <select id="dropdownname_01" name="dropdownname_01" size="1" onchange="dropdownname_01_onchange">
+ 
+        newlang                          .../g_json2html        proc      210
+        getDeepNodeFromKey               .../g_json_plus        proc      206
+        newlang                          .../g_options          proc      210
+----------------------------------------------------------------------
+    setTableBasic                    jolibs/generic/g_json2htmlproc      line: 249
+        (jnob: JsonNode, tablenamest: string): string 
+         
+UNIT INFO:
+Generate html-code for a table-element,
+based on an external json-based gui-def.
+
+
+Sample output:
+<table>
+  <tr>
+    <th>head01</th>
+    <th>head02</th>
+    <th>head03</th>
+    <th>head04</th>
+  </tr>
+  <tr>
+    <td>a1</td>
+    <td>b1</td>
+    <td>c1</td>
+    <td>d1</td>
+  </tr>
+  ...
+</table> 
+ 
+  # labelst = newlang(foundjnob[0]["ddlab"].getStr())  # translated
+#  var valuelistsq = foundjnob[1]["ddvalues"].getElems()   # values not translated for now
+      # echo item.getStr()
+ 
+        getDeepNodeFromKey               .../g_json_plus        proc      281
+----------------------------------------------------------------------
+    setTableFromDb                   jolibs/generic/g_json2htmlproc      line: 311
+        (jnob: JsonNode, tablenamest: string, radiocheckst: string = "",
+                    valuesq: seq[string] = @[], filtersq: seq[string] = @[]): string 
+         
+UNIT INFO:
+Generate html-code for a table-element with input and radio boxes.
+Thus enabling crud-ops. Based on an external json-based gui-def, 
+on which the data-table is grafted by g_db2json-functions.
+
+ADAP HIS:
+- add input boxes
+- add radio boxes
+
+ADAP NOW:
+
+Sample output:
+ 
+  # labelst = newlang(foundjnob[0]["ddlab"].getStr())  # translated
+#  var valuelistsq = foundjnob[1]["ddvalues"].getElems()   # values not translated for now
+  # and now the input boxes for data-entry
+ 
+        getDeepNodeFromKey               .../g_json_plus        proc      338
+----------------------------------------------------------------------
+    setTableDbOpt                    jolibs/generic/g_json2htmlproc      line: 419
+        (jnob: JsonNode, tablenamest: string,  
+                    showtype: ShownTableElements, radiocheckst: string = "", 
+                    valuesq: seq[string] = @[], filtersq: seq[string] = @[]): string 
+         
+UNIT INFO:
+
+Forth-development of setTableFromDb, but now with options.
+Generate html-code for a table-element with optional elements being
+input, filter and radio boxes.
+Optionally enabling crud-ops. Based on an external json-based gui-def, 
+on which the data-table is grafted by g_db2json-functions.
+The output is optionalized thru enum ShownTableElements (see top module)
+
+
+ADAP HIS:
+
+ADAP NOW:
+
+ADAP FUT:
+
+Sample output:
+ 
+  # labelst = newlang(foundjnob[0]["ddlab"].getStr())  # translated
+#  var valuelistsq = foundjnob[1]["ddvalues"].getElems()   # values not translated for now
+  # and now the input boxes for data-entry
+ 
+        getDeepNodeFromKey               .../g_json_plus        proc      453
+----------------------------------------------------------------------
+    OLD_setTableFromDb               jolibs/generic/g_json2htmlproc      line: 551
+        (jnob: JsonNode, tablenamest: string, radiocheckst: string = "",
+                              valuesq: seq[string] = @[]): string 
+         
+UNIT INFO:
+Generate html-code for a table-element with input and radio boxes.
+Thus enabling crud-ops. Based on an external json-based gui-def, 
+on which the data-table is grafted by g_db2json-functions.
+
+ADAP HIS:
+- add input boxes
+- add radio boxes
+
+ADAP NOW:
+
+Sample output:
+
+
+ 
+  # labelst = newlang(foundjnob[0]["ddlab"].getStr())  # translated
+#  var valuelistsq = foundjnob[1]["ddvalues"].getElems()   # values not translated for now
+  # and now the input boxes
+ 
+        getDeepNodeFromKey               .../g_json_plus        proc      580
+----------------------------------------------------------------------
+    setDatalist                      jolibs/generic/g_json2htmlproc      line: 647
+        (jnob: JsonNode, datalistnamest, currentvalst, placeholdervalst: string):string 
+         
+UNIT INFO:
+
+////UNDER CONSTRUCTION/////ON HOLD///////
+
+Generate code for an input and datalist-element,
+based on an external json-based gui-def.
+In this procedure you can only set one control per call.
+
+
+ADAP HIS:
+
+Sample output:
+
+<label for="mylist">Pick an option:</label>
+<input  list="options" id="mylist" name="mylist" onchange="mylist_onchange" placeholder=greyval/>
+<datalist id="options">
+  <option value="1">This</option>
+  <option value="2">That</option>
+  <option value="3">Those</option>
+</datalist>
+ 
+# <label for="mylist">Pick an option:</label>
+# <input  list="options" id="mylist" name="mylist" onchange="mylist_onchange" placeholder=greyval/>
+# <datalist id="options">
+ 
+        newlang                          .../g_json2html        proc      683
+        getDeepNodeFromKey               .../g_json_plus        proc      679
+        newlang                          .../g_options          proc      683
+
+
+****************    jolibs/generic/g_json_plus   ***********************************************************************
+
+----------------------------------------------------------------------
+    testDeepNodeFromKey              jolibs/generic/g_json_plusproc      line: 50
+        (keyst:string, depthcountit: int = 0, 
+                  jnob:JsonNode, foundjnob:var JsonNode) 
+  # deprecated; for testing
+  # Get the node from anywhere in the json-exp by recursing 
+  # the jnob and finding the key.
+ 
+        testDeepNodeFromKey              .../g_json_plus        proc      82
+----------------------------------------------------------------------
+    getDeepNodeFromKey               jolibs/generic/g_json_plusproc      line: 89
+        (keyst:string, jnob:JsonNode, parfoundjnob:var JsonNode) 
+         
+   Get the node from anywhere in the json-exp of original 
+   json-node-object jnob by recursing the jnob and finding the key.
+   The original jnob must be of type / kind: JObject.
+   The parfoundjnob must externally be existing and initilized,
+   and will be overwritten. If the key is not found nothing will 
+   be overwritten. If multiple keys are only the first one will 
+   be used.
+
+   ADAP HIS:
+    - added a block structure to enable immediate breaks after find
+    for better performance
+ 
+      # walk thru the keys
+ 
+        getDeepNodeFromKey               .../g_json_plus        proc      123
+----------------------------------------------------------------------
+    listKeysFromNode                 jolibs/generic/g_json_plusproc      line: 130
+        (jnob:JsonNode, allkeyssq: var seq[string]) 
+  # -walk thru all keys from a jnob, and put them in allkeyssq
+  # -an empty seq must be pre-initalized externally and given as param.
+  # walk thru keys
+ 
+        listKeysFromNode                 .../g_json_plus        proc      147
+----------------------------------------------------------------------
+    findDoubleKeys                   jolibs/generic/g_json_plusproc      line: 152
+        (keylistsq: seq[string]): seq[string] 
+  # -find the non-unique keys in a keylist and return them as 
+  # a (sub)sequence
+ 
+----------------------------------------------------------------------
+    pruneJnodesFromTree              jolibs/generic/g_json_plusproc      line: 166
+        (treejnob: var JsonNode, pathtoparentsq, 
+                                    siblings_to_prunesq: seq[string]) 
+  # Remove items (siblings_to_prunesq) from the treejnob that are located at 
+  # pathtoparentsq
+ 
+----------------------------------------------------------------------
+    graftJObjectToTree               jolibs/generic/g_json_plusproc      line: 179
+        (newkeyst: string, pathtomountpointsq: seq[string], 
+                          adoptivejnob: var JsonNode, orphanjnob: JsonNode) 
+         Add a new (orphan) jsonnode to an adoptive jsonnode, both of type JObject.
+      Set the path to mountpoint (where to attach) via pathtomountpointsq. 
+      The orphan-jnob must look like: {newkeyst: some-jsonnode, blabla}
+      The adoptive node must be preset outside of/before the procedure.
+    
+ 
+----------------------------------------------------------------------
+    replaceLastItemOfSeq             jolibs/generic/g_json_plusproc      line: 198
+        (sequencesq: seq[string], newtailest: string): seq[string] 
+ 
+
+
+****************    jolibs/generic/g_mine   ***********************************************************************
+
+----------------------------------------------------------------------
+    getWebSite                       jolibs/generic/g_mineproc      line: 42
+        (addresst: string): string 
+ 
+----------------------------------------------------------------------
+    getWebSiteAsync                  jolibs/generic/g_mineproc      line: 88
+        (addresst: string): string 
+  # experimental - in progress
+ 
+----------------------------------------------------------------------
+    getSubstringPositions            jolibs/generic/g_mineproc      line: 96
+        (stringst, subst: string):seq[int] 
+        
+  Return positions of all occurrences of the substring in the string 
+  and put them in a list of integers. Zero-based.
+  
+#  echo stringst
+#  echo subst
+#  echo fragmentsq
+ 
+----------------------------------------------------------------------
+    pairChainsAreValid               jolibs/generic/g_mineproc      line: 128
+        (startchainsq, endchainsq: seq[int]): bool 
+         For some functions of the form getData*** it is 
+      needy to determine if the sequences (chains) of the start-tag
+      and the end-tag are valid. That means:
+      -1- the chain-lengths are equal
+      -2- there are no overlaps:
+        b(n) < e(n)
+        b(n+1) > e(n)
+   
+    # continue second validation
+ 
+----------------------------------------------------------------------
+    getDataSeqClean                  jolibs/generic/g_mineproc      line: 161
+        (tekst, starttagst, endtagst:string): seq[string] 
+         
+  If the pair-chains are valid (local well-formedness) then 
+  get the data between the tag-pair starttag and endtag for all 
+  occurrences of the pair, and put them in a sequence. (zero-based)
+  If the pair-chains are invalid or if there are no pair-occurences, 
+  return an empty sequence @[]
+
+  Call like: getDataSeqClean(sometext, "<tr>", "</tr>")
+   
+      # build the data-sequence
+ 
+        getSubstringPositions            .../g_mine             proc      183
+        pairChainsAreValid               .../g_mine             proc      188
+----------------------------------------------------------------------
+    getDataSeqDirty                  jolibs/generic/g_mineproc      line: 203
+        (tekst, starttagst, endtagst:string): seq[string] 
+         
+  If the pair-chains are NOT valid then 
+  begin from the starttags and from there see if an endtag can be found
+  before the new starttag appears. If yes put the intertag-data in the
+  sequence, otherwise move on. (zero-based)
+  If there are no pair-occurences, return an empty sequence @[]
+  
+  Works for mal-formed data but SLOWER than the clean variant.
+
+  Call like: getDataSeqDirty(sometext, "<tr>", "</tr>")
+   
+    # search if endtag exists before next starttag
+ 
+        getSubstringPositions            .../g_mine             proc      227
+----------------------------------------------------------------------
+    getPartFromWebAddress            jolibs/generic/g_mineproc      line: 251
+        (webaddresst: string, addresspart: AddressPart): string 
+         
+  Non-expanded base: http://www.x.nl/a/b/c/blah.html  becomes  http://www.x.nl
+  Expand to parent: http://www.x.nl/a/b/c/blah.html  becomes  http://www.x.nl/a/b/c
+  Expand to grandparent: http://www.x.nl/a/b/c/blah.html  becomes  http://www.x.nl/a/b
+ 
+  # firstly chop the address up on the slashes
+  # if tbo: echo addressq
+      # then restore it for the first 3 parts
+ 
+----------------------------------------------------------------------
+    getBaseFromWebAddress2           jolibs/generic/g_mineproc      line: 308
+        (webaddresst: string, expandparentbo: bool = false): string 
+         
+  Non-expanded full base: http://www.x.nl/a/b/c/blah.html  becomes  http://www.x.nl
+  Expand to parent: http://www.x.nl/a/b/c/blah.html  becomes  http://www.x.nla/b/c
+ 
+  # firstly chop the address up on the slashes
+  # if tbo: echo addressq
+    # then restore it for the first 3 parts
+ 
+----------------------------------------------------------------------
+    convertWebLinksToAbsolute        jolibs/generic/g_mineproc      line: 343
+        (childweblinkst, parentweblinkst: string): string 
+         
+  Convert the relative child-weblink to absolute based on the given
+  parent-link and the relativity-type.
+   
+ 
+        getBaseFromWebAddress2           .../g_mine             proc      352
+----------------------------------------------------------------------
+    substringsInString               jolibs/generic/g_mineproc      line: 373
+        (stringst: string, substringsq: seq[string], 
+                        empty_is_true: bool = false): bool 
+         
+  At least one of the substrings in substringsq must be present 
+  in stringst to return true.
+  If empty_is_true = true then an empty substringsq is allowed
+
+  requires strutils / sequtils ??
+ 
+ 
+----------------------------------------------------------------------
+    linkIsPresent                    jolibs/generic/g_mineproc      line: 406
+        (childlinkst: string, weblinksq: var seq[array[5, string]]): bool 
+ 
+----------------------------------------------------------------------
+    multiplyString                   jolibs/generic/g_mineproc      line: 415
+        (stringst: string, timesit: int): string 
+  # m times 3 becomes mmm  
+ 
+----------------------------------------------------------------------
+    removeSingleStrings              jolibs/generic/g_mineproc      line: 427
+        (tekst: string, removablesq: seq[string]): string 
+        
+  Remove all occurences of the strings in removablesq from the tekst.
+
+ 
+----------------------------------------------------------------------
+    removeDuplicateStrings           jolibs/generic/g_mineproc      line: 442
+        (tekst: string, removablesq: seq[string]): string 
+         
+   In the tekst do replace all multiples of a string with its single, for each string in removablesq.
+ 
+ 
+        multiplyString                   .../g_mine             proc      453
+----------------------------------------------------------------------
+    removeLongWords                  jolibs/generic/g_mineproc      line: 468
+        (tekst: string, maxwordlengthit: int): string 
+         remove long words
+  ADAP FUT:
+  ?- choplongwordsbo: chop them up
+ 
+ 
+----------------------------------------------------------------------
+    getInnerText3                    jolibs/generic/g_mineproc      line: 490
+        (tekst: string, maxwordlengthit: int = -1,
+                  separatorst: string = "", maxshortitemsit: int = -1): string 
+         
+  Generic text-extraction of html-code.
+  Based on getDataSeqDirty(tekst, ">", "<")
+
+  Specificly made for extraction of intro-text.
+
+  -maxwordlength avoid huge words that mess up the table-size
+  -separatorst usefull to separate different types of text.
+  -maxshortitemsit to limit short items in below concat-loop, 
+  thereby forwarding to the real text instead of generic menu-items etc.
+
+  params -1 means: no limits
+
+
+
+  ADAP FUT
+  -better clean up of page-breaks etc.
+   
+    # interpunction_reachedbo: bool = false
+  # filter and concatenate elems
+        # if interpunction_reachedbo == false:
+ 
+        getDataSeqDirty                  .../g_mine             proc      523
+        substringsInString               .../g_mine             proc      550
+        removeSingleStrings              .../g_mine             proc      530
+        removeDuplicateStrings           .../g_mine             proc      531
+        removeLongWords                  .../g_mine             proc      559
+----------------------------------------------------------------------
+    getInnerText3_old                jolibs/generic/g_mineproc      line: 578
+        (tekst: string, maxwordlengthit: int = -1,
+                      separatorst: string = ""): string 
+         
+  Generic text-extraction of html-code.
+  Based on getDataSeqDirty(tekst, ">", "<")
+
+  params -1 means: no limits
+
+  ADAP FUT
+  -better clean up of page-breaks etc.
+   
+  # filter and concatenate elems
+ 
+        getDataSeqDirty                  .../g_mine             proc      597
+        removeSingleStrings              .../g_mine             proc      603
+        removeDuplicateStrings           .../g_mine             proc      611
+        removeLongWords                  .../g_mine             proc      606
+----------------------------------------------------------------------
+    getInnerText2                    jolibs/generic/g_mineproc      line: 618
+        (tekst: string, maxitemcountit: int = -1, 
+                            maxwordlengthit: int = -1): string 
+         
+  Generic text-extraction of html-code.
+  Based on getDataSeqDirty(tekst, ">", "<")
+
+  params -1 means: no limits
+
+  ADAP FUT
+  -better clean up of page-breaks etc.
+   
+  # filter and concatenate elems
+ 
+        getDataSeqDirty                  .../g_mine             proc      637
+        removeSingleStrings              .../g_mine             proc      650
+        removeDuplicateStrings           .../g_mine             proc      651
+        removeLongWords                  .../g_mine             proc      644
+----------------------------------------------------------------------
+    createSeqOfUniqueWords           jolibs/generic/g_mineproc      line: 658
+        (input_tekst:string, wordlengthit:int): seq[string] 
+         
+  Create a list of word-frequencies in html (useHtmlBreaksbo = true) or normal text.
+  Only add words with a length > wordlenghit
+  Limit the list-length to topcountit (like top 10)
+   
+ 
+        removeSingleStrings              .../g_mine             proc      673
+----------------------------------------------------------------------
+    calcWordFrequencies              jolibs/generic/g_mineproc      line: 684
+        (input_tekst:string, wordlengthit:int, skiplistsq: seq[string], 
+                    useHtmlBreaksbo:bool, topcountit: int = 10000, altfreqit: int = 11): string 
+         
+  Create a list of word-frequencies in html (useHtmlBreaksbo = true) or normal text.
+  Only add words with a length > wordlenghit.
+  Dont add words that are in the skiplistsq.
+  Limit the list-length to topcountit (like top 10)
+  Use an alternate frequency-counting when integer > 0:
+    0 = normal counting
+    1 = reduce all letters to lower case
+    10 = 1 = clip tailing s (to aggregate singular and plural)
+    11 = lower-case and no s's
+   
+  # using template for performance 
+    # walk thru the words to add words under certain conditions to allwordssq
+  # implement template depending of type of freq-counting
+ 
+        removeSingleStrings              .../g_mine             proc      713
+----------------------------------------------------------------------
+    calcCumulFrequencies             jolibs/generic/g_mineproc      line: 804
+        (input_tekst:string, wordlengthit:int, skiplistsq: seq[string],
+                              altfreqit: int = 11, globwordsq: var seq[string]) 
+         
+  Only add words with a length > wordlenghit
+   
+  # for wordst in wordsq:
+  #   tempst = removeSingleStrings(wordst, @["\p", "\t", "\c"])
+  #   if len(tempst) >= wordlengthit:
+ 
+        removeSingleStrings              .../g_mine             proc      830
+----------------------------------------------------------------------
+    calcCumulFrequencies_old         jolibs/generic/g_mineproc      line: 853
+        (input_tekst:string, wordlengthit:int, skiplistsq: seq[string],
+                              globwordsq: var seq[string]) 
+         
+  Only add words with a length > wordlenghit
+   
+ 
+        removeSingleStrings              .../g_mine             proc      867
+----------------------------------------------------------------------
+    getDataSequence                  jolibs/generic/g_mineproc      line: 874
+        (link_or_tekst, starttagst, endtagst:string): seq[string] 
+          
+  Get the data-sequence, either cleanly or dirtyly.
+  Input either a weblink or the previously retrieved website.
+  If no pair-occurence can be found, then return an empty
+  sequence: @[]
+
+   
+  # if the website is mal-formed get the data dirtyly..
+ 
+        getWebSite                       .../g_mine             proc      889
+        getDataSeqClean                  .../g_mine             proc      894
+        getDataSeqDirty                  .../g_mine             proc      899
+----------------------------------------------------------------------
+    getDataBetweenTags2              jolibs/generic/g_mineproc      line: 905
+        (link_or_tekst, starttagst, endtagst:string, 
+                                      occurit: int): string 
+         
+  Get the data between the tag-pair starttag and endtag for 
+  the occurit-th occurrence of the pair. (ONE-BASED)
+ 
+ 
+        getDataSequence                  .../g_mine             proc      916
+----------------------------------------------------------------------
+    getTitleFromWebsite2             jolibs/generic/g_mineproc      line: 930
+        (webaddresst:string): string 
+ 
+        getDataBetweenTags2              .../g_mine             proc      933
+----------------------------------------------------------------------
+    getChildLinks                    jolibs/generic/g_mineproc      line: 942
+        (parentweblinkst: string, maxdepthit, curdepthit, linknumit: int,
+            includesubstringsq:seq[string]= @[],  excludesubstringsq:seq[string]= @[], 
+            weblinksq: var seq[array[5, string]]): int 
+         
+  Get all the weblinks of the page parentweblinkst and put them in the var 
+  weblinksq of the form @[[parentlink, curdepth, childlink, childtitle, indexnr]]
+  The var weblinksq must be externally created before being called.
+  The proc is recurrent and maxdepthit determines the maximal parsing-depth.
+  MaxDepth 0 means only retrieve the parent, Maxdepth 1 means the (first order) children.
+  Call with curdepth = 1
+
+  Fields of weblinksq:
+  link1, depth, link2, title2, indexnr
+
+  ADAP NOW:
+  ADAP FUT:
+  -see below
+  
+  # if the website is mal-formed get the data dirtyly..
+  # future-approach? Then can also get weblink directly
+      # parse the data-sequence for title and link2
+ 
+        l1                               .../g_mine             template  973
+        getWebSite                       .../g_mine             proc      963
+        getDataSeqClean                  .../g_mine             proc      969
+        getDataSeqDirty                  .../g_mine             proc      974
+        convertWebLinksToAbsolute        .../g_mine             proc      1018
+        substringsInString               .../g_mine             proc      1020
+        linkIsPresent                    .../g_mine             proc      1022
+        getInnerText2                    .../g_mine             proc      1008
+        getTitleFromWebsite2             .../g_mine             proc      992
+        getChildLinks                    .../g_mine             proc      1030
+        countIsFactorOf                  .../g_tools            proc      1000
+----------------------------------------------------------------------
+    countWords                       jolibs/generic/g_mineproc      line: 1042
+        (tekst: string): int 
+ 
+----------------------------------------------------------------------
+    getTagContent                    jolibs/generic/g_mineproc      line: 1049
+        (link_or_tekst, startpartst, endpartst: string): seq[string] 
+         
+    Retrieve a sequence of content-data between pairs of startpartst 
+    and endpartst. 
+   
+      # parse the data-sequence for the content between > and <
+ 
+        getInnerText2                    .../g_mine             proc      1073
+        getDataSequence                  .../g_mine             proc      1058
+----------------------------------------------------------------------
+    enlistSequenceToDoc              jolibs/generic/g_mineproc      line: 1084
+        (sequensq: seq[string], output_doc: DocType, 
+                          maxlineit: int, widthmakerbo: bool = true): string 
+  # Create a listing-doc from a sequence of string in the desired format DocType
+  # with maximum line-size maxlineit.
+ 
+----------------------------------------------------------------------
+    getHtmlHeaders                   jolibs/generic/g_mineproc      line: 1115
+        (link_or_tekst: string, output_doc: DocType, 
+                  maxlineit: int, widthmakerbo: bool = true): string 
+            # parse the data-sequence for the content between > and <
+ 
+        multiplyString                   .../g_mine             proc      1152
+        getInnerText2                    .../g_mine             proc      1144
+        getDataSequence                  .../g_mine             proc      1123
+
+
+****************    jolibs/generic/g_nim2json   ***********************************************************************
+
+----------------------------------------------------------------------
+    createPicklistNodeFromSeq        jolibs/generic/g_nim2jsonproc      line: 40
+        (picklisttype: PickList, picklistnamest, labelst: string, 
+                                datasq: seq[array[2, string]]): JsonNode 
+         Create a json-object for the select-element (dropdown (dd) or picklist)
+    From the datasq, the first elem is the real-value, the second one the shown value.
+   
+ 
+
+
+****************    jolibs/generic/g_options   ***********************************************************************
+
+----------------------------------------------------------------------
+    readOptionFromFile               jolibs/generic/g_optionsproc      line: 124
+        (optnamest: string, optiontype: OptionType): string 
+        
+  Read from the settings-file based on the option-data, which are ordered 
+  per line containing:
+  option-name___value___some description here___list-item1,,list-item2,,list-item3,,ect...
+
+  The option-name is the first part of the line, the others are retrieved thru the 
+  optiontype-enum.
+  Expects settings-file as projectprefix_settings.conf"
+ 
+      # walk thru the lines of the file
+        # echo line
+              # new cluster found
+ 
+----------------------------------------------------------------------
+    getValList                       jolibs/generic/g_optionsproc      line: 198
+        (valuelist: string): seq[string] 
+ 
+----------------------------------------------------------------------
+    newlang                          jolibs/generic/g_optionsproc      line: 204
+        (englishtekst:string):string 
+  # Read from the language-translation-file (*.tra) the
+  # appropriate translation for the target-language 
+  # and return that.
+ 
+        readOptionFromFile               .../g_options          proc      219
+
+
+****************    jolibs/generic/g_stringdata   ***********************************************************************
+
+----------------------------------------------------------------------
+    readFromSeparatedString          jolibs/generic/g_stringdataproc      line: 67
+        (tablest: string, outersepst: string, innersepsq: seq[string], returnfragmentsq: seq[int], filtervaluesq: seq[string], comparisonsq: seq[ComparisonType], filtcoordsq: seq[seq[int]]): seq[string] 
+        
+    Generic way to read data from a textual table that match filter-criteria.
+    It Walks thru the outer separated fragments  of tablest and retrieves fragments (or parts thereof) that match the filter-criteria.
+
+    The easiest way to imagine is that the outer separator is a line-feed and that the inner seps 
+    are the separator between fields, and possibly within fields.
+
+    The filter can exist of multiple search-criteria and is using the and-operator.
+    Every filter-coordinate can have a different length.
+    
+    Both the parameters returnfragmentsq and filtcoordsq are coordinate-based params. 
+    returnfragmentsq expects coordinates to designate the field-value or field-value-part to return, 
+    like @[2,1] looks in the third field (zerobased) and the second part.
+
+    filtcoordsq is a sequence of coordinates.
+
+    filtervaluesq, comparisonsq and filtcoordsq are linked params in the sense that the n-th item 
+    of each makes up a filter-criterion. Therefore all must have the same length.
+
+    ADAP NOW
+
+    ADAP FUT
+    Maybe later:
+    You can retrieve a range of items [1, -10] or [3,5] from the second sep.
+  
+    #  reportst = "separatorsq and returnfragmentsq have different length!"
+    #  wisp(reportst
+    #  testsOKbo = true
+ 
+        zoomIntoFragments                .../g_stringdata       proc      133
+        wisp                             .../g_templates        template  115
+----------------------------------------------------------------------
+    writeToSeparatedString           jolibs/generic/g_stringdataproc      line: 178
+        (tekst, insertst: string, operationeu: OperationOnString, separatorsq: seq[string], filtercoordinatesq: seq[seq[int]], filtervaluesq, comparisonsq: seq[string]): string 
+        
+    The filter can exist of multiple search-criteria using the and-operator.
+    Every filter-coordinate can have a different length.
+
+    Remarks:
+    - you can update the char-position at each pass
+
+  
+ 
+
+
+****************    jolibs/generic/g_templates   ***********************************************************************
+
+----------------------------------------------------------------------
+    getTrace                         jolibs/generic/g_templatestemplate  line: 29
+        (wordsq: varargs[string, `$`]) 
+  # works only for non-release-compilation; thats ok
+ 
+        wisp                             .../g_templates        template  36
+----------------------------------------------------------------------
+    wisp                             jolibs/generic/g_templatestemplate  line: 53
+        (wordsq: varargs[string, `$`]) 
+  # works only for non-release-compilation; thats ok
+ 
+        wisp                             .../g_templates        template  61
+----------------------------------------------------------------------
+    withFile                         jolibs/generic/g_templatestemplate  line: 85
+        (f, fn, mode, actions: untyped): untyped 
+ 
+----------------------------------------------------------------------
+    withFileAdvanced                 jolibs/generic/g_templatestemplate  line: 97
         (f, fn, mode, actions: untyped): untyped 
          
 Below are some timing-functions that may or may not
@@ -293,24 +1361,81 @@ accurate.
  
  
 ----------------------------------------------------------------------
-    doWork                           g_templates    proc      line: 45
+    doWork                           jolibs/generic/g_templatesproc      line: 125
         (x: int) 
  
 ----------------------------------------------------------------------
-    timeStuff                        g_templates    template  line: 51
+    timeStuff                        jolibs/generic/g_templatestemplate  line: 131
         (statement: untyped): string 
  
 ----------------------------------------------------------------------
-    timeThings                       g_templates    template  line: 57
+    timeThings                       jolibs/generic/g_templatestemplate  line: 137
         (statement: untyped) 
   # easiest to use
  
 ----------------------------------------------------------------------
-    timeNeatly                       g_templates    template  line: 65
+    timeNeatly                       jolibs/generic/g_templatestemplate  line: 145
         (statement: untyped): float 
  
 ----------------------------------------------------------------------
-    timeCop                          g_templates    template  line: 71
+    timeCop                          jolibs/generic/g_templatestemplate  line: 151
         (statement: untyped) 
   # measures real-time instead of cpu-time
+ 
+
+
+****************    jolibs/generic/g_tools   ***********************************************************************
+
+----------------------------------------------------------------------
+    convertSequenceToFile            jolibs/generic/g_toolsproc      line: 48
+        (filepathst: string, lisq: seq[string]) 
+ 
+        withFile                         .../g_templates        template  50
+----------------------------------------------------------------------
+    convertSequenceToText            jolibs/generic/g_toolsproc      line: 56
+        (lisq: seq[string]): string 
+  # untested..
+ 
+----------------------------------------------------------------------
+    zipTwoSeqsToOne                  jolibs/generic/g_toolsproc      line: 67
+        (firstsq: seq[string], secondsq: seq[string] = @[]): seq[array[2, string]] 
+ 
+----------------------------------------------------------------------
+    filterIsMatching                 jolibs/generic/g_toolsproc      line: 84
+        (tekst, searchtermst: string, testingbo: bool = false, itemnumberst: string = ""): string 
+        
+  The searchterms form the filter.
+  result types:
+  - If filter matches the text: yes
+  - if filter doesnt match: no
+  - if filter is invalid: error-message
+
+  currently supported operators:
+  - a = and, o = or, n = (and) not
+  - using no operators: will be treated as 'and'
+
+  ADAP FUT:
+  -add phrases
+  -enable parentheses
+  -enable alternative operators (more common ones)
+  
+      # suppose and-ops are meant and add them
+    # test if the search-terms are present in the text
+    # create the logical expression based on the found results
+ 
+----------------------------------------------------------------------
+    countIsFactorOf                  jolibs/generic/g_toolsproc      line: 182
+        (countit, factorit: int): bool 
+        
+    Use for intermittent messages like:
+    if count is factor of 100:
+      echo count
+  
+ 
+----------------------------------------------------------------------
+    concatenateFiles                 jolibs/generic/g_toolsproc      line: 198
+        (filelisq: seq[string], newfilepathst: string) 
+        
+    Create a new file with the contents from all the files in filelisq
+  
  

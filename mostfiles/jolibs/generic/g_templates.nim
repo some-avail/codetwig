@@ -76,7 +76,7 @@ template wisp*(wordsq: varargs[string, `$`]) =
         hprocnamest = $tob[tob.len - 2].procname
 
       messagest = wordsq.join(" ")
-      echo ""
+      #echo ""
       echo "==>  ", hprocnamest, "---", procnamest, "  echos:   ",  messagest
 
 
