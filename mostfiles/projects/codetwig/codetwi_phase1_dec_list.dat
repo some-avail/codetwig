@@ -3,28 +3,33 @@ other_declaration~~~ctwig~~~import std/[os, ~~~ls:22
 other_declaration~~~ctwig~~~var ~~~ls:25
 other_declaration~~~ctwig~~~type~~~ls:34
 other_declaration~~~ctwig~~~var debugbo: boo~~~ls:79
-addSourceFilesToProject_old~~~ctwig~~~proc~~~ls:89~~~cs:5~~~ce:31
-addSourceFilesToProject~~~ctwig~~~proc~~~ls:167~~~cs:5~~~ce:27
-extractFileSectionToSequence~~~ctwig~~~proc~~~ls:252~~~cs:5~~~ce:32
-getSliceFromAnchor~~~ctwig~~~proc~~~ls:275~~~cs:5~~~ce:22
-countLinesOfFile~~~ctwig~~~proc~~~ls:349~~~cs:5~~~ce:20
-createDeclarationList~~~ctwig~~~proc~~~ls:362~~~cs:5~~~ce:25
-getSliceFromLines~~~ctwig~~~proc~~~ls:643~~~cs:5~~~ce:21
-getXLinesWithSubstring~~~ctwig~~~proc~~~ls:724~~~cs:5~~~ce:26
-createCodeViewFile~~~ctwig~~~proc~~~ls:754~~~cs:5~~~ce:22
-getSeqFromFileLines~~~ctwig~~~proc~~~ls:995~~~cs:5~~~ce:23
-getSeqFromFileLines2~~~ctwig~~~proc~~~ls:1057~~~cs:5~~~ce:24
-getSeqFromLinesSpecial~~~ctwig~~~proc~~~ls:1137~~~cs:5~~~ce:26
-writeFamily~~~ctwig~~~proc~~~ls:1189~~~cs:5~~~ce:15
-echoDeclarationData~~~ctwig~~~proc~~~ls:1275~~~cs:5~~~ce:23
-showDeclarationBranch~~~ctwig~~~proc~~~ls:1381~~~cs:5~~~ce:25
-echoHelpInfo~~~ctwig~~~proc~~~ls:1494~~~cs:5~~~ce:16
-createMultiProjectFiles~~~ctwig~~~proc~~~ls:1539~~~cs:5~~~ce:27
-createAllViewFiles~~~ctwig~~~proc~~~ls:1543~~~cs:5~~~ce:22
-generate_all~~~ctwig~~~proc~~~ls:1552~~~cs:5~~~ce:16
-processCommandLine~~~ctwig~~~proc~~~ls:1560~~~cs:5~~~ce:22
-other_declaration~~~ctwig~~~var for_realbo: ~~~ls:1666
-other_declaration~~~ctwig~~~if for_realbo:~~~ls:1667
+extractFileExtension~~~ctwig~~~proc~~~ls:89~~~cs:5~~~ce:24
+clipString~~~ctwig~~~proc~~~ls:109~~~cs:5~~~ce:14
+addSourceFilesToProject_old~~~ctwig~~~proc~~~ls:126~~~cs:5~~~ce:31
+addSourceFilesToProject~~~ctwig~~~proc~~~ls:204~~~cs:5~~~ce:27
+extractFileSectionToSequence~~~ctwig~~~proc~~~ls:289~~~cs:5~~~ce:32
+getSliceFromAnchor~~~ctwig~~~proc~~~ls:312~~~cs:5~~~ce:22
+countLinesOfFile~~~ctwig~~~proc~~~ls:386~~~cs:5~~~ce:20
+createDeclarationList~~~ctwig~~~proc~~~ls:399~~~cs:5~~~ce:25
+getSliceFromLines~~~ctwig~~~proc~~~ls:680~~~cs:5~~~ce:21
+getXLinesWithSubstring~~~ctwig~~~proc~~~ls:761~~~cs:5~~~ce:26
+createCodeViewFile~~~ctwig~~~proc~~~ls:791~~~cs:5~~~ce:22
+getSeqFromFileLines~~~ctwig~~~proc~~~ls:1032~~~cs:5~~~ce:23
+getSeqFromFileLines2~~~ctwig~~~proc~~~ls:1094~~~cs:5~~~ce:24
+getSeqFromLinesSpecial~~~ctwig~~~proc~~~ls:1174~~~cs:5~~~ce:26
+writeFamily~~~ctwig~~~proc~~~ls:1226~~~cs:5~~~ce:15
+writeFamily_old~~~ctwig~~~proc~~~ls:1321~~~cs:5~~~ce:19
+echoDeclarationData_old~~~ctwig~~~proc~~~ls:1406~~~cs:5~~~ce:27
+echoDeclarationData~~~ctwig~~~proc~~~ls:1520~~~cs:5~~~ce:23
+showDeclarationBranchSingle~~~ctwig~~~proc~~~ls:1641~~~cs:5~~~ce:31
+showDeclarationBranch~~~ctwig~~~proc~~~ls:1756~~~cs:5~~~ce:25
+echoHelpInfo~~~ctwig~~~proc~~~ls:1897~~~cs:5~~~ce:16
+createMultiProjectFiles~~~ctwig~~~proc~~~ls:1944~~~cs:5~~~ce:27
+createAllViewFiles~~~ctwig~~~proc~~~ls:1993~~~cs:5~~~ce:22
+generate_all~~~ctwig~~~proc~~~ls:2002~~~cs:5~~~ce:16
+processCommandLine~~~ctwig~~~proc~~~ls:2010~~~cs:5~~~ce:22
+other_declaration~~~ctwig~~~var for_realbo: ~~~ls:2120
+other_declaration~~~ctwig~~~if for_realbo:~~~ls:2121
 other_declaration~~~jolibs/generic/g_cookie~~~import tables, s~~~ls:8
 other_declaration~~~jolibs/generic/g_cookie~~~import g_json2ht~~~ls:9
 other_declaration~~~jolibs/generic/g_cookie~~~var versionfl: f~~~ls:11
@@ -163,15 +168,15 @@ other_declaration~~~jolibs/generic/g_options~~~when isMainModul~~~ls:282
 other_declaration~~~jolibs/generic/g_stringdata~~~import strutils~~~ls:1
 other_declaration~~~jolibs/generic/g_stringdata~~~import g_templat~~~ls:2
 other_declaration~~~jolibs/generic/g_stringdata~~~var~~~ls:5
-other_declaration~~~jolibs/generic/g_stringdata~~~wispbo = false~~~ls:8
-other_declaration~~~jolibs/generic/g_stringdata~~~type~~~ls:10
-zoomIntoFragments~~~jolibs/generic/g_stringdata~~~proc~~~ls:24~~~cs:5~~~ce:21
-readFromSeparatedString~~~jolibs/generic/g_stringdata~~~proc~~~ls:67~~~cs:5~~~ce:27
-writeToSeparatedString~~~jolibs/generic/g_stringdata~~~proc~~~ls:178~~~cs:5~~~ce:26
-other_declaration~~~jolibs/generic/g_stringdata~~~when isMainModul~~~ls:191
+other_declaration~~~jolibs/generic/g_stringdata~~~wispbo = false~~~ls:9
+other_declaration~~~jolibs/generic/g_stringdata~~~type~~~ls:11
+zoomIntoFragments~~~jolibs/generic/g_stringdata~~~proc~~~ls:29~~~cs:5~~~ce:21
+readFromSeparatedString~~~jolibs/generic/g_stringdata~~~proc~~~ls:179~~~cs:5~~~ce:27
+writeToSeparatedString~~~jolibs/generic/g_stringdata~~~proc~~~ls:302~~~cs:5~~~ce:26
+other_declaration~~~jolibs/generic/g_stringdata~~~when isMainModul~~~ls:315
 other_declaration~~~jolibs/generic/g_templates~~~import std/[time~~~ls:1
 other_declaration~~~jolibs/generic/g_templates~~~var versionfl: f~~~ls:3
-other_declaration~~~jolibs/generic/g_templates~~~var wispbo* = tr~~~ls:6
+other_declaration~~~jolibs/generic/g_templates~~~var wispbo* = fa~~~ls:6
 wisp_old~~~jolibs/generic/g_templates~~~template~~~ls:10~~~cs:9~~~ce:16
 getTrace~~~jolibs/generic/g_templates~~~template~~~ls:29~~~cs:9~~~ce:16
 wisp~~~jolibs/generic/g_templates~~~template~~~ls:53~~~cs:9~~~ce:12
@@ -194,4 +199,4 @@ zipTwoSeqsToOne~~~jolibs/generic/g_tools~~~proc~~~ls:67~~~cs:5~~~ce:19
 filterIsMatching~~~jolibs/generic/g_tools~~~proc~~~ls:84~~~cs:5~~~ce:20
 countIsFactorOf~~~jolibs/generic/g_tools~~~proc~~~ls:182~~~cs:5~~~ce:19
 concatenateFiles~~~jolibs/generic/g_tools~~~proc~~~ls:198~~~cs:5~~~ce:20
-other_declaration~~~jolibs/generic/g_tools~~~when isMainModul~~~ls:226
+other_declaration~~~jolibs/generic/g_tools~~~when isMainModul~~~ls:234

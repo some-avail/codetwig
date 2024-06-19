@@ -1,9 +1,9 @@
 import std/[times, strutils]
 
-var versionfl: float = 0.11
+var versionfl: float = 0.12
 
 
-var wispbo* = true
+var wispbo* = false
 
 
 
@@ -37,8 +37,8 @@ template getTrace*(wordsq: varargs[string, `$`]) =
     let tob = getStackTraceEntries()      # a proc from the system-module
 
     if tob.len > 0:       # needed for release-compilation
+      echo "counting ", tob.len, " ", type(itemob)
       for itemob in tob:
-        echo "counting ", tob.len, " ", type(itemob)
         #echo itemob
 
         filepathst = $itemob.filename
@@ -90,7 +90,7 @@ template withFile*(f, fn, mode, actions: untyped): untyped =
     finally:
       close(f)
   else:
-    echo("cannot open: " & fn)
+    echo("withFile cannot open: " & fn)
 
 
 
@@ -107,7 +107,7 @@ template withFileAdvanced*(f, fn, mode, actions: untyped): untyped =
     finally:
       close(f)
   else:
-    echo("Cannot open: " & fn)
+    echo("withFileAdvanced cannot open: " & fn)
 
 
 

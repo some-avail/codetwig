@@ -2,25 +2,29 @@
  ~~~~~~~~~~~~~~~~~  Project = codetwig  ~~~~~~~~~~~~~~~~~~~~
 
 ctwig---------------------------------------------------
-    addSourceFilesToProject          proc      line: 167
-    extractFileSectionToSequence     proc      line: 252
-    getSliceFromAnchor               proc      line: 275
-    countLinesOfFile                 proc      line: 349
-    createDeclarationList            proc      line: 362
-    getSliceFromLines                proc      line: 643
-    getXLinesWithSubstring           proc      line: 724
-    createCodeViewFile               proc      line: 754
-    getSeqFromFileLines              proc      line: 995
-    getSeqFromFileLines2             proc      line: 1057
-    getSeqFromLinesSpecial           proc      line: 1137
-    writeFamily                      proc      line: 1189
-    echoDeclarationData              proc      line: 1275
-    showDeclarationBranch            proc      line: 1381
-    echoHelpInfo                     proc      line: 1494
-    createMultiProjectFiles          proc      line: 1539
-    createAllViewFiles               proc      line: 1543
-    generate_all                     proc      line: 1552
-    processCommandLine               proc      line: 1560
+    addSourceFilesToProject_old      proc      line: 106
+    addSourceFilesToProject          proc      line: 184
+    extractFileSectionToSequence     proc      line: 269
+    getSliceFromAnchor               proc      line: 292
+    countLinesOfFile                 proc      line: 366
+    createDeclarationList            proc      line: 379
+    getSliceFromLines                proc      line: 660
+    getXLinesWithSubstring           proc      line: 741
+    createCodeViewFile               proc      line: 771
+    getSeqFromFileLines              proc      line: 1012
+    getSeqFromFileLines2             proc      line: 1074
+    getSeqFromLinesSpecial           proc      line: 1154
+    writeFamily                      proc      line: 1206
+    writeFamily_old                  proc      line: 1297
+    echoDeclarationData_old          proc      line: 1382
+    echoDeclarationData              proc      line: 1496
+    showDeclarationBranchSingle      proc      line: 1611
+    showDeclarationBranch            proc      line: 1726
+    echoHelpInfo                     proc      line: 1863
+    createMultiProjectFiles          proc      line: 1910
+    createAllViewFiles               proc      line: 1959
+    generate_all                     proc      line: 1968
+    processCommandLine               proc      line: 1976
 jolibs/generic/g_cookie---------------------------------------------------
     getFuncParts                     proc      line: 29
     runFunctionFromClient            proc      line: 46

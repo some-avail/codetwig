@@ -195,7 +195,7 @@ proc countIsFactorOf*(countit, factorit: int): bool =
 
 
 
-proc concatenateFiles(filelisq: seq[string], newfilepathst: string) = 
+proc concatenateFiles*(filelisq: seq[string], newfilepathst: string) = 
 
   #[
     Create a new file with the contents from all the files in filelisq
@@ -205,16 +205,24 @@ proc concatenateFiles(filelisq: seq[string], newfilepathst: string) =
     curfilest, allfilest: string
     fileob, newfileob: File
 
+  echo $filelisq.len, " files found to concatenate.\p"
+
+  # preclear the file
+  if open(newfileob, newfilepathst, fmWrite):
+    newfileob.close()
+
+  # open the new file for appending
   if open(newfileob, newfilepathst, fmAppend):
 
     for filepathst in filelisq:
       if open(fileob, filepathst, fmRead):
+        echo "...concatenating: " & filepathst
         curfilest = fileob.readAll()
         newfileob.write(curfilest)
         fileob.close()
       else:
         echo filepathst, " could not be found!"
-
+    echo "\pWritten to: " & newfilepathst
     newfileob.close()
 
   else:

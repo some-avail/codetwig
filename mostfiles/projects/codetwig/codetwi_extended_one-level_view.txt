@@ -6,7 +6,22 @@
 ****************    ctwig   ***********************************************************************
 
 ----------------------------------------------------------------------
-    addSourceFilesToProject          ctwig          proc      line: 167
+    addSourceFilesToProject_old      ctwig          proc      line: 106
+        (proj_def_pathst: string): string 
+        
+  Based on the project-path in the project-def-file, the source-files
+  from that project are added to the project-def-file.
+
+  ADAP FUT
+  -add param overwritebo to overwrite / update the current sf-list
+  -exclusion-list to auto-exclude certain files that are probably copies
+  of originals, with numbers and words like bak or copy.
+  
+    # open the project-file for read-write access
+        # check for block-header
+              # read the project-path
+----------------------------------------------------------------------
+    addSourceFilesToProject          ctwig          proc      line: 184
         (proj_def_pathst: string): string 
         
   Based on the project-path in the project-def-file, the source-files
@@ -25,14 +40,14 @@
         # check for block-header
               # read the project-path
 ----------------------------------------------------------------------
-    extractFileSectionToSequence     ctwig          proc      line: 252
+    extractFileSectionToSequence     ctwig          proc      line: 269
         (filepathst, start_separst, end_separst: string): seq[string] 
         
     Extract the lines of a file that are located between the starting and ending separator and 
     put them in a sequence.
   
 ----------------------------------------------------------------------
-    getSliceFromAnchor               ctwig          proc      line: 275
+    getSliceFromAnchor               ctwig          proc      line: 292
         (tekst, anchorst: string, possib_endmarksq: seq[string], appendspacebo: bool): array[0..1, int] 
         
     Searching in the tekst, return a target-string indicated as slice [start,end] located after an anchor-string.
@@ -51,10 +66,10 @@
     -add orientation; target can be located next to an anchor-string with a certain orientation (before or after).
   
 ----------------------------------------------------------------------
-    countLinesOfFile                 ctwig          proc      line: 349
+    countLinesOfFile                 ctwig          proc      line: 366
         (filepathst: string): int 
 ----------------------------------------------------------------------
-    createDeclarationList            ctwig          proc      line: 362
+    createDeclarationList            ctwig          proc      line: 379
         (proj_def_pathst: string) 
         
   proj_def_pathst = path to the file in which the codetwig-project for a source-project is defined
@@ -75,7 +90,7 @@
     # to avoid doubles
     # must be unique
 ----------------------------------------------------------------------
-    getSliceFromLines                ctwig          proc      line: 643
+    getSliceFromLines                ctwig          proc      line: 660
         (fileob: var File, linestartit, lineendit: int, starttagst, endtagst: string, samelinebo: bool = false): array[0..1, int] 
         
     Looping thru the lines, starting at linestart, retrieve the starting and ending point 
@@ -89,7 +104,7 @@
           # geval2: starttag is ( en eindtag is )
                 # search the next occurence of starttagst
 ----------------------------------------------------------------------
-    getXLinesWithSubstring           ctwig          proc      line: 724
+    getXLinesWithSubstring           ctwig          proc      line: 741
         (fileob: var File, subst: string, linestartit, lineendit, numberit: int): seq[string] 
          Retrieve numberit lines from fileob based on the substring in them 
      starting from linestartit and put them in a sequence. Lines are prestripped for comparison
@@ -98,7 +113,7 @@
       commentlinesq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
 
 ----------------------------------------------------------------------
-    createCodeViewFile               ctwig          proc      line: 754
+    createCodeViewFile               ctwig          proc      line: 771
         (proj_def_pathst: string, viewtypeeu: ViewType) 
         
   Create view-files of the enum-type
@@ -110,7 +125,7 @@
     # set the target-dir and declaration-file
     # create the source-file-table
 ----------------------------------------------------------------------
-    getSeqFromFileLines              ctwig          proc      line: 995
+    getSeqFromFileLines              ctwig          proc      line: 1012
         (filepathst, searchst, sep1st, sep2st: string, searchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
         
     Add lines to the sequence which match the search-filter.
@@ -126,7 +141,7 @@
     extra separator and sortfieldar may come later    
   
 ----------------------------------------------------------------------
-    getSeqFromFileLines2             ctwig          proc      line: 1057
+    getSeqFromFileLines2             ctwig          proc      line: 1074
         (filepathst, fstsearchst, secsearchst, sep1st, sep2st: string, fstsearchfieldar, secsearchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
         
     Add lines to the sequence which match the search-filter.
@@ -141,7 +156,7 @@
     extra separator and sortfieldar may come later
   
 ----------------------------------------------------------------------
-    getSeqFromLinesSpecial           ctwig          proc      line: 1137
+    getSeqFromLinesSpecial           ctwig          proc      line: 1154
         (filepathst, searchst, sep1st, sep2st: string): seq[string] 
         
     Search-function specific for the dec-list phase-3.
@@ -152,21 +167,39 @@
     extra separator and sortfieldar may come later
   
 ----------------------------------------------------------------------
-    writeFamily                      ctwig          proc      line: 1189
+    writeFamily                      ctwig          proc      line: 1206
+        (proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int, projectst: string = "") 
+        
+  Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
+
+    # set the target-dir and declaration-file
+----------------------------------------------------------------------
+    writeFamily_old                  ctwig          proc      line: 1297
         (proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int) 
         
   Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
 
     # set the target-dir and declaration-file
 ----------------------------------------------------------------------
-    echoDeclarationData              ctwig          proc      line: 1275
+    echoDeclarationData_old          ctwig          proc      line: 1382
         (proj_def_pathst, declarationst, modulest: string) 
-        ", "
-    # retrieve project-data from project-def-file
+        
+    Echo extra data of the declare like parameters and comment.
+  
+      # retrieve project-data from project-def-file
     # set the target-dir and declaration-file
     # add the parameter-declares (inputs)
 ----------------------------------------------------------------------
-    showDeclarationBranch            ctwig          proc      line: 1381
+    echoDeclarationData              ctwig          proc      line: 1496
+        (proj_def_pathst, declarationst, modulest: string, projectst: string = "") 
+        
+    Echo extra data of the declare like parameters and comment.
+  
+      # retrieve project-data from project-def-file
+    # set the target-dir and declaration-file
+    # add the parameter-declares (inputs)
+----------------------------------------------------------------------
+    showDeclarationBranchSingle      ctwig          proc      line: 1611
         (proj_def_pathst, directionst: string, maxdepthit: int) 
         
   Show a tree of declarations; either a usage-tree or a used-by-tree.
@@ -175,19 +208,42 @@
     # set the target-dir and declaration-file
       # if no exact match found or wildcard * used (all found):
 ----------------------------------------------------------------------
-    echoHelpInfo                     ctwig          proc      line: 1494
+    showDeclarationBranch            ctwig          proc      line: 1726
+        (proj_def_pathst, directionst: string, maxdepthit: int) 
+        
+  Show a tree of declarations; either a usage-tree or a used-by-tree.
+
+    # set the target-dir and declaration-file
+      # if no exact match found or wildcard used (all found):
+          # maybe find something with substring-search
+----------------------------------------------------------------------
+    echoHelpInfo                     ctwig          proc      line: 1863
         () 
 ----------------------------------------------------------------------
-    createMultiProjectFiles          ctwig          proc      line: 1539
+    createMultiProjectFiles          ctwig          proc      line: 1910
         (multiprojectdefst: string) 
+        
+  Currently:
+  v-create a multi-project directory based on your .mul-file
+  v-Concatenate the dec-lists from multiple projects as defined in your 
+  multi-project-definition (.mul)
+
+  (After you have defined some projects in project-files (.pro),
+  you can create a multi-project-definition that enables you to show 
+  more projects at once; for now that is trees of usage and used-by.)
+
+
+  # create a target-dir and -file, ie the dec-list
+  # extract the project-file-names from the multiproj-file
+  # retrieve the phase3 dec-list for all projects and put them in a list-seq
 ----------------------------------------------------------------------
-    createAllViewFiles               ctwig          proc      line: 1543
+    createAllViewFiles               ctwig          proc      line: 1959
         (filepathst: string) 
 ----------------------------------------------------------------------
-    generate_all                     ctwig          proc      line: 1552
+    generate_all                     ctwig          proc      line: 1968
         (projectpathst: string) 
 ----------------------------------------------------------------------
-    processCommandLine               ctwig          proc      line: 1560
+    processCommandLine               ctwig          proc      line: 1976
         () 
         
   firstly load the args from the commandline and set the needed vars 
@@ -1201,3 +1257,5 @@ accurate.
         
     Create a new file with the contents from all the files in filelisq
   
+  # preclear the file
+  # open the new file for appending

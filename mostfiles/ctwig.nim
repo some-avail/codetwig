@@ -17,13 +17,13 @@ ADAP NOW
 ]#
 
 
-import jolibs/generic/[g_disk2nim, g_templates]
+import jolibs/generic/[g_disk2nim, g_templates, g_tools, g_stringdata]
 #import std/[os, strutils, paths, dirs, tables, unicode]
 import std/[os, strutils, paths, tables, parseopt]
 #import dirs
 
 var 
-  versionfl: float = 1.51
+  versionfl: float = 1.55
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -83,6 +83,43 @@ template log(messagest: string) =
   # replacement for echo that is only evaluated when debugbo = true
   if debugbo: 
     echo messagest
+
+
+
+proc extractFileExtension(filepathst: string): string = 
+
+  # Extract the extension a file or filepath
+  # Can be absent, zero-length or any length
+
+  var 
+    extst:string
+    dotsq: seq[string]
+
+  if filepathst.contains("."):
+    dotsq = filepathst.split(".")
+    extst = dotsq[dotsq.len - 1]
+    
+  else: 
+    extst = ""
+
+  result = extst
+
+
+
+proc clipString(inputst: string, lengthit: int): string = 
+
+  # maximize string at lengthit
+
+  var 
+    outputst: string
+
+  if inputst.len > lengthit:
+    outputst = inputst[0..lengthit - 1]
+  else:
+    outputst = inputst
+
+  result = outputst
+
 
 
 
@@ -1186,8 +1223,102 @@ proc getSeqFromLinesSpecial(filepathst, searchst, sep1st, sep2st: string): seq[s
 
 
 
-proc writeFamily(proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int) = 
+proc writeFamily(proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int, projectst: string = "") = 
 
+#[
+  Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
+]#
+
+
+  var 
+    decfileob: File 
+    decfilepathst: string
+    sourceprojectpathst, reltargetprojectpathst: string
+    source_filesq, foundlinesq, wordsq, dlinesq, uselinesq: seq[string]
+    sep1st = "~~~"
+    #sep1st = "___"
+    sep2st = "___"
+    sep3st = "==="
+    inputst, outputst: string
+    onelinest, declarest, usedatalinest, indentationst, decdatalinest: string
+    choppedmodulest, decfilecontentst: string
+
+
+  try:
+
+    # set the target-dir and declaration-file
+    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
+    reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
+
+    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
+    decfileob = open(decfilepathst, fmRead)
+    decfilecontentst = readAll(decfileob)
+
+
+
+    if directionst == "usage":
+      if curdepthit == 1:
+        #foundlinesq = getSeqFromFileLines2(decfilepathst, declarationst, modulest, sep3st, sep1st, [0,0], [0,1])
+        foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[declarationst, modulest, projectst], @[cmSub, cmSub, cmSub], @[@[0,0], @[0,1], @[0,7]])
+      else:
+        #foundlinesq = getSeqFromFileLines(decfilepathst, declarationst, sep3st, sep1st, [0,0])
+        foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[declarationst, projectst], @[cmSub, cmExact], @[@[0,0], @[0,7]])
+
+
+      onelinest = foundlinesq[0]
+      dlinesq = onelinest.split(sep3st)
+
+      for it, uselinest in dlinesq:
+        if it > 0:
+          uselinesq = uselinest.split(sep1st)
+          choppedmodulest = extractFilename(uselinesq[1])
+          if choppedmodulest != uselinesq[1]:
+            choppedmodulest = ".../" & string(extractFilename(uselinesq[1]))
+          usedatalinest = uselinesq[0].alignLeft(33) & choppedmodulest.alignLeft(23) & uselinesq[2].alignLeft(15) & uselinesq[3]
+          indentationst = "    ".repeat(curdepthit)
+          echo indentationst & usedatalinest
+          if curdepthit <= maxdepthit:
+            writeFamily(proj_def_pathst, uselinesq[0],"" ,directionst, curdepthit + 1 , maxdepthit, projectst)
+
+
+    elif directionst == "used-by":
+
+      foundlinesq = getSeqFromLinesSpecial(decfilepathst, declarationst, sep3st, sep1st)
+      for linest in foundlinesq:
+        dlinesq = linest.split(sep3st)[0].split(sep1st)
+        choppedmodulest = extractFilename(dlinesq[1])
+        if choppedmodulest != dlinesq[1]:
+          choppedmodulest = ".../" & string(extractFilename(dlinesq[1]))
+        decdatalinest = dlinesq[0].alignLeft(33) & choppedmodulest.alignLeft(23) & dlinesq[2].alignLeft(15) & dlinesq[3]
+        indentationst = "    ".repeat(curdepthit)
+        echo indentationst & decdatalinest
+        if curdepthit <= maxdepthit:
+          writeFamily(proj_def_pathst, dlinesq[0], "",directionst, curdepthit + 1 , maxdepthit, projectst)
+
+
+  except IndexDefect:
+    let errob = getCurrentException()
+    echo "\p-----error start-----" 
+    echo "Index-error caused by bug in program"
+    echo "System-error-description:"
+    echo errob.name
+    echo errob.msg
+    echo repr(errob) 
+    echo "----End error-----\p"
+
+    #unanticipated errors come here
+  except:
+    let errob = getCurrentException()
+    echo "\p******* Unanticipated error *******" 
+    echo errob.name
+    echo errob.msg
+    echo repr(errob)
+    echo "\p****End exception****\p"
+
+
+
+
+proc writeFamily_old(proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int) = 
 #[
   Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
 ]#
@@ -1271,9 +1402,12 @@ proc writeFamily(proj_def_pathst, declarationst, modulest, directionst: string, 
     echo "\p****End exception****\p"
 
 
-#[]#
-proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string) = 
 
+proc echoDeclarationData_old(proj_def_pathst, declarationst, modulest: string) = 
+
+  #[
+    Echo extra data of the declare like parameters and comment.
+  ]#
 
   var 
     fob, modfileob: File 
@@ -1292,8 +1426,15 @@ proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string) =
 
 
   try:
-    # retrieve project-data from project-def-file
-    sourceprojectpathst = extractFileSectionToSequence(proj_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
+
+    if proj_def_pathst[0..proj_def_pathst.len - 5] == ".mul":
+      discard()
+
+    elif proj_def_pathst[0..proj_def_pathst.len - 5] == ".pro":
+      # retrieve project-data from project-def-file
+      sourceprojectpathst = extractFileSectionToSequence(proj_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
+    else:
+      echo "Your (multi-)project-definition \"" & proj_def_pathst & "\" has an invalid extension (must be .nim or .mul)"
    
 
     # set the target-dir and declaration-file
@@ -1376,9 +1517,128 @@ proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string) =
 
 
 
+proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string, projectst: string = "") = 
+
+  #[
+    Echo extra data of the declare like parameters and comment.
+  ]#
+
+  var 
+    fob, modfileob, decfileob: File 
+    decfilepathst: string
+    sourceprojectpathst, reltargetprojectpathst: string
+    dlinesq, decdatasq, singlelinesq: seq[string]
+
+    sep1st = "~~~"
+    sep3st = "==="
+    decnamest, dectypest, linestartst, lineendst: string
+    interpointar, betweenpointar: array[0..1, int]
+    modfilest, slicest, nextslicest, modstringst, dlinest: string
+    linestartit, lineendit: int
+    commentlinesq: seq[string]
+    reconstructed_project_def_pathst, decfilecontentst: string
 
 
-proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int) = 
+  try:
+    wispbo = false
+    wisp("projectst = ", projectst)
+
+
+    if proj_def_pathst.extractFileExtension() == "mul":
+      reconstructed_project_def_pathst = string(Path(ct_projectsdirst) / Path(projectst & ".pro"))
+      sourceprojectpathst = extractFileSectionToSequence(reconstructed_project_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
+    elif proj_def_pathst.extractFileExtension() == "pro":
+      # retrieve project-data from project-def-file
+      sourceprojectpathst = extractFileSectionToSequence(proj_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
+    else:
+      echo "Your (multi-)project-definition \"" & proj_def_pathst & "\" has an invalid extension (must be .pro or .mul)"
+
+
+    # set the target-dir and declaration-file
+    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
+    reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
+
+    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
+    decfileob = open(decfilepathst, fmRead)
+    decfilecontentst = readAll(decfileob)
+
+    modfilest = string(Path(sourceprojectpathst) / Path(modulest & ".nim"))
+    modfileob = open(modfilest, fmRead)
+    modstringst = readAll(modfileob)
+
+    #singlelinesq = getSeqFromFileLines2(decfilepathst, declarationst, modulest, sep3st, sep1st, [0,0], [0,1], false)
+    singlelinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[declarationst, modulest, projectst], @[cmExact, cmSub, cmSub], @[@[0,0], @[0,1], @[0,7]])
+
+    dlinest = singlelinesq[0]
+    dlinesq = dlinest.split(sep3st)
+    decdatasq = dlinesq[0].split(sep1st)
+    #decnamest = decdatasq[0]
+    #dectypest = decdatasq[2]
+    linestartst = decdatasq[3]
+    lineendst = decdatasq[6]
+
+
+    linestartit = parseInt(linestartst.split(":")[1])
+    lineendit = parseInt(lineendst.split(":")[1])
+    fob = modfileob
+
+
+    # add the parameter-declares (inputs)
+    interpointar = getSliceFromLines(fob, linestartit, lineendit, "(", ")")
+    if interpointar[0] != -1 and interpointar[1] != -1 and interpointar[1] >= interpointar[0]:
+      slicest = modstringst[interpointar[0]..interpointar[1]]
+    else:
+      slicest = ""
+      #echo "    ", "missing input-params ", decnamest, " - ",  $interpointar, " - ", modulest
+
+    # add the parameter-declares (output)
+    betweenpointar = getSliceFromLines(fob, linestartit, lineendit, ")", "=")
+    if betweenpointar[0] != -1 and betweenpointar[1] != -1 and betweenpointar[1] >= betweenpointar[0]:
+      nextslicest = modstringst[betweenpointar[0]..betweenpointar[1]]
+    else:
+      nextslicest = ""
+      #echo  "    ", "missing output-params ", decnamest, " - ",  $betweenpointar, " - ", modulest
+
+    echo("        (" & slicest & ")" & nextslicest & "\p")
+
+
+    # add the comment-blocks
+    interpointar = getSliceFromLines(fob, linestartit, lineendit, "#[", "]#")
+    if interpointar[0] != -1 and interpointar[1] != -1 and interpointar[1] >= interpointar[0]:
+      slicest = modstringst[interpointar[0]..interpointar[1]]
+      echo("        " & slicest & "\p")
+
+    # add separate comment-lines if present
+    commentlinesq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
+    for commentlinest in commentlinesq:
+      echo(commentlinest)
+    echo()
+
+
+  except IndexDefect:
+    let errob = getCurrentException()
+    echo "\p-----error start-----" 
+    echo "Index-error caused by bug in program"
+    echo "System-error-description:"
+    echo errob.name
+    echo errob.msg
+    echo repr(errob) 
+    echo "----End error-----\p"
+
+    #unanticipated errors come here
+  except:
+    let errob = getCurrentException()
+    echo "\p******* Unanticipated error *******" 
+    echo errob.name
+    echo errob.msg
+    echo repr(errob)
+    echo "\p****End exception****\p"
+
+
+
+
+
+proc showDeclarationBranchSingle(proj_def_pathst, directionst: string, maxdepthit: int) = 
 
 #[
   Show a tree of declarations; either a usage-tree or a used-by-tree.
@@ -1401,8 +1661,8 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
 
   try:
     # retrieve project-data from project-def-file
-    sourceprojectpathst = extractFileSectionToSequence(proj_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
-    source_filesq = extractFileSectionToSequence(proj_def_pathst, "SOURCE_FILES", ">----------------------------------<")
+    #sourceprojectpathst = extractFileSectionToSequence(proj_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
+    #source_filesq = extractFileSectionToSequence(proj_def_pathst, "SOURCE_FILES", ">----------------------------------<")
 
     # set the target-dir and declaration-file
     var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
@@ -1491,6 +1751,149 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
     echo "\p****End exception****\p"
 
 
+
+
+proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int) = 
+
+#[
+  Show a tree of declarations; either a usage-tree or a used-by-tree.
+]#
+
+  var 
+    decfilob: File 
+    decfilepathst: string
+    sourceprojectpathst, reltargetprojectpathst: string
+    source_filesq, foundlinesq, foundsublinesq, wordsq, inputsq: seq[string]
+    sep1st = "~~~"
+    #sep1st = "___"
+    sep2st = "___"
+
+    sep3st = "==="
+    #decnamest, modulest, dectypest, linestartst, newmodulest, decdatalinest: string
+    inputst, outputst: string
+    onelinest, declarest, modulest, dectypest, linestartst, projecst: string
+    projecttypest, projectst, decfilecontentst: string
+
+
+
+  try:
+
+
+    if proj_def_pathst.extractFileExtension() == "mul":
+      projecttypest = "multi"
+    elif proj_def_pathst.extractFileExtension() == "pro":
+      projecttypest = "single"
+    else:
+      echo "Your (multi-)project-definition \"" & proj_def_pathst & "\" has an invalid extension (must be .pro or .mul)"
+
+
+    # set the target-dir and declaration-file
+    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
+    reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
+
+    echo "--------------------------------------------------------"
+    echo "Direction (tree-type) = ", directionst, ", Maxdepth = ", maxdepthit
+    echo "Enter:  declaration;module;project      to view specific items, emtpy for all items, or exit to exit: "
+    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
+
+    decfilob = open(decfilepathst, fmRead)
+    decfilecontentst = decfilob.readAll()
+
+    inputst = ""
+    while inputst notin ["exit","quit"]:
+      inputst = readline(stdin)
+      inputsq = inputst.split(";")
+
+      wisp(inputst)
+      if inputsq.len == 1:
+        #foundlinesq = getSeqFromFileLines(decfilepathst, inputst, sep3st, sep1st, [0,0], false)
+        foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst], @[cmExactInsens], @[@[0,0]])
+      elif inputsq.len == 2:
+        if projecttypest == "single":
+          foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0], inputsq[1]], @[cmSubInsens, cmSubInsens], @[@[0,0], @[0,1]])
+        else:
+          echo "For multi-projects: Enter one item (proc) or three items (declaration;module;project); it can be emtpy"
+      elif inputsq.len == 3:
+        #foundlinesq = getSeqFromFileLines2(decfilepathst, inputsq[0], inputsq[1], sep3st, sep1st, [0,0], [0,1], true)
+        foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0], inputsq[1], inputsq[2]], @[cmSubInsens, cmSubInsens, cmSubInsens], @[@[0,0], @[0,1], @[0,7]])
+
+
+      # if no exact match found or wildcard used (all found):
+      if foundlinesq.len == 0 or foundlinesq.len > 1:
+
+        if foundlinesq.len == 0:
+          # maybe find something with substring-search
+          #foundsublinesq = getSeqFromFileLines(decfilepathst, inputst, sep3st, sep1st, [0,0])
+          foundsublinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst], @[cmSubInsens], @[@[0,0]])
+        else:   # when wildcard has been entered (all found) proceed as if many are found
+          foundsublinesq = foundlinesq
+
+        if foundsublinesq.len > 1:
+          #echo foundlinesq
+          echo "========================================================================="
+          for linest in foundsublinesq:
+            wordsq = linest.split(sep3st)[0].split(sep1st)
+            outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10) & wordsq[7].alignLeft(12)
+            echo outputst
+          echo "-------------------------------------------------------------------------"
+        elif foundsublinesq.len == 1:
+          echo "========================================================================="
+          onelinest = foundsublinesq[0]
+          wordsq = onelinest.split(sep3st)[0].split(sep1st)
+          declarest = wordsq[0]
+          modulest = wordsq[1]
+          projectst = wordsq[7]
+          outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10) & wordsq[7].alignLeft(12)
+          echo declarest, " - ", modulest, "\p"
+          echoDeclarationData(proj_def_pathst, declarest, modulest, projectst)
+          echo outputst
+          echo "-------------------------------------------------------------------------"      
+          writeFamily(proj_def_pathst, declarest, modulest, directionst, 1, maxdepthit, projectst)
+          echo "-------------------------------------------------------------------------"
+        elif foundsublinesq.len == 0:
+          echo "Item not found..."
+
+      elif foundlinesq.len == 1:
+        echo "========================================================================="
+        onelinest = foundlinesq[0]
+        wordsq = onelinest.split(sep3st)[0].split(sep1st)
+        declarest = wordsq[0]
+        modulest = wordsq[1]
+        dectypest = wordsq[2]
+        linestartst = wordsq[3].split(":")[1]
+        projectst = wordsq[7]
+        outputst = declarest.alignLeft(33) & modulest.alignLeft(40) & wordsq[2].alignLeft(15) & linestartst.alignLeft(10) & projectst.alignLeft(12)
+        echo declarest, " - ", modulest, "\p"
+        echoDeclarationData(proj_def_pathst, declarest, modulest, projectst)
+        echo outputst
+        echo "-------------------------------------------------------------------------"
+        writeFamily(proj_def_pathst, declarest, modulest, directionst, 1, maxdepthit, projectst)
+        echo "-------------------------------------------------------------------------"
+
+    echo "Exiting..."
+
+
+  except IndexDefect:
+    let errob = getCurrentException()
+    echo "\p-----error start-----" 
+    echo "Index-error caused by bug in program"
+    echo "System-error-description:"
+    echo errob.name
+    echo errob.msg
+    echo repr(errob) 
+    echo "----End error-----\p"
+
+    #unanticipated errors come here
+  except:
+    let errob = getCurrentException()
+    echo "\p******* Unanticipated error *******" 
+    echo errob.name
+    echo errob.msg
+    echo repr(errob)
+    echo "\p****End exception****\p"
+
+
+
 proc echoHelpInfo() = 
 
   echo "Help for CodeTwig:"
@@ -1503,7 +1906,7 @@ proc echoHelpInfo() =
   var allcommandst = """
     for kind, key, val in optob.getopt():
       case kind:
-      of cmdArgument:             # without hyphen(s); used here for project-definition-file-path
+      of cmdArgument:                       # without hyphen(s); used here for project-definition-file-path
         projectpathst = key
       of cmdShortOption, cmdLongOption:
         case key:
@@ -1513,6 +1916,8 @@ proc echoHelpInfo() =
             procst = "addSourceFilesToProject"
           of "d", "declarations":
             procst =  "createDeclarationList"
+          of "c", "combine":                       # combine multiple projects / dec-lists (later more?)
+            procst = "createMultiProjectFiles"
           of "v", "views":
             procst = "createAllViewFiles"
           of "g", "generate_all":
@@ -1539,20 +1944,58 @@ proc echoHelpInfo() =
 proc createMultiProjectFiles(multiprojectdefst: string) = 
 
 #[
-  
-]#
-  discard()
+  Currently:
+  v-create a multi-project directory based on your .mul-file
+  v-Concatenate the dec-lists from multiple projects as defined in your 
+  multi-project-definition (.mul)
 
+  (After you have defined some projects in project-files (.pro),
+  you can create a multi-project-definition that enables you to show 
+  more projects at once; for now that is trees of usage and used-by.)
+
+]#
+  
+  var 
+    reltargetprojectpathst, multiprojectnamest, projectst, declist: string
+    project_filesq, dec_list_filepathsq: seq[string]
+    newdeclist: string
+
+
+  # create a target-dir and -file, ie the dec-list
+  var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(multiprojectdefst))
+  reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
+  multiprojectnamest = string(pd_filebasepa)
+
+  if not dirExists(reltargetprojectpathst):   
+    createDir(reltargetprojectpathst)     # proc creates subdirs also
+    echo "Creating target-directory for your " & codetwigst & "-project: " & reltargetprojectpathst
+  else:
+    echo "Using target-directory for your " & codetwigst & "-project: " & reltargetprojectpathst
+  
+  # extract the project-file-names from the multiproj-file
+  project_filesq = extractFileSectionToSequence(multiprojectdefst, "PROJECTS_LIST", ">----------------------------------<")
+
+
+  # retrieve the phase3 dec-list for all projects and put them in a list-seq
+  for pfilest in project_filesq:
+    projectst = pfilest[0..pfilest.len - 5]
+
+    declist = ct_projectsdirst & "/" & projectst  & "/" & clipString(projectst, 7) & "_phase3_dec_list.dat"
+    dec_list_filepathsq.add(declist)
+
+  newdeclist = reltargetprojectpathst & "/" & clipString(multiprojectnamest, 7) & "_phase3_dec_list.dat"
+
+  concatenateFiles(dec_list_filepathsq, newdeclist)
 
 
 
 
 proc createAllViewFiles(filepathst: string) = 
 
-    createCodeViewFile(filepathst, viewBasic_OneLevel)
-    createCodeViewFile(filepathst, viewBasic_TwoLevels)
-    createCodeViewFile(filepathst, viewExtended_OneLevel)
-    createCodeViewFile(filepathst, viewExtended_TwoLevels)
+  createCodeViewFile(filepathst, viewBasic_OneLevel)
+  createCodeViewFile(filepathst, viewBasic_TwoLevels)
+  createCodeViewFile(filepathst, viewExtended_OneLevel)
+  createCodeViewFile(filepathst, viewExtended_TwoLevels)
 
 
 
@@ -1585,7 +2028,7 @@ proc processCommandLine() =
     # firstly load the args from the commandline and set the needed vars 
     for kind, key, val in optob.getopt():
       case kind:
-      of cmdArgument:
+      of cmdArgument:                       # without hyphen(s); used here for project-definition-file-path
         projectpathst = key
       of cmdShortOption, cmdLongOption:
         case key:
@@ -1595,9 +2038,11 @@ proc processCommandLine() =
             procst = "addSourceFilesToProject"
           of "d", "declarations":
             procst =  "createDeclarationList"
+          of "c", "combine":                       # combine multiple projects / dec-lists (later more?)
+            procst = "createMultiProjectFiles"
           of "v", "views":
             procst = "createAllViewFiles"
-          of "g", "generate_all":
+          of "g", "generate_all":                 # both dec-lists and view-files
             procst = "generate_all"
           of "t", "tree":
             procst = "showDeclarationBranch"
@@ -1631,6 +2076,8 @@ proc processCommandLine() =
           echo addSourceFilesToProject(projectpathst)
         of "createDeclarationList":
           createDeclarationList(projectpathst)
+        of "createMultiProjectFiles":
+          createMultiProjectFiles(projectpathst)
         of "createAllViewFiles":
           createAllViewFiles(projectpathst)
         of "generate_all":
@@ -1730,6 +2177,12 @@ else:
     showDeclarationBranch(filepathst, "usage", 3)
     #showDeclarationBranch(filepathst, "used-by", 5)
 
-  if true:
+  if false:
     echoDeclarationData(filepathst, "formatText", "process_text")
+
+  if false:
+    createMultiProjectFiles("projects/myprojects.mul")
+
+  if true:
+    echo extractFileExtension("opa.oma.txt")
 
