@@ -22,8 +22,9 @@ import jolibs/generic/[g_disk2nim, g_templates, g_tools, g_stringdata]
 import std/[os, strutils, paths, tables, parseopt]
 #import dirs
 
+
 var 
-  versionfl: float = 1.55
+  versionfl: float = 1.56
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -1171,7 +1172,7 @@ proc getSeqFromFileLines2(filepathst, fstsearchst, secsearchst, sep1st, sep2st: 
 
 
 
-proc getSeqFromLinesSpecial(filepathst, searchst, sep1st, sep2st: string): seq[string] = 
+proc getSeqFromLinesSpecial(filepathst, searchst, sep1st, sep2st: string, projectst = ""): seq[string] = 
   #[
     Search-function specific for the dec-list phase-3.
     It searches in all the used declarations for each line.
@@ -1184,18 +1185,34 @@ proc getSeqFromLinesSpecial(filepathst, searchst, sep1st, sep2st: string): seq[s
   var 
     fileob: File
     searchfieldvalst: string
-    outputsq, declaresq, uselinesq: seq[string] = @[]
+    outputsq, declaresq, sublinesq, fieldvalsq: seq[string] = @[]
+    project_matchingbo: bool
 
   try:
     fileob = open(filepathst, fmRead)
 
     for linest in fileob.lines:
+      project_matchingbo = false
       declaresq = linest.split(sep1st)
-      for it, uselinest in declaresq:
+      for it, sublinest in declaresq:
+        if it == 0:
+          if projectst != "":
+            fieldvalsq = sublinest.split(sep2st)
+            if fieldvalsq[7] == projectst:
+              project_matchingbo = true
         if it > 0:
-          uselinesq = uselinest.split(sep1st)
-          if uselinesq[0].toLowerAscii.contains(searchst.toLowerAscii):
-            outputsq.add(linest)
+          if projectst == "":
+            fieldvalsq = sublinest.split(sep2st)
+            if fieldvalsq[0].toLowerAscii == searchst.toLowerAscii:
+              if linest notin outputsq:
+                outputsq.add(linest)
+          else:
+            if project_matchingbo:
+              fieldvalsq = sublinest.split(sep2st)
+              if fieldvalsq[0].toLowerAscii == searchst.toLowerAscii:
+                if linest notin outputsq:
+                  outputsq.add(linest)
+
 
     fileob.close()
     result = outputsq
@@ -1283,13 +1300,13 @@ proc writeFamily(proj_def_pathst, declarationst, modulest, directionst: string, 
 
     elif directionst == "used-by":
 
-      foundlinesq = getSeqFromLinesSpecial(decfilepathst, declarationst, sep3st, sep1st)
+      foundlinesq = getSeqFromLinesSpecial(decfilepathst, declarationst, sep3st, sep1st, projectst)
       for linest in foundlinesq:
         dlinesq = linest.split(sep3st)[0].split(sep1st)
         choppedmodulest = extractFilename(dlinesq[1])
         if choppedmodulest != dlinesq[1]:
           choppedmodulest = ".../" & string(extractFilename(dlinesq[1]))
-        decdatalinest = dlinesq[0].alignLeft(33) & choppedmodulest.alignLeft(23) & dlinesq[2].alignLeft(15) & dlinesq[3]
+        decdatalinest = dlinesq[0].alignLeft(33) & choppedmodulest.alignLeft(23) & dlinesq[2].alignLeft(20) & dlinesq[3].alignLeft(15) & dlinesq[7].alignLeft(15) 
         indentationst = "    ".repeat(curdepthit)
         echo indentationst & decdatalinest
         if curdepthit <= maxdepthit:
@@ -1317,7 +1334,7 @@ proc writeFamily(proj_def_pathst, declarationst, modulest, directionst: string, 
 
 
 
-
+#[
 proc writeFamily_old(proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int) = 
 #[
   Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
@@ -1400,9 +1417,10 @@ proc writeFamily_old(proj_def_pathst, declarationst, modulest, directionst: stri
     echo errob.msg
     echo repr(errob)
     echo "\p****End exception****\p"
+]#
 
 
-
+#[
 proc echoDeclarationData_old(proj_def_pathst, declarationst, modulest: string) = 
 
   #[
@@ -1515,7 +1533,7 @@ proc echoDeclarationData_old(proj_def_pathst, declarationst, modulest: string) =
     echo repr(errob)
     echo "\p****End exception****\p"
 
-
+]#
 
 proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string, projectst: string = "") = 
 
@@ -1636,7 +1654,7 @@ proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string, proje
 
 
 
-
+#[
 
 proc showDeclarationBranchSingle(proj_def_pathst, directionst: string, maxdepthit: int) = 
 
@@ -1750,7 +1768,7 @@ proc showDeclarationBranchSingle(proj_def_pathst, directionst: string, maxdepthi
     echo repr(errob)
     echo "\p****End exception****\p"
 
-
+]#
 
 
 proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int) = 
@@ -1807,7 +1825,10 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
       wisp(inputst)
       if inputsq.len == 1:
         #foundlinesq = getSeqFromFileLines(decfilepathst, inputst, sep3st, sep1st, [0,0], false)
-        foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst], @[cmExactInsens], @[@[0,0]])
+        if inputst.startswith("~") or inputst.endswith("~"):
+          foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst.strip(chars = {'~'})], @[cmExactInsens], @[@[0,0]])
+        else:
+          foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst], @[cmSubInsens], @[@[0,0]])
       elif inputsq.len == 2:
         if projecttypest == "single":
           foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0], inputsq[1]], @[cmSubInsens, cmSubInsens], @[@[0,0], @[0,1]])
@@ -1815,7 +1836,10 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
           echo "For multi-projects: Enter one item (proc) or three items (declaration;module;project); it can be emtpy"
       elif inputsq.len == 3:
         #foundlinesq = getSeqFromFileLines2(decfilepathst, inputsq[0], inputsq[1], sep3st, sep1st, [0,0], [0,1], true)
-        foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0], inputsq[1], inputsq[2]], @[cmSubInsens, cmSubInsens, cmSubInsens], @[@[0,0], @[0,1], @[0,7]])
+        if inputsq[0].startswith("~") or inputsq[0].endswith("~"):
+          foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0].strip(chars = {'~'}), inputsq[1], inputsq[2]], @[cmExactInsens, cmSubInsens, cmSubInsens], @[@[0,0], @[0,1], @[0,7]])
+        else:
+          foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0], inputsq[1], inputsq[2]], @[cmSubInsens, cmSubInsens, cmSubInsens], @[@[0,0], @[0,1], @[0,7]])
 
 
       # if no exact match found or wildcard used (all found):
@@ -1830,14 +1854,14 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
 
         if foundsublinesq.len > 1:
           #echo foundlinesq
-          echo "========================================================================="
+          echo "=============================================================================================================="
           for linest in foundsublinesq:
             wordsq = linest.split(sep3st)[0].split(sep1st)
             outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10) & wordsq[7].alignLeft(12)
             echo outputst
-          echo "-------------------------------------------------------------------------"
+          echo "--------------------------------------------------------------------------------------------------------------"
         elif foundsublinesq.len == 1:
-          echo "========================================================================="
+          echo "============================================================================================================"
           onelinest = foundsublinesq[0]
           wordsq = onelinest.split(sep3st)[0].split(sep1st)
           declarest = wordsq[0]
@@ -1847,14 +1871,14 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
           echo declarest, " - ", modulest, "\p"
           echoDeclarationData(proj_def_pathst, declarest, modulest, projectst)
           echo outputst
-          echo "-------------------------------------------------------------------------"      
+          echo "--------------------------------------------------------------------------------------------------------------"      
           writeFamily(proj_def_pathst, declarest, modulest, directionst, 1, maxdepthit, projectst)
-          echo "-------------------------------------------------------------------------"
+          echo "--------------------------------------------------------------------------------------------------------------"
         elif foundsublinesq.len == 0:
           echo "Item not found..."
 
       elif foundlinesq.len == 1:
-        echo "========================================================================="
+        echo "=============================================================================================================="
         onelinest = foundlinesq[0]
         wordsq = onelinest.split(sep3st)[0].split(sep1st)
         declarest = wordsq[0]
@@ -1866,9 +1890,9 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
         echo declarest, " - ", modulest, "\p"
         echoDeclarationData(proj_def_pathst, declarest, modulest, projectst)
         echo outputst
-        echo "-------------------------------------------------------------------------"
+        echo "--------------------------------------------------------------------------------------------------------------"
         writeFamily(proj_def_pathst, declarest, modulest, directionst, 1, maxdepthit, projectst)
-        echo "-------------------------------------------------------------------------"
+        echo "--------------------------------------------------------------------------------------------------------------"
 
     echo "Exiting..."
 

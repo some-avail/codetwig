@@ -1,0 +1,32 @@
+CodeTwig can create special views of your programming-projects.
+
+This is a multi-project-definition.
+Multi-project-definitions must have the extension .mul
+
+After you have defined some projects in project-files (.pro),
+you can create a multi-project-definition that enables you to show 
+more projects at once; for now that is trees of usage and used-by.
+
+Substitute the below sample-projects with your own.
+
+To create a multi-project declaration-list do the following:
+-create and update the individual projects you want to include.
+in below list.
+-run the command: ./ctwig projects/your_multiproject.mul -c:c
+-the command creates a directory and concatenates the dec-list 
+of the individual projects into one with a similar 
+naming-convention.
+
+
+
+
+
+PROJECTS_LIST
+someproject.pro
+anotherproject.pro
+libraryproject.pro
+>----------------------------------<
+
+
+
+
