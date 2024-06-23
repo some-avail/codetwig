@@ -11,10 +11,14 @@ For example you run:
 ctwig projects/myproj.pro -ct
 
 ADAP NOW
--CT version 2.0 will be multi-project and multi-level
--design objects
--design conversions
+-CT version >= 1.5 will be multi-project and multi-level
+
+ADAP FUT
+-CT version x.y - implement the objects?? not soon because they only beautify the code..
+  v-design objects
+  -design conversions
 ]#
+
 
 
 import jolibs/generic/[g_disk2nim, g_templates, g_tools, g_stringdata]
@@ -33,6 +37,17 @@ var
 
 
 type
+
+  ViewType = enum
+    viewBasic_OneLevel
+    viewBasic_TwoLevels
+    viewExtended_OneLevel
+    viewExtended_TwoLevels
+    viewAll
+
+
+  # below objects are drafted but NOT USES YET;
+  # however they give a idea of the involved structures.
   # below pathI and pathE are usually resp. including or excluding a filename
   Project =  object of RootObj
     proName: string
@@ -66,14 +81,6 @@ type
     usedDec: string
     usedCallLine: int
 
-
-
-  ViewType = enum
-    viewBasic_OneLevel
-    viewBasic_TwoLevels
-    viewExtended_OneLevel
-    viewExtended_TwoLevels
-    viewAll
 
 
 # var debugbo: bool = true
