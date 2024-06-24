@@ -13,7 +13,8 @@ All commands follow a certain structure and style:
 Currently all commands require a project-definition-path, except for help:
 ctwig -h or ctwig --help
 
-As option-separator one can use ':', '=' or none (for short options) and space (for long options)
+As option-separator one can use ':' and '='. Also a brief option-sep exists of none for short options and space for long options. Example short style: ctwig projects/someproject.pro -ct -rb -d4
+
 
 Below I will list the commands with possible (extra) options in the logical order of use.
 All commands are invoked as:
@@ -30,6 +31,10 @@ All codetwig-genererated files are placed in a newly created folder: projects/yo
 So the folder-name is based on the basename of your project-def-file.
 
 
+MULTI-PROJECTS
+After you have defined some projects in project-files (.pro), since CT 1.5x you can create a multi-project-definition (.mul) that enables you to show more projects at once; for now that is the trees of usage and used-by. (no views, for that you can look at the respective projects). Lateron the source-code-view will be added.
+
+
 
 ALL COMMANDS
 
@@ -39,7 +44,7 @@ no options
 Full example:
 ctwig projects/yourproject.pro -c:a
 
-After you have copied the project-template, renamed it and adjusted the path to the source-files, you can run above command. All it does for now is adding the names of the source-files (.nim) from the source-path to project-def-file (yourproject.pro).
+After you have copied the project-template, renamed it and adjusted the path to the source-files, you can run above command. The operation adds the names of the source-files (.nim) from the source-path and (since 1.5x) underlying directories to project-def-file (yourproject.pro). You must manually prune backup- or test-files or other .nim-files that you want to exclude from the codetwig-analysis.
 ---------------------------------------------------------------------------
 
 -c:d or --command:declarations
@@ -52,7 +57,7 @@ Running this command will create a list of declarations. Declarations are the va
 - declarations (like procs) for all source-files
 - declarations that are used in above declarations (these are appended to above line)
 
-The arise of the dec-list happens in three phases, whereby phase 3 is the version that is used by other functions.
+The arise of the dec-list happens in three phases, whereby phase 3 is the version that is used by other functions. Since CT 1.5x a field with the project-name is added to enable multi-project trees. (command:combine will tell more on that).
 ---------------------------------------------------------------------------
 
 -c:v or --command:views
@@ -61,7 +66,7 @@ no options
 Full example:
 ctwig projects/yourproject.pro -c:v
 
-Running this command will create some views of the source-code. Currently four views are available, basic and extended view with one level or two levels. The one-level-files show the source-files and the declarations only (usually mostly procs), and the two-level-files shows the (first-level) usages of each declaration (used procs). The extended ones provide also the parameters of function and the added comment.
+Running this command will create some views of the source-code. Currently four views are available, basic and extended view with one level or two levels. The one-level-files show the source-files and the declarations only (usually mostly procs), and the two-level-files shows the (first-level) usages of each declaration (that is mostly the used procs). The extended ones provide also the parameters of function and the added comment.
 
 So you get:
 yourproject_basic_one-level_view.txt
@@ -76,9 +81,22 @@ no options
 Full example:
 ctwig projects/yourproject.pro -c:g
 
-This command generates both the declaration-list and all of the views. Use it if you want to update your project and are not interested in the output screen-notification.
+This command generates both the declaration-list and all of the views for a project. Use it if you want to update your project and are not interested in the output screen-notifications of the dec-list.
 ---------------------------------------------------------------------------
 
+
+
+-c:c or --command:combine
+
+After you have defined some projects in project-files (.pro), since CT 1.5x you can create a multi-project-definition (.mul) that enables you to show more projects at once; for now that is the trees of usage and used-by.
+
+To create a multi-project declaration-list do the following:
+-create and update the individual projects you want to include in below list.
+-run the command: ./ctwig projects/your_multiproject.mul -c:c
+-the command creates a directory and concatenates the dec-lists of the individual projects into one with a similar naming-convention. (mymultiproject.mul generates a subdir mymultiproject)
+
+
+---------------------------------------------------------------------------
 -c:t or --command:tree
 options:
 * direction
@@ -92,14 +110,37 @@ ctwig projects/yourproject.pro -c:t -r:b -d:4
 ctwig projects/yourproject.pro -c:t -r:u -d:2
 ctwig projects/yourproject.pro -c:t          (using the defaults)
 
+And since 1.5x:
+ctwig projects/yourmultiproject.mul -c:t
+
 Seps can be ommitted:
 ctwig projects/yourproject.pro -ct -ru -d2
 
 
 Lastly above command starts with a box in which a substring can be entered to search for a declaration. Then  a list of declarations is displayed which have the substring in them. If the entered substring matches only one declaration, a tree is shown based on the parameters direction and depth. The direction usage refers to the calls to other procs that are made in the proc, where used-by stands for all the procs that are using the declaration (so the reverse process). The depths stands for the number of levels that are shown.
 
-As off CT 0.35 you can add a semi-column to indicate not only declaration but module as well, like so: 
+Also now declarational arguments and comments are added to the chosen declaration.
+
+Since CT 0.35 you can add a semi-column to indicate not only declaration but module as well, like so: 
 declaration;module
 This is needed to show same-named decs.
+Since CT 1.5x you can also enter a projectname, which is usefull for the multiproject-case, like so:
+declaration;module;project
 
-Also now declarational arguments and comment are added to the chosen declaration.
+Omitting things means a wildcard. A tilde ~ prepended or postpended means exact-match (but case-insensitive).
+
+Examples:
+
+- entering nothing returns all decs
+- ;;  also means all decs
+- ;;someproject  means all decs of someproject
+- ;somemodule;   means all decs in somemodule of all projects
+
+Defaultly the search is substring but sometimes you need an EXACT-MATCH, for example when you have myfunc and myfunction, for which the first one is a substring of the second one.
+- myfunc~ returns only that function (if unique in all projects); also allowed
+- ~myfunc
+- ~myfunc~ for who likes to type ;-)
+
+
+
+
