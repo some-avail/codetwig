@@ -1,0 +1,14 @@
+What's new in CodeTwig?
+
+
+1.56
+- recursive scanning of subdirs for source-files.
+- multiproject enables creation of a multi-project declaration-list and thus treeviews
+- add a flexible semicolumn-separated search: declaration;module;project
+
+
+0.35
+- Both in the views and in the tree-function the following information will be added:
+  - procedural arguments
+  - initial comments
+
