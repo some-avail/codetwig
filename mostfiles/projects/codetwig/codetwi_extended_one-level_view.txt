@@ -6,7 +6,12 @@
 ****************    ctwig   ***********************************************************************
 
 ----------------------------------------------------------------------
-    addSourceFilesToProject_old      ctwig          proc      line: 106
+    clipString                       ctwig          proc      line: 120
+        (inputst: string, lengthit: int): string 
+
+  # maximize string at lengthit
+----------------------------------------------------------------------
+    addSourceFilesToProject_old      ctwig          proc      line: 137
         (proj_def_pathst: string): string 
         
   Based on the project-path in the project-def-file, the source-files
@@ -17,11 +22,12 @@
   -exclusion-list to auto-exclude certain files that are probably copies
   of originals, with numbers and words like bak or copy.
   
+
     # open the project-file for read-write access
         # check for block-header
               # read the project-path
 ----------------------------------------------------------------------
-    addSourceFilesToProject          ctwig          proc      line: 184
+    addSourceFilesToProject          ctwig          proc      line: 215
         (proj_def_pathst: string): string 
         
   Based on the project-path in the project-def-file, the source-files
@@ -36,18 +42,20 @@
   -exclusion-list to auto-exclude certain files that are probably copies
   of originals, with numbers and words like bak or copy.
   
+
     # open the project-file for read-write access
         # check for block-header
               # read the project-path
 ----------------------------------------------------------------------
-    extractFileSectionToSequence     ctwig          proc      line: 269
+    extractFileSectionToSequence     ctwig          proc      line: 300
         (filepathst, start_separst, end_separst: string): seq[string] 
         
     Extract the lines of a file that are located between the starting and ending separator and 
     put them in a sequence.
   
+
 ----------------------------------------------------------------------
-    getSliceFromAnchor               ctwig          proc      line: 292
+    getSliceFromAnchor               ctwig          proc      line: 323
         (tekst, anchorst: string, possib_endmarksq: seq[string], appendspacebo: bool): array[0..1, int] 
         
     Searching in the tekst, return a target-string indicated as slice [start,end] located after an anchor-string.
@@ -65,11 +73,13 @@
     ADAP MAYBE
     -add orientation; target can be located next to an anchor-string with a certain orientation (before or after).
   
+
 ----------------------------------------------------------------------
-    countLinesOfFile                 ctwig          proc      line: 366
+    countLinesOfFile                 ctwig          proc      line: 397
         (filepathst: string): int 
+
 ----------------------------------------------------------------------
-    createDeclarationList            ctwig          proc      line: 379
+    createDeclarationList            ctwig          proc      line: 410
         (proj_def_pathst: string) 
         
   proj_def_pathst = path to the file in which the codetwig-project for a source-project is defined
@@ -86,11 +96,12 @@
   ADAP FUT
   -add special type of declarations like "route:""
   
+
     # declaration-types
     # to avoid doubles
     # must be unique
 ----------------------------------------------------------------------
-    getSliceFromLines                ctwig          proc      line: 660
+    getSliceFromLines                ctwig          proc      line: 691
         (fileob: var File, linestartit, lineendit: int, starttagst, endtagst: string, samelinebo: bool = false): array[0..1, int] 
         
     Looping thru the lines, starting at linestart, retrieve the starting and ending point 
@@ -100,11 +111,12 @@
     Call like:
     interpointar = getSliceFromLines(fob, linestartit, lineendit, "(", ")")
   
+
           # geval1: starttag is ) en eindtag is =
           # geval2: starttag is ( en eindtag is )
                 # search the next occurence of starttagst
 ----------------------------------------------------------------------
-    getXLinesWithSubstring           ctwig          proc      line: 741
+    getXLinesWithSubstring           ctwig          proc      line: 772
         (fileob: var File, subst: string, linestartit, lineendit, numberit: int): seq[string] 
          Retrieve numberit lines from fileob based on the substring in them 
      starting from linestartit and put them in a sequence. Lines are prestripped for comparison
@@ -112,8 +124,9 @@
       Call like:
       commentlinesq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
 
+
 ----------------------------------------------------------------------
-    createCodeViewFile               ctwig          proc      line: 771
+    createCodeViewFile               ctwig          proc      line: 802
         (proj_def_pathst: string, viewtypeeu: ViewType) 
         
   Create view-files of the enum-type
@@ -121,11 +134,12 @@
   ADAP FUT
   ??- sort second-level decs on line-nr.
 
+
     # retrieve project-data from project-def-file
     # set the target-dir and declaration-file
     # create the source-file-table
 ----------------------------------------------------------------------
-    getSeqFromFileLines              ctwig          proc      line: 1012
+    getSeqFromFileLines              ctwig          proc      line: 1050
         (filepathst, searchst, sep1st, sep2st: string, searchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
         
     Add lines to the sequence which match the search-filter.
@@ -140,8 +154,9 @@
 
     extra separator and sortfieldar may come later    
   
+
 ----------------------------------------------------------------------
-    getSeqFromFileLines2             ctwig          proc      line: 1074
+    getSeqFromFileLines2             ctwig          proc      line: 1112
         (filepathst, fstsearchst, secsearchst, sep1st, sep2st: string, fstsearchfieldar, secsearchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
         
     Add lines to the sequence which match the search-filter.
@@ -155,9 +170,10 @@
 
     extra separator and sortfieldar may come later
   
+
 ----------------------------------------------------------------------
-    getSeqFromLinesSpecial           ctwig          proc      line: 1154
-        (filepathst, searchst, sep1st, sep2st: string): seq[string] 
+    getSeqFromLinesSpecial           ctwig          proc      line: 1192
+        (filepathst, searchst, sep1st, sep2st: string, projectst = ""): seq[string] 
         
     Search-function specific for the dec-list phase-3.
     It searches in all the used declarations for each line.
@@ -166,61 +182,72 @@
     MAYBE:
     extra separator and sortfieldar may come later
   
+
 ----------------------------------------------------------------------
-    writeFamily                      ctwig          proc      line: 1206
+    writeFamily                      ctwig          proc      line: 1260
         (proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int, projectst: string = "") 
         
   Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
 
-    # set the target-dir and declaration-file
-----------------------------------------------------------------------
-    writeFamily_old                  ctwig          proc      line: 1297
-        (proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int) 
-        
-  Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
 
     # set the target-dir and declaration-file
 ----------------------------------------------------------------------
-    echoDeclarationData_old          ctwig          proc      line: 1382
-        (proj_def_pathst, declarationst, modulest: string) 
-        
-    Echo extra data of the declare like parameters and comment.
-  
-      # retrieve project-data from project-def-file
-    # set the target-dir and declaration-file
-    # add the parameter-declares (inputs)
-----------------------------------------------------------------------
-    echoDeclarationData              ctwig          proc      line: 1496
+    echoDeclarationData              ctwig          proc      line: 1354
         (proj_def_pathst, declarationst, modulest: string, projectst: string = "") 
         
     Echo extra data of the declare like parameters and comment.
   
+
       # retrieve project-data from project-def-file
     # set the target-dir and declaration-file
     # add the parameter-declares (inputs)
 ----------------------------------------------------------------------
-    showDeclarationBranchSingle      ctwig          proc      line: 1611
+    showDeclarationBranch            ctwig          proc      line: 1478
         (proj_def_pathst, directionst: string, maxdepthit: int) 
         
   Show a tree of declarations; either a usage-tree or a used-by-tree.
 
-    # retrieve project-data from project-def-file
-    # set the target-dir and declaration-file
-      # if no exact match found or wildcard * used (all found):
-----------------------------------------------------------------------
-    showDeclarationBranch            ctwig          proc      line: 1726
-        (proj_def_pathst, directionst: string, maxdepthit: int) 
-        
-  Show a tree of declarations; either a usage-tree or a used-by-tree.
 
     # set the target-dir and declaration-file
       # if no exact match found or wildcard used (all found):
           # maybe find something with substring-search
 ----------------------------------------------------------------------
-    echoHelpInfo                     ctwig          proc      line: 1863
-        () 
+    getRangeOfFileLines              ctwig          proc      line: 1625
+        (filepathst: string, linestartit, lineendit: int): seq[string] 
+        
+    Write the lines of the range starting with linestartit and ending with lineendit 
+    to an output-sequence and return it.
+  
+
 ----------------------------------------------------------------------
-    createMultiProjectFiles          ctwig          proc      line: 1910
+    echoSequence                     ctwig          proc      line: 1653
+        (inputsq: seq[string]) 
+
+----------------------------------------------------------------------
+    echoRangeOfFileLines             ctwig          proc      line: 1658
+        (filepathst: string, linestartit, lineendit: int) 
+
+----------------------------------------------------------------------
+    getModulePath                    ctwig          proc      line: 1664
+        (proj_def_pathst, modulest, projectst: string): string 
+
+    # retrieve project-data from project-def-file
+----------------------------------------------------------------------
+    showSourceCode                   ctwig          proc      line: 1683
+        (proj_def_pathst: string) 
+        
+  Show the source-code of a declaration
+
+
+    # set the target-dir and declaration-file
+      # if no exact match found or wildcard used (all found):
+          # maybe find something with substring-search
+----------------------------------------------------------------------
+    echoHelpInfo                     ctwig          proc      line: 1836
+        () 
+
+----------------------------------------------------------------------
+    createMultiProjectFiles          ctwig          proc      line: 1883
         (multiprojectdefst: string) 
         
   Currently:
@@ -233,23 +260,27 @@
   more projects at once; for now that is trees of usage and used-by.)
 
 
+
   # create a target-dir and -file, ie the dec-list
   # extract the project-file-names from the multiproj-file
   # retrieve the phase3 dec-list for all projects and put them in a list-seq
 ----------------------------------------------------------------------
-    createAllViewFiles               ctwig          proc      line: 1959
+    createAllViewFiles               ctwig          proc      line: 1932
         (filepathst: string) 
+
 ----------------------------------------------------------------------
-    generate_all                     ctwig          proc      line: 1968
+    generate_all                     ctwig          proc      line: 1941
         (projectpathst: string) 
+
 ----------------------------------------------------------------------
-    processCommandLine               ctwig          proc      line: 1976
+    processCommandLine               ctwig          proc      line: 1949
         () 
         
   firstly load the args from the commandline and set the needed vars 
   then run the chosen procedures.
 
   test: string
+
 
     # firstly load the args from the commandline and set the needed vars 
 
@@ -259,12 +290,14 @@
 ----------------------------------------------------------------------
     getFuncParts                     jolibs/generic/g_cookieproc      line: 29
         (functionpartst: string): OrderedTable[string, string] 
+
   # parse the function-parts
   # sample: "funcname::g_cookie.dummyPass++location::inner++varname:statustext++param1::nieuwe statustekst"
   # log($functa)
 ----------------------------------------------------------------------
     runFunctionFromClient            jolibs/generic/g_cookieproc      line: 46
         (funcPartsta: OrderedTable[string, string], jnob: JsonNode): string 
+
   # run the function
 #     "funcname:setDropDown++location:inner++varname:dropdown1++param2:dropdownname_01++param3:third realvalue++param4:1", 60);
 # proc setDropDown*(jnob: JsonNode, dropdownnamest, selected_valuest: string, 
@@ -275,18 +308,22 @@
 ----------------------------------------------------------------------
     withDb                           jolibs/generic/g_databasetemplate  line: 78
         (body: untyped): untyped 
+
   # perform db-ops with automatic opening and closing of the db
 ----------------------------------------------------------------------
     enquote                          jolibs/generic/g_databaseproc      line: 88
         (unquoted_namest: string): string 
+
   # to be implemented
 ----------------------------------------------------------------------
     dequote                          jolibs/generic/g_databaseproc      line: 92
         (quoted_namest: string): string 
+
   # to be implemented
 ----------------------------------------------------------------------
     convertChars                     jolibs/generic/g_databaseproc      line: 96
         () 
+
   # to be implemented
   # convert special characters, like apostrophe
 ----------------------------------------------------------------------
@@ -306,6 +343,7 @@ sample-create-string:
 Type TEXT, Builder STRING, Date_of_build DATE, Weight REAL, Cost NUMERIC, 
 Purpose STRING, Modelnr TEXT)
  
+
     # firstly strip surrounding spaces and then split on spaces
     # strip possible brackets
 ----------------------------------------------------------------------
@@ -334,6 +372,7 @@ FROM Relations
 WHERE ((Not (Relations.Change) Is Null))
 ORDER BY Relations.Change
  
+
       # firstly strip surrounding spaces and then split on spaces
       # strip possible brackets
       # firstly strip surrounding spaces and then split on spaces
@@ -365,6 +404,7 @@ ORDER BY Relations.Change
 
     ADAP FUT:
    
+
   # which fields to query
   # prepare the where-clause / row-filter
   # prep order-strings
@@ -396,6 +436,7 @@ ORDER BY Relations.Change
 
     ADAP FUT:
    
+
   # which fields to query
   # prepare the where-clause / row-filter
   # prep order-strings
@@ -412,6 +453,7 @@ ORDER BY Relations.Change
     addNewFromParams("mr_data", @[["Droidname", "Koid"], ["Type","neutronic"]])
     addNewFromParams("mr_data", @[["Weight", "63"]])
    
+
 ----------------------------------------------------------------------
     deleteFromParams                 jolibs/generic/g_databaseproc      line: 476
         (tablenamest: string, comparetype: Comparetype = compString, 
@@ -421,6 +463,7 @@ ORDER BY Relations.Change
     fieldvaluesq = @[] must have at least one array-pair
 
    
+
   # prepare the where-clause / row-filter
   # get the row-sequence
 ----------------------------------------------------------------------
@@ -428,29 +471,35 @@ ORDER BY Relations.Change
         (tablenamest: string, setfieldvaluesq: seq[array[2, string]],
                            comparetype: Comparetype = compString, 
                         wherefieldvaluesq: seq[array[2, string]] = @[]) 
+
   # starting-sql-statement
   # prepare the set-clause
   # prepare the where-clause / row-filter
 ----------------------------------------------------------------------
     getAllUserTables                 jolibs/generic/g_databaseproc      line: 575
         (): seq[string] 
+
 ----------------------------------------------------------------------
     rowCount                         jolibs/generic/g_databaseproc      line: 593
         (tablenamest: string, comparetype: Comparetype = compString, 
                             fieldvaluesq: seq[array[2, string]] = @[]): int 
+
   # get the number of records in the record-set given the criteria
 ----------------------------------------------------------------------
     getColumnCount                   jolibs/generic/g_databaseproc      line: 603
         (tablenamest: string): int 
+
   # get the number of columns of the table
 ----------------------------------------------------------------------
     getKeyFieldStatus                jolibs/generic/g_databaseproc      line: 610
         (tablenamest: string): IdGenerationType 
+
   # Determine how the ID-field is generated culminating in the 
   # enum IdGenerationType (for now only two types supported)
 ----------------------------------------------------------------------
     idValueExists                    jolibs/generic/g_databaseproc      line: 627
         (tablenamest, id_fieldst, id_valuest: string): bool 
+
   # Determine if the passed id-value exists for given table
 
 
@@ -465,6 +514,7 @@ ORDER BY Relations.Change
     The fieldpairsq-param first elem is the real-value, the second one the shown value.
     If they the same put the same names in.
    
+
   # get a table-query to provide the data for the select
 
 
@@ -477,6 +527,7 @@ ORDER BY Relations.Change
   determine the location of the wordpattern with regard to 
   the location of the star
   
+
 ----------------------------------------------------------------------
     writeFilePatternToSeq2           jolibs/generic/g_disk2nimproc      line: 73
         (starred_patternst, source_dirst: string): seq[string] 
@@ -487,6 +538,7 @@ ORDER BY Relations.Change
   -in the middle: *pattern*
 
  
+
   # walk thru the file-iterator and sequence the right file(names)
 ----------------------------------------------------------------------
     writeFilePatternToSeq3           jolibs/generic/g_disk2nimproc      line: 120
@@ -498,6 +550,7 @@ ORDER BY Relations.Change
   -end with / right-part: *pattern
   -in the middle: *pattern*
  
+
   # walk thru the file-iterator and sequence the right file(names)
 ----------------------------------------------------------------------
     writeFilePatternToSeqRec         jolibs/generic/g_disk2nimproc      line: 174
@@ -509,6 +562,7 @@ ORDER BY Relations.Change
   -end with / right-part: *pattern
   -in the middle: *pattern*
  
+
   # walk thru the file-iterator and sequence the right file(names)
 ----------------------------------------------------------------------
     addShowValuesToSeq               jolibs/generic/g_disk2nimproc      line: 223
@@ -518,6 +572,7 @@ ORDER BY Relations.Change
   From the real file-names-seq create a second seq with adjusted names to show in the 
   select-control and zip them into a double array
   
+
 ----------------------------------------------------------------------
     convertFileToSequence            jolibs/generic/g_disk2nimproc      line: 243
         (filepathst, skipst: string): seq[string] 
@@ -525,6 +580,7 @@ ORDER BY Relations.Change
   Convert a file to a Nim-sequence.
   Skip lines with the value skipst.
  
+
 ----------------------------------------------------------------------
     convertMultFilesToSeq            jolibs/generic/g_disk2nimproc      line: 266
         (filepathsq: seq[string], skipst: string): seq[string] 
@@ -532,6 +588,7 @@ ORDER BY Relations.Change
   Convert a file to a Nim-sequence.
   Skip lines with the value skipst.
  
+
 
 
 ****************    jolibs/generic/g_json2html   ***********************************************************************
@@ -553,6 +610,7 @@ ORDER BY Relations.Change
 <input type="radio" id="id_rbut3" name="radio-set-example" onchange="radio-set-example_onchange()" value="rbut3" checked>
 <label for="id_rbut3">and here nr. 3</label><br>
    
+
   # every item in the array is a Jobject
 #        "\" onchange=\"" & setnamest & "_onchange()" &
 ----------------------------------------------------------------------
@@ -576,6 +634,7 @@ Returns for sample-def (default):
 <input type="checkbox" id="id_mies" name="mies" checked>
 <label for="id_mies">mies-bouwman</label><br>
  
+
     # every item in the array is a Jobject
 ----------------------------------------------------------------------
     setDropDown                      jolibs/generic/g_json2htmlproc      line: 171
@@ -603,6 +662,7 @@ Sample output:
 <option value="third realvalue">third value is shown</option>
 </select>
  
+
   # dropdown_html &= "<select id=\"" & namest & "\" name=\"" & namest & "\">\p"
 # <span ><label for="dropdownname_01">Some label:</label></span>
 # <select id="dropdownname_01" name="dropdownname_01" size="1" onchange="dropdownname_01_onchange">
@@ -632,6 +692,7 @@ Sample output:
   ...
 </table> 
  
+
   # labelst = newlang(foundjnob[0]["ddlab"].getStr())  # translated
 #  var valuelistsq = foundjnob[1]["ddvalues"].getElems()   # values not translated for now
       # echo item.getStr()
@@ -653,6 +714,7 @@ ADAP NOW:
 
 Sample output:
  
+
   # labelst = newlang(foundjnob[0]["ddlab"].getStr())  # translated
 #  var valuelistsq = foundjnob[1]["ddvalues"].getElems()   # values not translated for now
   # and now the input boxes for data-entry
@@ -680,6 +742,7 @@ ADAP FUT:
 
 Sample output:
  
+
   # labelst = newlang(foundjnob[0]["ddlab"].getStr())  # translated
 #  var valuelistsq = foundjnob[1]["ddvalues"].getElems()   # values not translated for now
   # and now the input boxes for data-entry
@@ -703,6 +766,7 @@ Sample output:
 
 
  
+
   # labelst = newlang(foundjnob[0]["ddlab"].getStr())  # translated
 #  var valuelistsq = foundjnob[1]["ddvalues"].getElems()   # values not translated for now
   # and now the input boxes
@@ -731,6 +795,7 @@ Sample output:
   <option value="3">Those</option>
 </datalist>
  
+
 # <label for="mylist">Pick an option:</label>
 # <input  list="options" id="mylist" name="mylist" onchange="mylist_onchange" placeholder=greyval/>
 # <datalist id="options">
@@ -742,6 +807,7 @@ Sample output:
     testDeepNodeFromKey              jolibs/generic/g_json_plusproc      line: 50
         (keyst:string, depthcountit: int = 0, 
                   jnob:JsonNode, foundjnob:var JsonNode) 
+
   # deprecated; for testing
   # Get the node from anywhere in the json-exp by recursing 
   # the jnob and finding the key.
@@ -761,22 +827,26 @@ Sample output:
     - added a block structure to enable immediate breaks after find
     for better performance
  
+
       # walk thru the keys
 ----------------------------------------------------------------------
     listKeysFromNode                 jolibs/generic/g_json_plusproc      line: 130
         (jnob:JsonNode, allkeyssq: var seq[string]) 
+
   # -walk thru all keys from a jnob, and put them in allkeyssq
   # -an empty seq must be pre-initalized externally and given as param.
   # walk thru keys
 ----------------------------------------------------------------------
     findDoubleKeys                   jolibs/generic/g_json_plusproc      line: 152
         (keylistsq: seq[string]): seq[string] 
+
   # -find the non-unique keys in a keylist and return them as 
   # a (sub)sequence
 ----------------------------------------------------------------------
     pruneJnodesFromTree              jolibs/generic/g_json_plusproc      line: 166
         (treejnob: var JsonNode, pathtoparentsq, 
                                     siblings_to_prunesq: seq[string]) 
+
   # Remove items (siblings_to_prunesq) from the treejnob that are located at 
   # pathtoparentsq
 ----------------------------------------------------------------------
@@ -788,9 +858,11 @@ Sample output:
       The orphan-jnob must look like: {newkeyst: some-jsonnode, blabla}
       The adoptive node must be preset outside of/before the procedure.
     
+
 ----------------------------------------------------------------------
     replaceLastItemOfSeq             jolibs/generic/g_json_plusproc      line: 198
         (sequencesq: seq[string], newtailest: string): seq[string] 
+
 
 
 ****************    jolibs/generic/g_mine   ***********************************************************************
@@ -798,9 +870,11 @@ Sample output:
 ----------------------------------------------------------------------
     getWebSite                       jolibs/generic/g_mineproc      line: 42
         (addresst: string): string 
+
 ----------------------------------------------------------------------
     getWebSiteAsync                  jolibs/generic/g_mineproc      line: 88
         (addresst: string): string 
+
   # experimental - in progress
 ----------------------------------------------------------------------
     getSubstringPositions            jolibs/generic/g_mineproc      line: 96
@@ -809,6 +883,7 @@ Sample output:
   Return positions of all occurrences of the substring in the string 
   and put them in a list of integers. Zero-based.
   
+
 #  echo stringst
 #  echo subst
 #  echo fragmentsq
@@ -823,6 +898,7 @@ Sample output:
         b(n) < e(n)
         b(n+1) > e(n)
    
+
     # continue second validation
 ----------------------------------------------------------------------
     getDataSeqClean                  jolibs/generic/g_mineproc      line: 161
@@ -836,6 +912,7 @@ Sample output:
 
   Call like: getDataSeqClean(sometext, "<tr>", "</tr>")
    
+
       # build the data-sequence
 ----------------------------------------------------------------------
     getDataSeqDirty                  jolibs/generic/g_mineproc      line: 203
@@ -851,6 +928,7 @@ Sample output:
 
   Call like: getDataSeqDirty(sometext, "<tr>", "</tr>")
    
+
     # search if endtag exists before next starttag
 ----------------------------------------------------------------------
     getPartFromWebAddress            jolibs/generic/g_mineproc      line: 251
@@ -860,6 +938,7 @@ Sample output:
   Expand to parent: http://www.x.nl/a/b/c/blah.html  becomes  http://www.x.nl/a/b/c
   Expand to grandparent: http://www.x.nl/a/b/c/blah.html  becomes  http://www.x.nl/a/b
  
+
   # firstly chop the address up on the slashes
   # if tbo: echo addressq
       # then restore it for the first 3 parts
@@ -870,6 +949,7 @@ Sample output:
   Non-expanded full base: http://www.x.nl/a/b/c/blah.html  becomes  http://www.x.nl
   Expand to parent: http://www.x.nl/a/b/c/blah.html  becomes  http://www.x.nla/b/c
  
+
   # firstly chop the address up on the slashes
   # if tbo: echo addressq
     # then restore it for the first 3 parts
@@ -880,6 +960,7 @@ Sample output:
   Convert the relative child-weblink to absolute based on the given
   parent-link and the relativity-type.
    
+
 ----------------------------------------------------------------------
     substringsInString               jolibs/generic/g_mineproc      line: 373
         (stringst: string, substringsq: seq[string], 
@@ -891,12 +972,15 @@ Sample output:
 
   requires strutils / sequtils ??
  
+
 ----------------------------------------------------------------------
     linkIsPresent                    jolibs/generic/g_mineproc      line: 406
         (childlinkst: string, weblinksq: var seq[array[5, string]]): bool 
+
 ----------------------------------------------------------------------
     multiplyString                   jolibs/generic/g_mineproc      line: 415
         (stringst: string, timesit: int): string 
+
   # m times 3 becomes mmm  
 ----------------------------------------------------------------------
     removeSingleStrings              jolibs/generic/g_mineproc      line: 427
@@ -904,12 +988,14 @@ Sample output:
         
   Remove all occurences of the strings in removablesq from the tekst.
 
+
 ----------------------------------------------------------------------
     removeDuplicateStrings           jolibs/generic/g_mineproc      line: 442
         (tekst: string, removablesq: seq[string]): string 
          
    In the tekst do replace all multiples of a string with its single, for each string in removablesq.
  
+
 ----------------------------------------------------------------------
     removeLongWords                  jolibs/generic/g_mineproc      line: 468
         (tekst: string, maxwordlengthit: int): string 
@@ -917,6 +1003,7 @@ Sample output:
   ADAP FUT:
   ?- choplongwordsbo: chop them up
  
+
 ----------------------------------------------------------------------
     getInnerText3                    jolibs/generic/g_mineproc      line: 490
         (tekst: string, maxwordlengthit: int = -1,
@@ -939,6 +1026,7 @@ Sample output:
   ADAP FUT
   -better clean up of page-breaks etc.
    
+
     # interpunction_reachedbo: bool = false
   # filter and concatenate elems
         # if interpunction_reachedbo == false:
@@ -955,6 +1043,7 @@ Sample output:
   ADAP FUT
   -better clean up of page-breaks etc.
    
+
   # filter and concatenate elems
 ----------------------------------------------------------------------
     getInnerText2                    jolibs/generic/g_mineproc      line: 618
@@ -969,6 +1058,7 @@ Sample output:
   ADAP FUT
   -better clean up of page-breaks etc.
    
+
   # filter and concatenate elems
 ----------------------------------------------------------------------
     createSeqOfUniqueWords           jolibs/generic/g_mineproc      line: 658
@@ -978,6 +1068,7 @@ Sample output:
   Only add words with a length > wordlenghit
   Limit the list-length to topcountit (like top 10)
    
+
 ----------------------------------------------------------------------
     calcWordFrequencies              jolibs/generic/g_mineproc      line: 684
         (input_tekst:string, wordlengthit:int, skiplistsq: seq[string], 
@@ -993,6 +1084,7 @@ Sample output:
     10 = 1 = clip tailing s (to aggregate singular and plural)
     11 = lower-case and no s's
    
+
   # using template for performance 
     # walk thru the words to add words under certain conditions to allwordssq
   # implement template depending of type of freq-counting
@@ -1003,6 +1095,7 @@ Sample output:
          
   Only add words with a length > wordlenghit
    
+
   # for wordst in wordsq:
   #   tempst = removeSingleStrings(wordst, @["\p", "\t", "\c"])
   #   if len(tempst) >= wordlengthit:
@@ -1013,6 +1106,7 @@ Sample output:
          
   Only add words with a length > wordlenghit
    
+
 ----------------------------------------------------------------------
     getDataSequence                  jolibs/generic/g_mineproc      line: 874
         (link_or_tekst, starttagst, endtagst:string): seq[string] 
@@ -1023,6 +1117,7 @@ Sample output:
   sequence: @[]
 
    
+
   # if the website is mal-formed get the data dirtyly..
 ----------------------------------------------------------------------
     getDataBetweenTags2              jolibs/generic/g_mineproc      line: 905
@@ -1032,9 +1127,11 @@ Sample output:
   Get the data between the tag-pair starttag and endtag for 
   the occurit-th occurrence of the pair. (ONE-BASED)
  
+
 ----------------------------------------------------------------------
     getTitleFromWebsite2             jolibs/generic/g_mineproc      line: 930
         (webaddresst:string): string 
+
 ----------------------------------------------------------------------
     getChildLinks                    jolibs/generic/g_mineproc      line: 942
         (parentweblinkst: string, maxdepthit, curdepthit, linknumit: int,
@@ -1055,12 +1152,14 @@ Sample output:
   ADAP FUT:
   -see below
   
+
   # if the website is mal-formed get the data dirtyly..
   # future-approach? Then can also get weblink directly
       # parse the data-sequence for title and link2
 ----------------------------------------------------------------------
     countWords                       jolibs/generic/g_mineproc      line: 1042
         (tekst: string): int 
+
 ----------------------------------------------------------------------
     getTagContent                    jolibs/generic/g_mineproc      line: 1049
         (link_or_tekst, startpartst, endpartst: string): seq[string] 
@@ -1068,17 +1167,20 @@ Sample output:
     Retrieve a sequence of content-data between pairs of startpartst 
     and endpartst. 
    
+
       # parse the data-sequence for the content between > and <
 ----------------------------------------------------------------------
     enlistSequenceToDoc              jolibs/generic/g_mineproc      line: 1084
         (sequensq: seq[string], output_doc: DocType, 
                           maxlineit: int, widthmakerbo: bool = true): string 
+
   # Create a listing-doc from a sequence of string in the desired format DocType
   # with maximum line-size maxlineit.
 ----------------------------------------------------------------------
     getHtmlHeaders                   jolibs/generic/g_mineproc      line: 1115
         (link_or_tekst: string, output_doc: DocType, 
                   maxlineit: int, widthmakerbo: bool = true): string 
+
             # parse the data-sequence for the content between > and <
 
 
@@ -1091,6 +1193,7 @@ Sample output:
          Create a json-object for the select-element (dropdown (dd) or picklist)
     From the datasq, the first elem is the real-value, the second one the shown value.
    
+
 
 
 ****************    jolibs/generic/g_options   ***********************************************************************
@@ -1107,15 +1210,18 @@ Sample output:
   optiontype-enum.
   Expects settings-file as projectprefix_settings.conf"
  
+
       # walk thru the lines of the file
         # echo line
               # new cluster found
 ----------------------------------------------------------------------
     getValList                       jolibs/generic/g_optionsproc      line: 198
         (valuelist: string): seq[string] 
+
 ----------------------------------------------------------------------
     newlang                          jolibs/generic/g_optionsproc      line: 204
         (englishtekst:string):string 
+
   # Read from the language-translation-file (*.tra) the
   # appropriate translation for the target-language 
   # and return that.
@@ -1124,8 +1230,8 @@ Sample output:
 ****************    jolibs/generic/g_stringdata   ***********************************************************************
 
 ----------------------------------------------------------------------
-    readFromSeparatedString          jolibs/generic/g_stringdataproc      line: 67
-        (tablest: string, outersepst: string, innersepsq: seq[string], returnfragmentsq: seq[int], filtervaluesq: seq[string], comparisonsq: seq[ComparisonType], filtcoordsq: seq[seq[int]]): seq[string] 
+    readFromSeparatedString          jolibs/generic/g_stringdataproc      line: 179
+        (tablest: string, outersepst: string, innersepsq: seq[string], returnfragmentsq: seq[int], filtervaluesq: seq[string], comparisonsq: seq[ComparisonType], filtcoordsq: seq[seq[int]], skip_errorsbo: bool = true): seq[string] 
         
     Generic way to read data from a textual table that match filter-criteria.
     It Walks thru the outer separated fragments  of tablest and retrieves fragments (or parts thereof) that match the filter-criteria.
@@ -1139,11 +1245,15 @@ Sample output:
     Both the parameters returnfragmentsq and filtcoordsq are coordinate-based params. 
     returnfragmentsq expects coordinates to designate the field-value or field-value-part to return, 
     like @[2,1] looks in the third field (zerobased) and the second part.
+    If returnfragmentsq == @[] then return the whole inner frag.
 
     filtcoordsq is a sequence of coordinates.
 
     filtervaluesq, comparisonsq and filtcoordsq are linked params in the sense that the n-th item 
     of each makes up a filter-criterion. Therefore all must have the same length.
+
+    Currently skip-errors means skipping empty or whitespaced lines.
+
 
     ADAP NOW
 
@@ -1151,11 +1261,12 @@ Sample output:
     Maybe later:
     You can retrieve a range of items [1, -10] or [3,5] from the second sep.
   
-    #  reportst = "separatorsq and returnfragmentsq have different length!"
-    #  wisp(reportst
-    #  testsOKbo = true
+
+      # walk thru the outer (first sep) separated fragments
+            # set the filter-criteria
+          # zoom in to the return-fragment
 ----------------------------------------------------------------------
-    writeToSeparatedString           jolibs/generic/g_stringdataproc      line: 178
+    writeToSeparatedString           jolibs/generic/g_stringdataproc      line: 302
         (tekst, insertst: string, operationeu: OperationOnString, separatorsq: seq[string], filtercoordinatesq: seq[seq[int]], filtervaluesq, comparisonsq: seq[string]): string 
         
     The filter can exist of multiple search-criteria using the and-operator.
@@ -1167,19 +1278,23 @@ Sample output:
   
 
 
+
 ****************    jolibs/generic/g_templates   ***********************************************************************
 
 ----------------------------------------------------------------------
     getTrace                         jolibs/generic/g_templatestemplate  line: 29
         (wordsq: varargs[string, `$`]) 
+
   # works only for non-release-compilation; thats ok
 ----------------------------------------------------------------------
     wisp                             jolibs/generic/g_templatestemplate  line: 53
         (wordsq: varargs[string, `$`]) 
+
   # works only for non-release-compilation; thats ok
 ----------------------------------------------------------------------
     withFile                         jolibs/generic/g_templatestemplate  line: 85
         (f, fn, mode, actions: untyped): untyped 
+
 ----------------------------------------------------------------------
     withFileAdvanced                 jolibs/generic/g_templatestemplate  line: 97
         (f, fn, mode, actions: untyped): untyped 
@@ -1190,22 +1305,28 @@ it doesnt register a sleep-function.
 Finally in timeCop i revert to the now-function, which seems
 accurate.
  
+
 ----------------------------------------------------------------------
     doWork                           jolibs/generic/g_templatesproc      line: 125
         (x: int) 
+
 ----------------------------------------------------------------------
     timeStuff                        jolibs/generic/g_templatestemplate  line: 131
         (statement: untyped): string 
+
 ----------------------------------------------------------------------
     timeThings                       jolibs/generic/g_templatestemplate  line: 137
         (statement: untyped) 
+
   # easiest to use
 ----------------------------------------------------------------------
     timeNeatly                       jolibs/generic/g_templatestemplate  line: 145
         (statement: untyped): float 
+
 ----------------------------------------------------------------------
     timeCop                          jolibs/generic/g_templatestemplate  line: 151
         (statement: untyped) 
+
   # measures real-time instead of cpu-time
 
 
@@ -1214,13 +1335,16 @@ accurate.
 ----------------------------------------------------------------------
     convertSequenceToFile            jolibs/generic/g_toolsproc      line: 48
         (filepathst: string, lisq: seq[string]) 
+
 ----------------------------------------------------------------------
     convertSequenceToText            jolibs/generic/g_toolsproc      line: 56
         (lisq: seq[string]): string 
+
   # untested..
 ----------------------------------------------------------------------
     zipTwoSeqsToOne                  jolibs/generic/g_toolsproc      line: 67
         (firstsq: seq[string], secondsq: seq[string] = @[]): seq[array[2, string]] 
+
 ----------------------------------------------------------------------
     filterIsMatching                 jolibs/generic/g_toolsproc      line: 84
         (tekst, searchtermst: string, testingbo: bool = false, itemnumberst: string = ""): string 
@@ -1240,6 +1364,7 @@ accurate.
   -enable parentheses
   -enable alternative operators (more common ones)
   
+
       # suppose and-ops are meant and add them
     # test if the search-terms are present in the text
     # create the logical expression based on the found results
@@ -1251,11 +1376,13 @@ accurate.
     if count is factor of 100:
       echo count
   
+
 ----------------------------------------------------------------------
     concatenateFiles                 jolibs/generic/g_toolsproc      line: 198
         (filelisq: seq[string], newfilepathst: string) 
         
     Create a new file with the contents from all the files in filelisq
   
+
   # preclear the file
   # open the new file for appending

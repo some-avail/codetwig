@@ -49,19 +49,23 @@ Or look at the commits.
 
 
 #### Completed from future plans
+- ct 1.61
+  - add a source-code-view option (c:s); after searching show the full source-code of the proc /declaration.
 - ct 1.56
   - recursively scan multiple dir-levels for source-files.
   - added a project-field so that multiple projects can be added to one declaration-list to enable multi-project search.
   - added flexible semicolumn-separated search: declaration;module;project
 
 
-
 ### Remaining future plans:
-- add a source-view option; after searching show the source-code of the proc /declaration.
-- better automatic source-file-selection
-  - filter out backups, copies and older versions of source-files.
-- add an options-file.
 
+- add an options-file (for example for customizing the number of comment-lines)
+- multiproject-level regeneration of individual project-files.
+- within search do enable line-start-appending to be able to uniquify overloaded names
+
+
+### Maybe ever?
+- command-history
 
 
 <a name="more-screenshots">More screenshots:</a>

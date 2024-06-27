@@ -11,8 +11,11 @@ For example you run:
 ctwig projects/myproj.pro -ct
 
 
-ADAP NOW
+ADAP HIS
 -CT version >= 1.5 will be multi-project and multi-level
+
+
+ADAP NOW
 
 
 ADAP FUT
@@ -24,13 +27,11 @@ ADAP FUT
 
 
 import jolibs/generic/[g_disk2nim, g_templates, g_tools, g_stringdata]
-#import std/[os, strutils, paths, dirs, tables, unicode]
 import std/[os, strutils, paths, tables, parseopt]
-#import dirs
 
 
 var 
-  versionfl: float = 1.56
+  versionfl: float = 1.61
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -824,7 +825,7 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
     interpointar, betweenpointar: array[0..1, int]
     filepathst, modfilest, slicest, nextslicest: string
     linestartit, lineendit: int
-    commentlinesq: seq[string]
+    commentlinesq, doublehashsq, singlehashsq: seq[string]
     choppedmodulest, projectnamest, toptitlest: string
 
   try:
@@ -981,11 +982,18 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
 
 
             # add separate comment-lines if present
-            commentlinesq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
-            for commentlinest in commentlinesq:
-              if viewtypeeu == viewExtended_OneLevel:              
+            doublehashsq = getXLinesWithSubstring(fob, "## ", linestartit, lineendit , 4)
+            singlehashsq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
+
+            commentlinesq = doublehashsq & singlehashsq
+
+            if viewtypeeu == viewExtended_OneLevel:
+              eofileob.writeLine("")
+              for commentlinest in commentlinesq:
                 eofileob.writeLine(commentlinest)
-              elif viewtypeeu == viewExtended_TwoLevels:
+            elif viewtypeeu == viewExtended_TwoLevels:
+              etfileob.writeLine("")
+              for commentlinest in commentlinesq:
                 etfileob.writeLine(commentlinest)
 
 
@@ -1343,207 +1351,6 @@ proc writeFamily(proj_def_pathst, declarationst, modulest, directionst: string, 
 
 
 
-#[
-proc writeFamily_old(proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int) = 
-#[
-  Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
-]#
-
-
-  var 
-    decfilob: File 
-    decfilepathst: string
-    sourceprojectpathst, reltargetprojectpathst: string
-    source_filesq, foundlinesq, wordsq, dlinesq, uselinesq: seq[string]
-    sep1st = "~~~"
-    #sep1st = "___"
-    sep2st = "___"
-    sep3st = "==="
-    inputst, outputst: string
-    onelinest, declarest, usedatalinest, indentationst, decdatalinest: string
-    choppedmodulest: string
-
-
-  try:
-
-    # set the target-dir and declaration-file
-    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
-    reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
-
-    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
-
-    if directionst == "usage":
-      if curdepthit == 1:
-        foundlinesq = getSeqFromFileLines2(decfilepathst, declarationst, modulest, sep3st, sep1st, [0,0], [0,1])
-      else:
-        foundlinesq = getSeqFromFileLines(decfilepathst, declarationst, sep3st, sep1st, [0,0])
-      onelinest = foundlinesq[0]
-      dlinesq = onelinest.split(sep3st)
-
-      for it, uselinest in dlinesq:
-        if it > 0:
-          uselinesq = uselinest.split(sep1st)
-          choppedmodulest = extractFilename(uselinesq[1])
-          if choppedmodulest != uselinesq[1]:
-            choppedmodulest = ".../" & string(extractFilename(uselinesq[1]))
-          usedatalinest = uselinesq[0].alignLeft(33) & choppedmodulest.alignLeft(23) & uselinesq[2].alignLeft(15) & uselinesq[3]
-          indentationst = "    ".repeat(curdepthit)
-          echo indentationst & usedatalinest
-          if curdepthit <= maxdepthit:
-            writeFamily(proj_def_pathst, uselinesq[0],"" ,directionst, curdepthit + 1 , maxdepthit)
-
-
-    elif directionst == "used-by":
-
-      foundlinesq = getSeqFromLinesSpecial(decfilepathst, declarationst, sep3st, sep1st)
-      for linest in foundlinesq:
-        dlinesq = linest.split(sep3st)[0].split(sep1st)
-        choppedmodulest = extractFilename(dlinesq[1])
-        if choppedmodulest != dlinesq[1]:
-          choppedmodulest = ".../" & string(extractFilename(dlinesq[1]))
-        decdatalinest = dlinesq[0].alignLeft(33) & choppedmodulest.alignLeft(23) & dlinesq[2].alignLeft(15) & dlinesq[3]
-        indentationst = "    ".repeat(curdepthit)
-        echo indentationst & decdatalinest
-        if curdepthit <= maxdepthit:
-          writeFamily(proj_def_pathst, dlinesq[0], "",directionst, curdepthit + 1 , maxdepthit)
-
-
-  except IndexDefect:
-    let errob = getCurrentException()
-    echo "\p-----error start-----" 
-    echo "Index-error caused by bug in program"
-    echo "System-error-description:"
-    echo errob.name
-    echo errob.msg
-    echo repr(errob) 
-    echo "----End error-----\p"
-
-    #unanticipated errors come here
-  except:
-    let errob = getCurrentException()
-    echo "\p******* Unanticipated error *******" 
-    echo errob.name
-    echo errob.msg
-    echo repr(errob)
-    echo "\p****End exception****\p"
-]#
-
-
-#[
-proc echoDeclarationData_old(proj_def_pathst, declarationst, modulest: string) = 
-
-  #[
-    Echo extra data of the declare like parameters and comment.
-  ]#
-
-  var 
-    fob, modfileob: File 
-    decfilepathst: string
-    sourceprojectpathst, reltargetprojectpathst: string
-    dlinesq, decdatasq, singlelinesq: seq[string]
-
-    sep1st = "~~~"
-    sep3st = "==="
-    decnamest, dectypest, linestartst, lineendst: string
-    interpointar, betweenpointar: array[0..1, int]
-    modfilest, slicest, nextslicest, modstringst, dlinest: string
-    linestartit, lineendit: int
-    commentlinesq: seq[string]
-
-
-
-  try:
-
-    if proj_def_pathst[0..proj_def_pathst.len - 5] == ".mul":
-      discard()
-
-    elif proj_def_pathst[0..proj_def_pathst.len - 5] == ".pro":
-      # retrieve project-data from project-def-file
-      sourceprojectpathst = extractFileSectionToSequence(proj_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
-    else:
-      echo "Your (multi-)project-definition \"" & proj_def_pathst & "\" has an invalid extension (must be .nim or .mul)"
-   
-
-    # set the target-dir and declaration-file
-    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
-    reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
-
-    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
-
-    modfilest = string(Path(sourceprojectpathst) / Path(modulest & ".nim"))
-    modfileob = open(modfilest, fmRead)
-    modstringst = readAll(modfileob)
-
-    singlelinesq = getSeqFromFileLines2(decfilepathst, declarationst, modulest, sep3st, sep1st, [0,0], [0,1], false)
-
-    dlinest = singlelinesq[0]
-    dlinesq = dlinest.split(sep3st)
-    decdatasq = dlinesq[0].split(sep1st)
-    decnamest = decdatasq[0]
-    #modulest = decdatasq[1]
-    dectypest = decdatasq[2]
-    linestartst = decdatasq[3]
-    lineendst = decdatasq[6]
-
-
-    linestartit = parseInt(linestartst.split(":")[1])
-    lineendit = parseInt(lineendst.split(":")[1])
-    fob = modfileob
-
-
-    # add the parameter-declares (inputs)
-    interpointar = getSliceFromLines(fob, linestartit, lineendit, "(", ")")
-    if interpointar[0] != -1 and interpointar[1] != -1 and interpointar[1] >= interpointar[0]:
-      slicest = modstringst[interpointar[0]..interpointar[1]]
-    else:
-      slicest = ""
-      #echo "    ", "missing input-params ", decnamest, " - ",  $interpointar, " - ", modulest
-
-    # add the parameter-declares (output)
-    betweenpointar = getSliceFromLines(fob, linestartit, lineendit, ")", "=")
-    if betweenpointar[0] != -1 and betweenpointar[1] != -1 and betweenpointar[1] >= betweenpointar[0]:
-      nextslicest = modstringst[betweenpointar[0]..betweenpointar[1]]
-    else:
-      nextslicest = ""
-      #echo  "    ", "missing output-params ", decnamest, " - ",  $betweenpointar, " - ", modulest
-
-    echo("        (" & slicest & ")" & nextslicest & "\p")
-
-
-    # add the comment-blocks
-    interpointar = getSliceFromLines(fob, linestartit, lineendit, "#[", "]#")
-    if interpointar[0] != -1 and interpointar[1] != -1 and interpointar[1] >= interpointar[0]:
-      slicest = modstringst[interpointar[0]..interpointar[1]]
-      echo("        " & slicest & "\p")
-
-    # add separate comment-lines if present
-    commentlinesq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
-    for commentlinest in commentlinesq:
-      echo(commentlinest)
-    echo()
-
-
-  except IndexDefect:
-    let errob = getCurrentException()
-    echo "\p-----error start-----" 
-    echo "Index-error caused by bug in program"
-    echo "System-error-description:"
-    echo errob.name
-    echo errob.msg
-    echo repr(errob) 
-    echo "----End error-----\p"
-
-    #unanticipated errors come here
-  except:
-    let errob = getCurrentException()
-    echo "\p******* Unanticipated error *******" 
-    echo errob.name
-    echo errob.msg
-    echo repr(errob)
-    echo "\p****End exception****\p"
-
-]#
-
 proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string, projectst: string = "") = 
 
   #[
@@ -1562,7 +1369,7 @@ proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string, proje
     interpointar, betweenpointar: array[0..1, int]
     modfilest, slicest, nextslicest, modstringst, dlinest: string
     linestartit, lineendit: int
-    commentlinesq: seq[string]
+    commentlinesq, singlehashsq, doublehashsq: seq[string]
     reconstructed_project_def_pathst, decfilecontentst: string
 
 
@@ -1636,7 +1443,10 @@ proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string, proje
       echo("        " & slicest & "\p")
 
     # add separate comment-lines if present
-    commentlinesq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
+    doublehashsq = getXLinesWithSubstring(fob, "## ", linestartit, lineendit , 4)
+    singlehashsq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
+
+    commentlinesq = doublehashsq & singlehashsq
     for commentlinest in commentlinesq:
       echo(commentlinest)
     echo()
@@ -1663,121 +1473,6 @@ proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string, proje
 
 
 
-#[
-
-proc showDeclarationBranchSingle(proj_def_pathst, directionst: string, maxdepthit: int) = 
-
-#[
-  Show a tree of declarations; either a usage-tree or a used-by-tree.
-]#
-
-  var 
-    decfilob: File 
-    decfilepathst: string
-    sourceprojectpathst, reltargetprojectpathst: string
-    source_filesq, foundlinesq, foundsublinesq, wordsq, inputsq: seq[string]
-    sep1st = "~~~"
-    #sep1st = "___"
-    sep2st = "___"
-    sep3st = "==="
-    #decnamest, modulest, dectypest, linestartst, newmodulest, decdatalinest: string
-    inputst, outputst: string
-    onelinest, declarest, modulest: string
-    
-
-
-  try:
-    # retrieve project-data from project-def-file
-    #sourceprojectpathst = extractFileSectionToSequence(proj_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
-    #source_filesq = extractFileSectionToSequence(proj_def_pathst, "SOURCE_FILES", ">----------------------------------<")
-
-    # set the target-dir and declaration-file
-    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
-    reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
-
-    echo "--------------------------------------------------------"
-    echo "Direction (tree-type) = ", directionst, ", Maxdepth = ", maxdepthit
-    echo "Enter the declaration you want to view, * for all , or exit to exit: "
-    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
-
-    decfilob = open(decfilepathst, fmRead)
-
-    inputst = ""
-    while not(inputst in ["exit","quit"]):
-      inputst = readline(stdin)
-      inputsq = inputst.split(";")
-      if inputsq.len == 1:
-        foundlinesq = getSeqFromFileLines(decfilepathst, inputst, sep3st, sep1st, [0,0], false)
-      elif inputsq.len == 2:
-        foundlinesq = getSeqFromFileLines2(decfilepathst, inputsq[0], inputsq[1], sep3st, sep1st, [0,0], [0,1], true)
-      # if no exact match found or wildcard * used (all found):
-      if foundlinesq.len == 0 or foundlinesq.len > 1:
-        if foundlinesq.len == 0:
-          # maybe find something with substring-search
-          foundsublinesq = getSeqFromFileLines(decfilepathst, inputst, sep3st, sep1st, [0,0])
-        else:   # when * has been entered (all found) proceed as if many are found
-          foundsublinesq = foundlinesq
-        if foundsublinesq.len > 1:
-          #echo foundlinesq
-          echo "========================================================================="
-          for linest in foundsublinesq:
-            wordsq = linest.split(sep3st)[0].split(sep1st)
-            outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10)
-            echo outputst
-          echo "-------------------------------------------------------------------------"
-        elif foundsublinesq.len == 1:
-          echo "========================================================================="
-          onelinest = foundsublinesq[0]
-          wordsq = onelinest.split(sep3st)[0].split(sep1st)
-          declarest = wordsq[0]
-          modulest = wordsq[1]
-          outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10)
-          echo declarest, " - ", modulest, "\p"
-          echoDeclarationData(proj_def_pathst, declarest, modulest)
-          echo outputst
-          echo "-------------------------------------------------------------------------"      
-          writeFamily(proj_def_pathst, declarest, modulest, directionst, 1, maxdepthit)
-          echo "-------------------------------------------------------------------------"
-        elif foundsublinesq.len == 0:
-          echo "Item not found..."
-
-      elif foundlinesq.len == 1:
-        echo "========================================================================="
-        onelinest = foundlinesq[0]
-        wordsq = onelinest.split(sep3st)[0].split(sep1st)
-        declarest = wordsq[0] 
-        modulest = wordsq[1]
-        outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10)
-        echo declarest, " - ", modulest, "\p"
-        echoDeclarationData(proj_def_pathst, declarest, modulest)
-        echo outputst
-        echo "-------------------------------------------------------------------------"
-        writeFamily(proj_def_pathst, declarest, modulest, directionst, 1, maxdepthit)
-        echo "-------------------------------------------------------------------------"
-
-    echo "Exiting..."
-
-
-  except IndexDefect:
-    let errob = getCurrentException()
-    echo "\p-----error start-----" 
-    echo "Index-error caused by bug in program"
-    echo "System-error-description:"
-    echo errob.name
-    echo errob.msg
-    echo repr(errob) 
-    echo "----End error-----\p"
-
-    #unanticipated errors come here
-  except:
-    let errob = getCurrentException()
-    echo "\p******* Unanticipated error *******" 
-    echo errob.name
-    echo errob.msg
-    echo repr(errob)
-    echo "\p****End exception****\p"
-
-]#
 
 
 proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int) = 
@@ -1924,6 +1619,217 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
     echo errob.msg
     echo repr(errob)
     echo "\p****End exception****\p"
+
+
+
+proc getRangeOfFileLines(filepathst: string, linestartit, lineendit: int): seq[string] = 
+  #[
+    Write the lines of the range starting with linestartit and ending with lineendit 
+    to an output-sequence and return it.
+  ]#
+  
+  var 
+    in_declarebo: bool = false
+    outputsq: seq[string] = @[]
+    linecountit: int = 0
+
+  result = outputsq
+
+  withFileAdvanced(fileob, filepathst, fmRead):
+    for linest in fileob.lines:
+      linecountit += 1
+      if linecountit == linestartit:
+        in_declarebo = true
+      elif linecountit == lineendit + 1:
+        in_declarebo = false
+
+      if in_declarebo:
+        outputsq.add(linest)
+
+      result = outputsq
+
+
+
+proc echoSequence(inputsq: seq[string]) = 
+  for linest in inputsq:
+    echo linest
+
+
+proc echoRangeOfFileLines(filepathst: string, linestartit, lineendit: int) = 
+
+  echoSequence(getRangeOfFileLines(filepathst, linestartit, lineendit))
+
+
+
+proc getModulePath(proj_def_pathst, modulest, projectst: string): string = 
+
+  var 
+    reconstructed_project_def_pathst, sourceprojectpathst, modfilest: string
+
+  if proj_def_pathst.extractFileExtension() == "mul":
+    reconstructed_project_def_pathst = string(Path(ct_projectsdirst) / Path(projectst & ".pro"))
+    sourceprojectpathst = extractFileSectionToSequence(reconstructed_project_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
+  elif proj_def_pathst.extractFileExtension() == "pro":
+    # retrieve project-data from project-def-file
+    sourceprojectpathst = extractFileSectionToSequence(proj_def_pathst, "PROJECT_PATH", ">----------------------------------<")[0]
+  else:
+    echo "Your (multi-)project-definition \"" & proj_def_pathst & "\" has an invalid extension (must be .pro or .mul)"
+
+  modfilest = string(Path(sourceprojectpathst) / Path(modulest & ".nim"))
+  result = modfilest
+
+
+
+proc showSourceCode(proj_def_pathst: string) = 
+#[
+  Show the source-code of a declaration
+]#
+
+  var 
+    decfilob: File 
+    decfilepathst: string
+    sourceprojectpathst, reltargetprojectpathst: string
+    source_filesq, foundlinesq, foundsublinesq, wordsq, inputsq: seq[string]
+    sep1st = "~~~"
+    #sep1st = "___"
+    sep2st = "___"
+
+    sep3st = "==="
+    inputst, outputst: string
+    onelinest, declarest, modulest, dectypest, linestartst, lineendst, projecst: string
+    projecttypest, projectst, decfilecontentst: string
+
+
+
+  try:
+
+
+    if proj_def_pathst.extractFileExtension() == "mul":
+      projecttypest = "multi"
+    elif proj_def_pathst.extractFileExtension() == "pro":
+      projecttypest = "single"
+    else:
+      echo "Your (multi-)project-definition \"" & proj_def_pathst & "\" has an invalid extension (must be .pro or .mul)"
+
+
+    # set the target-dir and declaration-file
+    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
+    reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
+
+    echo "--------------------------------------------------------"
+    echo "To show the source-code of the declaration:"
+    echo "Enter:  declaration;module;project      to view specific items, emtpy for all items, or exit to exit: "
+    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
+
+    decfilob = open(decfilepathst, fmRead)
+    decfilecontentst = decfilob.readAll()
+
+    inputst = ""
+    while inputst notin ["exit","quit"]:
+      inputst = readline(stdin)
+      inputsq = inputst.split(";")
+
+      wisp(inputst)
+      if inputsq.len == 1:
+        #foundlinesq = getSeqFromFileLines(decfilepathst, inputst, sep3st, sep1st, [0,0], false)
+        if inputst.startswith("~") or inputst.endswith("~"):
+          foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst.strip(chars = {'~'})], @[cmExactInsens], @[@[0,0]])
+        else:
+          foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst], @[cmSubInsens], @[@[0,0]])
+      elif inputsq.len == 2:
+        if projecttypest == "single":
+          foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0], inputsq[1]], @[cmSubInsens, cmSubInsens], @[@[0,0], @[0,1]])
+        else:
+          echo "For multi-projects: Enter one item (proc) or three items (declaration;module;project); it can be emtpy"
+      elif inputsq.len == 3:
+        #foundlinesq = getSeqFromFileLines2(decfilepathst, inputsq[0], inputsq[1], sep3st, sep1st, [0,0], [0,1], true)
+        if inputsq[0].startswith("~") or inputsq[0].endswith("~"):
+          foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0].strip(chars = {'~'}), inputsq[1], inputsq[2]], @[cmExactInsens, cmSubInsens, cmSubInsens], @[@[0,0], @[0,1], @[0,7]])
+        else:
+          foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0], inputsq[1], inputsq[2]], @[cmSubInsens, cmSubInsens, cmSubInsens], @[@[0,0], @[0,1], @[0,7]])
+
+
+      # if no exact match found or wildcard used (all found):
+      if foundlinesq.len == 0 or foundlinesq.len > 1:
+
+        if foundlinesq.len == 0:
+          # maybe find something with substring-search
+          #foundsublinesq = getSeqFromFileLines(decfilepathst, inputst, sep3st, sep1st, [0,0])
+          foundsublinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst], @[cmSubInsens], @[@[0,0]])
+        else:   # when wildcard has been entered (all found) proceed as if many are found
+          foundsublinesq = foundlinesq
+
+        if foundsublinesq.len > 1:
+          #echo foundlinesq
+          echo "=============================================================================================================="
+          for linest in foundsublinesq:
+            wordsq = linest.split(sep3st)[0].split(sep1st)
+            outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10) & wordsq[7].alignLeft(12)
+            echo outputst
+          echo "--------------------------------------------------------------------------------------------------------------"
+        elif foundsublinesq.len == 1:
+          echo "============================================================================================================"
+          onelinest = foundsublinesq[0]
+          wordsq = onelinest.split(sep3st)[0].split(sep1st)
+          declarest = wordsq[0]
+          modulest = wordsq[1]
+          linestartst = wordsq[3].split(":")[1]
+          lineendst = wordsq[6].split(":")[1]
+          projectst = wordsq[7]
+
+          outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10) & wordsq[7].alignLeft(12)
+
+          #echo declarest, " - ", modulest, "\p"
+          echo outputst
+          echo "--------------------------------------------------------------------------------------------------------------\p"
+          echoRangeOfFileLines(getModulePath(proj_def_pathst, modulest, projectst), parseInt(linestartst), parseInt(lineendst))
+
+          echo "--------------------------------------------------------------------------------------------------------------"
+        elif foundsublinesq.len == 0:
+          echo "Item not found..."
+
+      elif foundlinesq.len == 1:
+        echo "=============================================================================================================="
+        onelinest = foundlinesq[0]
+        wordsq = onelinest.split(sep3st)[0].split(sep1st)
+        declarest = wordsq[0]
+        modulest = wordsq[1]
+        dectypest = wordsq[2]
+        linestartst = wordsq[3].split(":")[1]
+        lineendst = wordsq[6].split(":")[1]
+
+        projectst = wordsq[7]
+        outputst = declarest.alignLeft(33) & modulest.alignLeft(40) & wordsq[2].alignLeft(15) & linestartst.alignLeft(10) & projectst.alignLeft(12)
+        #echo declarest, " - ", modulest, "\p"
+        #echoDeclarationData(proj_def_pathst, declarest, modulest, projectst)
+        echo outputst
+        echo "--------------------------------------------------------------------------------------------------------------\p"
+        echoRangeOfFileLines(getModulePath(proj_def_pathst, modulest, projectst), parseInt(linestartst), parseInt(lineendst))
+        echo "--------------------------------------------------------------------------------------------------------------"
+
+    echo "Exiting..."
+
+
+  except IndexDefect:
+    let errob = getCurrentException()
+    echo "\p-----error start-----" 
+    echo "Index-error caused by bug in program"
+    echo "System-error-description:"
+    echo errob.name
+    echo errob.msg
+    echo repr(errob) 
+    echo "----End error-----\p"
+
+    #unanticipated errors come here
+  except:
+    let errob = getCurrentException()
+    echo "\p******* Unanticipated error *******" 
+    echo errob.name
+    echo errob.msg
+    echo repr(errob)
+    echo "\p****End exception****\p"
+
+
 
 
 
@@ -2079,6 +1985,8 @@ proc processCommandLine() =
             procst = "generate_all"
           of "t", "tree":
             procst = "showDeclarationBranch"
+          of "s", "sourcecode":
+            procst = "showSourceCode"
         of "r", "direction":
           case val:
           of "u", "usage":
@@ -2117,6 +2025,8 @@ proc processCommandLine() =
           generate_all(projectpathst)
         of "showDeclarationBranch":
           showDeclarationBranch(projectpathst, directionst, depthit)
+        of "showSourceCode":
+          showSourceCode(projectpathst)
         of "echoHelpInfo":
           echoHelpInfo()
 

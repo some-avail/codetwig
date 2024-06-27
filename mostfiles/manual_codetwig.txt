@@ -38,6 +38,11 @@ After you have defined some projects in project-files (.pro), since CT 1.5x you 
 
 ALL COMMANDS
 
+The commands are to be input in a terminal / powershell. Of course you can use multiple tabs for different tasks. Go to the directory where your ctwig-executable lives and enter one of the following commands.
+Where I write ctwig, in some terminals you must input: ./ctwig
+
+-----------------------------------------------------------------------------
+
 -c:a or --command:add_files
 no options
 
@@ -45,7 +50,8 @@ Full example:
 ctwig projects/yourproject.pro -c:a
 
 After you have copied the project-template, renamed it and adjusted the path to the source-files, you can run above command. The operation adds the names of the source-files (.nim) from the source-path and (since 1.5x) underlying directories to project-def-file (yourproject.pro). You must manually prune backup- or test-files or other .nim-files that you want to exclude from the codetwig-analysis.
----------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
 
 -c:d or --command:declarations
 no options
@@ -84,9 +90,11 @@ ctwig projects/yourproject.pro -c:g
 This command generates both the declaration-list and all of the views for a project. Use it if you want to update your project and are not interested in the output screen-notifications of the dec-list.
 ---------------------------------------------------------------------------
 
-
-
 -c:c or --command:combine
+
+Full example:
+ctwig projects/some_set_of_projects.mul -c:c
+
 
 After you have defined some projects in project-files (.pro), since CT 1.5x you can create a multi-project-definition (.mul) that enables you to show more projects at once; for now that is the trees of usage and used-by.
 
@@ -142,5 +150,17 @@ Defaultly the search is substring but sometimes you need an EXACT-MATCH, for exa
 - ~myfunc~ for who likes to type ;-)
 
 
+-----------------------------------------------------------------------------
+-c:s or --command:sourcecode
+
+Full example:
+ctwig projects/yourproject.pro -c:s
+
+
+This command enables you to show/view the full source-code of a certain declaration (like proc or template) and is added in CT 1.6x.
+The search-function is the same as in the tree-command; you can search for a:
+declaration;module;project
+
+See above for further explanation.
 
 

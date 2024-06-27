@@ -2,77 +2,83 @@
  ~~~~~~~~~~~~~~~~~  Project = codetwig  ~~~~~~~~~~~~~~~~~~~~
 
 ctwig--------------------------------------------------------------------
-    addSourceFilesToProject_old      proc      line: 106
-        writeFilePatternToSeq            .../g_disk2nim         proc      151
-        writeFilePatternToSeq2           .../g_disk2nim         proc      151
-    addSourceFilesToProject          proc      line: 184
-        writeFilePatternToSeq            .../g_disk2nim         proc      233
-        writeFilePatternToSeqRec         .../g_disk2nim         proc      233
-    extractFileSectionToSequence     proc      line: 269
-        withFile                         .../g_templates        template  280
-        withFileAdvanced                 .../g_templates        template  280
-    getSliceFromAnchor               proc      line: 292
-    countLinesOfFile                 proc      line: 366
-    createDeclarationList            proc      line: 379
-        extractFileSectionToSequence     ctwig                  proc      436
-        getSliceFromAnchor               ctwig                  proc      491
-        countLinesOfFile                 ctwig                  proc      547
-    getSliceFromLines                proc      line: 660
-    getXLinesWithSubstring           proc      line: 741
-    createCodeViewFile               proc      line: 771
-        extractFileSectionToSequence     ctwig                  proc      802
-        getSliceFromLines                ctwig                  proc      917
-        getXLinesWithSubstring           ctwig                  proc      954
-    getSeqFromFileLines              proc      line: 1012
-    getSeqFromFileLines2             proc      line: 1074
-    getSeqFromLinesSpecial           proc      line: 1154
-    writeFamily                      proc      line: 1206
-        getSeqFromLinesSpecial           ctwig                  proc      1262
-        writeFamily                      ctwig                  proc      1257
-        readFromSeparatedString          .../g_stringdata       proc      1238
-    writeFamily_old                  proc      line: 1297
-        getSeqFromFileLines              ctwig                  proc      1327
-        getSeqFromFileLines2             ctwig                  proc      1327
-        getSeqFromLinesSpecial           ctwig                  proc      1348
-        writeFamily                      ctwig                  proc      1343
-    echoDeclarationData_old          proc      line: 1382
-        extractFileSectionToSequence     ctwig                  proc      1411
-        getSliceFromLines                ctwig                  proc      1444
-        getXLinesWithSubstring           ctwig                  proc      1469
-        getSeqFromFileLines              ctwig                  proc      1426
-        getSeqFromFileLines2             ctwig                  proc      1426
-    echoDeclarationData              proc      line: 1496
-        extractFileSectionToSequence     ctwig                  proc      1521
-        getSliceFromLines                ctwig                  proc      1557
-        getXLinesWithSubstring           ctwig                  proc      1582
-        readFromSeparatedString          .../g_stringdata       proc      1540
-    showDeclarationBranchSingle      proc      line: 1611
-        getSeqFromFileLines              ctwig                  proc      1653
-        getSeqFromFileLines2             ctwig                  proc      1655
-        writeFamily                      ctwig                  proc      1682
-        echoDeclarationData              ctwig                  proc      1679
-    showDeclarationBranch            proc      line: 1726
-        writeFamily                      ctwig                  proc      1817
-        echoDeclarationData              ctwig                  proc      1814
-        readFromSeparatedString          .../g_stringdata       proc      1777
-    echoHelpInfo                     proc      line: 1863
-    createMultiProjectFiles          proc      line: 1910
-        clipString                       ctwig                  proc      1949
-        extractFileSectionToSequence     ctwig                  proc      1942
-        concatenateFiles                 .../g_tools            proc      1954
-    createAllViewFiles               proc      line: 1959
-        createCodeViewFile               ctwig                  proc      1961
-    generate_all                     proc      line: 1968
-        createDeclarationList            ctwig                  proc      1970
-        createAllViewFiles               ctwig                  proc      1971
-    processCommandLine               proc      line: 1976
-        addSourceFilesToProject          ctwig                  proc      2042
-        createDeclarationList            ctwig                  proc      2044
-        showDeclarationBranch            ctwig                  proc      2052
-        echoHelpInfo                     ctwig                  proc      2054
-        createMultiProjectFiles          ctwig                  proc      2046
-        createAllViewFiles               ctwig                  proc      2048
-        generate_all                     ctwig                  proc      2050
+    clipString                       proc      line: 120
+    addSourceFilesToProject_old      proc      line: 137
+        writeFilePatternToSeq            .../g_disk2nim         proc      182
+        writeFilePatternToSeq2           .../g_disk2nim         proc      182
+    addSourceFilesToProject          proc      line: 215
+        writeFilePatternToSeq            .../g_disk2nim         proc      264
+        writeFilePatternToSeqRec         .../g_disk2nim         proc      264
+    extractFileSectionToSequence     proc      line: 300
+        withFile                         .../g_templates        template  311
+        withFileAdvanced                 .../g_templates        template  311
+    getSliceFromAnchor               proc      line: 323
+    countLinesOfFile                 proc      line: 397
+    createDeclarationList            proc      line: 410
+        extractFileSectionToSequence     ctwig                  proc      467
+        getSliceFromAnchor               ctwig                  proc      522
+        countLinesOfFile                 ctwig                  proc      578
+    getSliceFromLines                proc      line: 691
+    getXLinesWithSubstring           proc      line: 772
+    createCodeViewFile               proc      line: 802
+        extractFileSectionToSequence     ctwig                  proc      833
+        getSliceFromLines                ctwig                  proc      948
+        getXLinesWithSubstring           ctwig                  proc      985
+    getSeqFromFileLines              proc      line: 1050
+    getSeqFromFileLines2             proc      line: 1112
+    getSeqFromLinesSpecial           proc      line: 1192
+    writeFamily                      proc      line: 1260
+        getSeqFromLinesSpecial           ctwig                  proc      1320
+        writeFamily                      ctwig                  proc      1315
+        readFromSeparatedString          .../g_stringdata       proc      1296
+    echoDeclarationData              proc      line: 1354
+        extractFileExtension             ctwig                  proc      1381
+        extractFileSectionToSequence     ctwig                  proc      1383
+        getSliceFromLines                ctwig                  proc      1421
+        getXLinesWithSubstring           ctwig                  proc      1446
+        readFromSeparatedString          .../g_stringdata       proc      1404
+        wisp                             .../g_templates        template  1377
+    showDeclarationBranch            proc      line: 1478
+        extractFileExtension             ctwig                  proc      1504
+        writeFamily                      ctwig                  proc      1579
+        echoDeclarationData              ctwig                  proc      1576
+        readFromSeparatedString          .../g_stringdata       proc      1533
+        wisp                             .../g_templates        template  1529
+    getRangeOfFileLines              proc      line: 1625
+        withFile                         .../g_templates        template  1638
+        withFileAdvanced                 .../g_templates        template  1638
+    echoSequence                     proc      line: 1653
+    echoRangeOfFileLines             proc      line: 1658
+        getRangeOfFileLines              ctwig                  proc      1660
+        echoSequence                     ctwig                  proc      1660
+    getModulePath                    proc      line: 1664
+        extractFileExtension             ctwig                  proc      1669
+        extractFileSectionToSequence     ctwig                  proc      1671
+    showSourceCode                   proc      line: 1683
+        extractFileExtension             ctwig                  proc      1707
+        echoRangeOfFileLines             ctwig                  proc      1785
+        getModulePath                    ctwig                  proc      1785
+        readFromSeparatedString          .../g_stringdata       proc      1736
+        wisp                             .../g_templates        template  1732
+    echoHelpInfo                     proc      line: 1836
+    createMultiProjectFiles          proc      line: 1883
+        clipString                       ctwig                  proc      1922
+        extractFileSectionToSequence     ctwig                  proc      1915
+        concatenateFiles                 .../g_tools            proc      1927
+    createAllViewFiles               proc      line: 1932
+        createCodeViewFile               ctwig                  proc      1934
+    generate_all                     proc      line: 1941
+        createDeclarationList            ctwig                  proc      1943
+        createAllViewFiles               ctwig                  proc      1944
+    processCommandLine               proc      line: 1949
+        addSourceFilesToProject          ctwig                  proc      2017
+        createDeclarationList            ctwig                  proc      2019
+        showDeclarationBranch            ctwig                  proc      2027
+        showSourceCode                   ctwig                  proc      2029
+        echoHelpInfo                     ctwig                  proc      2031
+        createMultiProjectFiles          ctwig                  proc      2021
+        createAllViewFiles               ctwig                  proc      2023
+        generate_all                     ctwig                  proc      2025
 jolibs/generic/g_cookie--------------------------------------------------------------------
     getFuncParts                     proc      line: 29
     runFunctionFromClient            proc      line: 46
@@ -247,17 +253,20 @@ jolibs/generic/g_options--------------------------------------------------------
     newlang                          proc      line: 204
         readOptionFromFile               .../g_options          proc      219
 jolibs/generic/g_stringdata--------------------------------------------------------------------
-    readFromSeparatedString          proc      line: 67
-        zoomIntoFragments                .../g_stringdata       proc      133
-        wisp                             .../g_templates        template  115
-    writeToSeparatedString           proc      line: 178
+    readFromSeparatedString          proc      line: 179
+        zoomIntoFragments                .../g_stringdata       proc      252
+        wisp                             .../g_templates        template  224
+    writeToSeparatedString           proc      line: 302
 jolibs/generic/g_templates--------------------------------------------------------------------
     getTrace                         template  line: 29
         wisp                             .../g_templates        template  36
     wisp                             template  line: 53
         wisp                             .../g_templates        template  61
     withFile                         template  line: 85
+        withFile                         .../g_templates        template  93
     withFileAdvanced                 template  line: 97
+        withFile                         .../g_templates        template  110
+        withFileAdvanced                 .../g_templates        template  110
     doWork                           proc      line: 125
     timeStuff                        template  line: 131
     timeThings                       template  line: 137

@@ -2,29 +2,32 @@
  ~~~~~~~~~~~~~~~~~  Project = codetwig  ~~~~~~~~~~~~~~~~~~~~
 
 ctwig---------------------------------------------------
-    addSourceFilesToProject_old      proc      line: 106
-    addSourceFilesToProject          proc      line: 184
-    extractFileSectionToSequence     proc      line: 269
-    getSliceFromAnchor               proc      line: 292
-    countLinesOfFile                 proc      line: 366
-    createDeclarationList            proc      line: 379
-    getSliceFromLines                proc      line: 660
-    getXLinesWithSubstring           proc      line: 741
-    createCodeViewFile               proc      line: 771
-    getSeqFromFileLines              proc      line: 1012
-    getSeqFromFileLines2             proc      line: 1074
-    getSeqFromLinesSpecial           proc      line: 1154
-    writeFamily                      proc      line: 1206
-    writeFamily_old                  proc      line: 1297
-    echoDeclarationData_old          proc      line: 1382
-    echoDeclarationData              proc      line: 1496
-    showDeclarationBranchSingle      proc      line: 1611
-    showDeclarationBranch            proc      line: 1726
-    echoHelpInfo                     proc      line: 1863
-    createMultiProjectFiles          proc      line: 1910
-    createAllViewFiles               proc      line: 1959
-    generate_all                     proc      line: 1968
-    processCommandLine               proc      line: 1976
+    clipString                       proc      line: 120
+    addSourceFilesToProject_old      proc      line: 137
+    addSourceFilesToProject          proc      line: 215
+    extractFileSectionToSequence     proc      line: 300
+    getSliceFromAnchor               proc      line: 323
+    countLinesOfFile                 proc      line: 397
+    createDeclarationList            proc      line: 410
+    getSliceFromLines                proc      line: 691
+    getXLinesWithSubstring           proc      line: 772
+    createCodeViewFile               proc      line: 802
+    getSeqFromFileLines              proc      line: 1050
+    getSeqFromFileLines2             proc      line: 1112
+    getSeqFromLinesSpecial           proc      line: 1192
+    writeFamily                      proc      line: 1260
+    echoDeclarationData              proc      line: 1354
+    showDeclarationBranch            proc      line: 1478
+    getRangeOfFileLines              proc      line: 1625
+    echoSequence                     proc      line: 1653
+    echoRangeOfFileLines             proc      line: 1658
+    getModulePath                    proc      line: 1664
+    showSourceCode                   proc      line: 1683
+    echoHelpInfo                     proc      line: 1836
+    createMultiProjectFiles          proc      line: 1883
+    createAllViewFiles               proc      line: 1932
+    generate_all                     proc      line: 1941
+    processCommandLine               proc      line: 1949
 jolibs/generic/g_cookie---------------------------------------------------
     getFuncParts                     proc      line: 29
     runFunctionFromClient            proc      line: 46
@@ -110,8 +113,8 @@ jolibs/generic/g_options---------------------------------------------------
     getValList                       proc      line: 198
     newlang                          proc      line: 204
 jolibs/generic/g_stringdata---------------------------------------------------
-    readFromSeparatedString          proc      line: 67
-    writeToSeparatedString           proc      line: 178
+    readFromSeparatedString          proc      line: 179
+    writeToSeparatedString           proc      line: 302
 jolibs/generic/g_templates---------------------------------------------------
     getTrace                         template  line: 29
     wisp                             template  line: 53
