@@ -31,7 +31,7 @@ import std/[os, strutils, paths, tables, parseopt]
 
 
 var 
-  versionfl: float = 1.61
+  versionfl: float = 1.62
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -429,7 +429,7 @@ proc createDeclarationList(proj_def_pathst: string) =
     fileob, phase1fileob, phase2fileob, phase2file2ob, phase3fileob: File
     source_filesq: seq[string]
     # declaration-types
-    nim_dec_typesq: seq[string] = @["proc", "template", "macro", "func"]
+    nim_dec_typesq: seq[string] = @["proc", "template", "macro", "func", "iterator", "method", "converter"]
     langekst: string = "nim"
     filepathst: string
     sourceprojectpathst, reltargetprojectpathst: string
@@ -460,6 +460,7 @@ proc createDeclarationList(proj_def_pathst: string) =
     dec_plus_modulest, previous_modulest: string
 
     projectnamest, fullmodpathst, modfilest, submodulest: string
+    projectprefikst: string
 
   try:
 
@@ -478,10 +479,10 @@ proc createDeclarationList(proj_def_pathst: string) =
     else:
       echo "Using target-directory for your " & codetwigst & "-project: " & reltargetprojectpathst
 
-
-    phase1_dec_list_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase1_" & dec_list_suffikst))
-    phase2_dec_list_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase2_" & dec_list_suffikst))
-    phase3_dec_list_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
+    projectprefikst = clipString(string(pd_filebasepa), 7)
+    phase1_dec_list_filepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_phase1_" & dec_list_suffikst))
+    phase2_dec_list_filepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_phase2_" & dec_list_suffikst))
+    phase3_dec_list_filepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_phase3_" & dec_list_suffikst))
 
 
     # first phase; create first intermediate product phase1_dec_list_filepathst
@@ -827,6 +828,8 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
     linestartit, lineendit: int
     commentlinesq, doublehashsq, singlehashsq: seq[string]
     choppedmodulest, projectnamest, toptitlest: string
+    projectprefikst: string
+
 
   try:
     # retrieve project-data from project-def-file
@@ -841,11 +844,14 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
     echo "--------------------------------------------------------"
     echo "Using target-directory for your " & codetwigst & "-project: " & reltargetprojectpathst
 
-    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
-    boview_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_basic_one-level_view.txt"))
-    btview_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_basic_two-level_view.txt"))
-    eoview_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_extended_one-level_view.txt"))
-    etview_filepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_extended_two-level_view.txt"))
+
+    projectprefikst = clipString(string(pd_filebasepa), 7)
+
+    decfilepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_phase3_" & dec_list_suffikst))
+    boview_filepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_basic_one-level_view.txt"))
+    btview_filepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_basic_two-level_view.txt"))
+    eoview_filepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_extended_one-level_view.txt"))
+    etview_filepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_extended_two-level_view.txt"))
 
 
     decfilob = open(decfilepathst, fmRead)
@@ -1276,6 +1282,7 @@ proc writeFamily(proj_def_pathst, declarationst, modulest, directionst: string, 
     inputst, outputst: string
     onelinest, declarest, usedatalinest, indentationst, decdatalinest: string
     choppedmodulest, decfilecontentst: string
+    projectprefikst: string
 
 
   try:
@@ -1284,7 +1291,8 @@ proc writeFamily(proj_def_pathst, declarationst, modulest, directionst: string, 
     var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
     reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
 
-    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
+    projectprefikst = clipString(string(pd_filebasepa), 7)
+    decfilepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_phase3_" & dec_list_suffikst))
     decfileob = open(decfilepathst, fmRead)
     decfilecontentst = readAll(decfileob)
 
@@ -1371,7 +1379,7 @@ proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string, proje
     linestartit, lineendit: int
     commentlinesq, singlehashsq, doublehashsq: seq[string]
     reconstructed_project_def_pathst, decfilecontentst: string
-
+    projectprefikst: string
 
   try:
     wispbo = false
@@ -1392,7 +1400,8 @@ proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string, proje
     var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
     reltargetprojectpathst = string(Path(ct_projectsdirst) / pd_filebasepa)
 
-    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
+    projectprefikst = clipString(string(pd_filebasepa), 7)
+    decfilepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_phase3_" & dec_list_suffikst))
     decfileob = open(decfilepathst, fmRead)
     decfilecontentst = readAll(decfileob)
 
@@ -1495,7 +1504,7 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
     inputst, outputst: string
     onelinest, declarest, modulest, dectypest, linestartst, projecst: string
     projecttypest, projectst, decfilecontentst: string
-
+    projectprefikst: string
 
 
   try:
@@ -1516,7 +1525,9 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
     echo "--------------------------------------------------------"
     echo "Direction (tree-type) = ", directionst, ", Maxdepth = ", maxdepthit
     echo "Enter:  declaration;module;project      to view specific items, emtpy for all items, or exit to exit: "
-    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
+
+    projectprefikst = clipString(string(pd_filebasepa), 7)
+    decfilepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_phase3_" & dec_list_suffikst))
 
     decfilob = open(decfilepathst, fmRead)
     decfilecontentst = decfilob.readAll()
@@ -1698,7 +1709,7 @@ proc showSourceCode(proj_def_pathst: string) =
     inputst, outputst: string
     onelinest, declarest, modulest, dectypest, linestartst, lineendst, projecst: string
     projecttypest, projectst, decfilecontentst: string
-
+    projectprefikst: string
 
 
   try:
@@ -1719,7 +1730,9 @@ proc showSourceCode(proj_def_pathst: string) =
     echo "--------------------------------------------------------"
     echo "To show the source-code of the declaration:"
     echo "Enter:  declaration;module;project      to view specific items, emtpy for all items, or exit to exit: "
-    decfilepathst = string(Path(reltargetprojectpathst) / Path(string(pd_filebasepa)[0..6] & "_phase3_" & dec_list_suffikst))
+
+    projectprefikst = clipString(string(pd_filebasepa), 7)    
+    decfilepathst = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_phase3_" & dec_list_suffikst))
 
     decfilob = open(decfilepathst, fmRead)
     decfilecontentst = decfilob.readAll()

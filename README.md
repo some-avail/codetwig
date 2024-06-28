@@ -9,19 +9,20 @@
 [Go to the user-manual](mostfiles/manual_codetwig.txt)
 
 
-#### Forthcoming version: 1.61
+#### Forthcoming version: 1.62
 
 ### Description CodeTwig
 
 CodeTwig (CT) is terminal-program to view the outline of the source-code and to show procedures as usage-trees or used-by-trees. Some features are still to be added. See future-plans below. Currently only meant for Nim.
 
 #### Features
-- CT scans the source-code-files on basis of the project you have defined.
-- It creates a declaration-list in which all declarations like procs and templates are listed.
+- CT scans the source-code-files on basis of the project you have defined and adds the files from all underlying directories (after which you can prune the list).
+- It creates a declaration-list in which all declarations like procs and templates are listed 
 - The declaration-list is used to generate 4 text-files that give specific views of the project.
 - CT can also show (for a certain declaration / proc) the usage-trees and used-by trees on basis of the dec-list, and gives with it the arguments and the comment-section.
+- a source-code-view option (-c:s); search and show the full source-code of the proc /declaration.
 - flexible semicolumn-separated search: declaration;module;project
-- CT can combine dec-list of multiple projects and thus show trees for multiple projects (multiproject-feature).
+- multiproject-feature; CT can combine dec-list of multiple projects and thus show trees for multiple projects (multiproject-feature).
 - all functions are called by entering terminal-commands, allthough the generated view-files can be watched by themselves of course.
 
 
@@ -49,19 +50,17 @@ Or look at the commits.
 
 
 #### Completed from future plans
-- ct 1.61
-  - add a source-code-view option (c:s); after searching show the full source-code of the proc /declaration.
-- ct 1.56
-  - recursively scan multiple dir-levels for source-files.
-  - added a project-field so that multiple projects can be added to one declaration-list to enable multi-project search.
-  - added flexible semicolumn-separated search: declaration;module;project
+- 1.62
+  - removed bug caused by short project-names
+  - added declaration-types method, iterator and converter
+
 
 
 ### Remaining future plans:
-
 - add an options-file (for example for customizing the number of comment-lines)
-- multiproject-level regeneration of individual project-files.
 - within search do enable line-start-appending to be able to uniquify overloaded names
+- limit decs in the usage-tree to the imported modules (optionize).
+- multiproject-level regeneration of individual project-files.
 
 
 ### Maybe ever?

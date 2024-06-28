@@ -1,9 +1,12 @@
 What's new in CodeTwig?
 
-1.6x
+1.62
+- removed bug caused by short project-names
+- added declaration-types method, iterator and converter
+
+1.61
 - enable the showing of full declarational source-code with a new command -s
 - improved comment-rendering
-
 
 1.56
 - recursive scanning of subdirs for source-files.
