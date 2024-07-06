@@ -19,7 +19,7 @@ Small def to package the source-code of codetwig
 VARIABLES TO SET
 comment: defaultly call enclosed in # like #var#
 arguments---separator=#
-version=1.61
+version=1.62
 target=./bundels_ct/codetwig_#version#
 archive=./bundels_ct/codetwig_#version#.tar.gz
 dirbasename=codetwig_#version#

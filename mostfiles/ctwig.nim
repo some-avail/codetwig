@@ -31,7 +31,7 @@ import std/[os, strutils, paths, tables, parseopt]
 
 
 var 
-  versionfl: float = 1.62
+  versionfl: float = 1.64
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -47,6 +47,11 @@ type
     viewExtended_OneLevel
     viewExtended_TwoLevels
     viewAll
+
+  ItemType = enum
+    itemDeclaration
+    itemSourceCode
+
 
 
   # below objects are drafted but NOT USES YET;
@@ -133,85 +138,6 @@ proc clipString(inputst: string, lengthit: int): string =
 
 
 
-
-proc addSourceFilesToProject_old(proj_def_pathst: string): string = 
-  #[
-  Based on the project-path in the project-def-file, the source-files
-  from that project are added to the project-def-file.
-
-  ADAP FUT
-  -add param overwritebo to overwrite / update the current sf-list
-  -exclusion-list to auto-exclude certain files that are probably copies
-  of originals, with numbers and words like bak or copy.
-  ]#
-
-  var
-    fileob: File
-    blockphasest: string
-    blockheadar: array[0..1, string] = [
-        "PROJECT_PATH",
-        "SOURCE_FILES"]
-    blockseparatorst = ">----------------------------------<"
-    projectpathst: string
-    source_filesq: seq[string]
-    blocklineit, source_file_posit, countit: int
-
-
-  try:
-    echo "Trying to open: " & proj_def_pathst
-    # open the project-file for read-write access
-    if open(fileob, proj_def_pathst, fmReadWriteExisting):
-      for linest in fileob.lines:
-
-        # check for block-header
-        if linest in blockheadar:
-          blockphasest = linest
-          #echo "\p" & blockphasest
-          if blockphasest == "SOURCE_FILES":
-            source_file_posit = fileob.getFilePos()
-          blocklineit = 0
-        elif linest != "":
-        
-          blocklineit += 1
-
-          if blockphasest == "PROJECT_PATH":
-            if linest != blockseparatorst:
-              # read the project-path
-              projectpathst = linest
-              echo "Project-path of the source-files: " & projectpathst
-              source_filesq = writeFilePatternToSeq2("*.nim", projectpathst)
-
-          elif blockphasest == "SOURCE_FILES":
-            if blocklineit == 1:
-              if linest == blockseparatorst:
-                # read the file-names of the source-files and write them to the files-section
-                fileob.setFilePos(source_file_posit)
-                countit = 0
-                for filenamest in source_filesq:
-                  countit += 1
-                  fileob.writeLine(filenamest)
-                  echo filenamest
-                echo "----------------------------------------------"
-                fileob.writeLine(blockseparatorst)
-                result =  $countit &  " source-file-names have been added to the project-file: " & proj_def_pathst
-              else:
-                result = "Source-files have been added previously; pre-clean section and try again.."
-    else:
-      echo "Could not open file; you may have misspelled the name.."
-  
-  
-    #unanticipated errors come here
-  except:
-    let errob = getCurrentException()
-    echo "\p******* Unanticipated error *******" 
-    echo errob.name
-    echo errob.msg
-    #echo repr(errob) 
-    echo "\p****End exception****\p"
-  finally:
-    fileob.close()
-
-
 proc addSourceFilesToProject(proj_def_pathst: string): string = 
   #[
   Based on the project-path in the project-def-file, the source-files
@@ -236,8 +162,8 @@ proc addSourceFilesToProject(proj_def_pathst: string): string =
     blockseparatorst = ">----------------------------------<"
     projectpathst: string
     source_filesq: seq[string]
-    blocklineit, source_file_posit, countit: int
-
+    blocklineit, countit: int
+    source_file_posit64: int64
 
   try:
     echo "Trying to open: " & proj_def_pathst
@@ -250,7 +176,7 @@ proc addSourceFilesToProject(proj_def_pathst: string): string =
           blockphasest = linest
           #echo "\p" & blockphasest
           if blockphasest == "SOURCE_FILES":
-            source_file_posit = fileob.getFilePos()
+            source_file_posit64 = fileob.getFilePos()
           blocklineit = 0
         elif linest != "":
         
@@ -269,7 +195,7 @@ proc addSourceFilesToProject(proj_def_pathst: string): string =
             if blocklineit == 1:
               if linest == blockseparatorst:
                 # read the file-names of the source-files and write them to the files-section
-                fileob.setFilePos(source_file_posit)
+                fileob.setFilePos(source_file_posit64)
                 countit = 0
                 for filenamest in source_filesq:
                   countit += 1
@@ -700,7 +626,7 @@ proc getSliceFromLines(fileob: var File, linestartit, lineendit: int, starttagst
   ]#
 
   var 
-    fileposfromlineit, startit, endit, filestartit, fileendit, countit: int
+    fileposfromlineit, startit, endit, filestartit, fileendit, countit: int64
     startfoundbo, endfoundbo, stopsearchingbo: bool
 
   fileob.setFilePos(0)
@@ -767,7 +693,7 @@ proc getSliceFromLines(fileob: var File, linestartit, lineendit: int, starttagst
     filestartit = -1
   if not endfoundbo:
     fileendit = -1        
-  result = [filestartit, fileendit]
+  result = [filestartit.int, fileendit.int]
 
 
 proc getXLinesWithSubstring(fileob: var File, subst: string, linestartit, lineendit, numberit: int): seq[string] = 
@@ -1484,7 +1410,7 @@ proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string, proje
 
 
 
-proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int) = 
+proc showDeclarationBranch_old(proj_def_pathst, directionst: string, maxdepthit: int) = 
 
 #[
   Show a tree of declarations; either a usage-tree or a used-by-tree.
@@ -1501,7 +1427,7 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
 
     sep3st = "==="
     #decnamest, modulest, dectypest, linestartst, newmodulest, decdatalinest: string
-    inputst, outputst: string
+    outputst: string
     onelinest, declarest, modulest, dectypest, linestartst, projecst: string
     projecttypest, projectst, decfilecontentst: string
     projectprefikst: string
@@ -1532,7 +1458,7 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
     decfilob = open(decfilepathst, fmRead)
     decfilecontentst = decfilob.readAll()
 
-    inputst = ""
+    var inputst = ""
     while inputst notin ["exit","quit"]:
       inputst = readline(stdin)
       inputsq = inputst.split(";")
@@ -1630,6 +1556,187 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
     echo errob.msg
     echo repr(errob)
     echo "\p****End exception****\p"
+
+
+
+proc findLines(inputst: string, sep1st = "~~~", sep3st = "===", decfilecontentst, projecttypest: string): seq[string] = 
+
+  var inputsq: seq[string] = inputst.split(";")
+  var foundlinesq: seq[string]
+
+
+  if inputsq.len == 1:
+    if inputst.startswith("~") or inputst.endswith("~"):
+      foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst.strip(chars = {'~'})], @[cmExactInsens], @[@[0,0]])
+    else:
+      foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst], @[cmSubInsens], @[@[0,0]])
+  elif inputsq.len == 2:
+    if projecttypest == "single":
+      foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0], inputsq[1]], @[cmSubInsens, cmSubInsens], @[@[0,0], @[0,1]])
+    else:
+      echo "For multi-projects: Enter one item (proc) or three items (declaration;module;project); it can be emtpy"
+  elif inputsq.len == 3:
+    if inputsq[0].startswith("~") or inputsq[0].endswith("~"):
+      foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0].strip(chars = {'~'}), inputsq[1], inputsq[2]], @[cmExactInsens, cmSubInsens, cmSubInsens], @[@[0,0], @[0,1], @[0,7]])
+    else:
+      foundlinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputsq[0], inputsq[1], inputsq[2]], @[cmSubInsens, cmSubInsens, cmSubInsens], @[@[0,0], @[0,1], @[0,7]])
+
+  result = foundlinesq
+
+
+
+proc echoDeclarationParts(linest, sep3st, sep1st, proj_def_pathst, directionst: string, maxdepthit: int) = 
+
+  var 
+    wordsq: seq[string]
+    outputst: string
+    declarest, modulest, dectypest, linestartst: string
+    projectst: string
+
+  echo "=============================================================================================================="
+  #onelinest = foundlinesq[0]
+  wordsq = linest.split(sep3st)[0].split(sep1st)
+  declarest = wordsq[0]
+  modulest = wordsq[1]
+  dectypest = wordsq[2]
+  linestartst = wordsq[3].split(":")[1]
+  projectst = wordsq[7]
+  outputst = declarest.alignLeft(33) & modulest.alignLeft(40) & dectypest.alignLeft(15) & linestartst.alignLeft(10) & projectst.alignLeft(12)
+  echo declarest, " - ", modulest, "               ", "show declar. parts, direction: ", directionst, ", maxdepth: ", $maxdepthit, "\p"
+  echoDeclarationData(proj_def_pathst, declarest, modulest, projectst)
+  echo outputst
+  echo "--------------------------------------------------------------------------------------------------------------"
+  writeFamily(proj_def_pathst, declarest, modulest, directionst, 1, maxdepthit, projectst)
+  echo "--------------------------------------------------------------------------------------------------------------"
+
+
+
+proc showItem(itemtypeu: ItemType, proj_def_pathst, directionst: string, maxdepthit: int) = 
+
+#[
+  Show either declarational partial data or full source-code
+]#
+
+
+
+  try:
+
+    var projecttypest: string
+    if proj_def_pathst.extractFileExtension() == "mul":
+      projecttypest = "multi"
+    elif proj_def_pathst.extractFileExtension() == "pro":
+      projecttypest = "single"
+    else:
+      echo "Your (multi-)project-definition \"" & proj_def_pathst & "\" has an invalid extension (must be .pro or .mul)"
+
+
+    # set the target-dir and declaration-file
+    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
+    var reltargetprojectpathst: string = string(Path(ct_projectsdirst) / pd_filebasepa)
+
+    echo "--------------------------------------------------------"
+    echo "Direction (tree-type) = ", directionst, ", Maxdepth = ", maxdepthit
+    echo "Enter:  declaration;module;project      to view specific items, emtpy for all items, or exit to exit: "
+
+    var projectprefikst: string = clipString(string(pd_filebasepa), 7)
+    var decfilepathst: string = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_phase3_" & dec_list_suffikst))
+
+    var decfilob: File = open(decfilepathst, fmRead)
+    var decfilecontentst: string = decfilob.readAll()
+
+    var inputst = ""
+    while inputst notin ["exit","quit"]:
+
+      inputst = readline(stdin)
+      wisp(inputst)
+    
+      var 
+        sep1st = "~~~"
+        sep2st = "___"
+        sep3st = "==="
+
+      var foundlinesq: seq[string] = findLines(inputst, sep1st, sep3st, decfilecontentst, projecttypest)
+
+
+      # if no exact match found or wildcard used (all found):
+      if foundlinesq.len == 0 or foundlinesq.len > 1:
+
+        var 
+          foundsublinesq, wordsq: seq[string]
+          outputst: string
+          onelinest, declarest, modulest, dectypest, linestartst: string
+          projectst: string
+
+
+        if foundlinesq.len == 0:
+          # maybe find something with substring-search
+          foundsublinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst], @[cmSubInsens], @[@[0,0]])
+        else:   # when wildcard has been entered (all found) proceed as if many are found
+          foundsublinesq = foundlinesq
+
+        if foundsublinesq.len > 1:
+          #echo foundlinesq
+          echo "=============================================================================================================="
+          for linest in foundsublinesq:
+            wordsq = linest.split(sep3st)[0].split(sep1st)
+            outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10) & wordsq[7].alignLeft(12)
+            echo outputst
+          echo "--------------------------------------------------------------------------------------------------------------"
+        elif foundsublinesq.len == 1:
+
+          if itemtypeu == itemDeclaration:
+            echoDeclarationParts(foundsublinesq[0], sep3st, sep1st, proj_def_pathst, directionst, maxdepthit)
+          else:
+            echo "not yet there"
+
+        elif foundsublinesq.len == 0:
+          echo "Item not found..."
+
+      elif foundlinesq.len == 1:
+
+        if itemtypeu == itemDeclaration:
+          echoDeclarationParts(foundlinesq[0], sep3st, sep1st, proj_def_pathst, directionst, maxdepthit)
+        else:
+          echo "not yet there"
+
+
+
+    echo "Exiting..."
+
+
+  except IndexDefect:
+    let errob = getCurrentException()
+    echo "\p-----error start-----" 
+    echo "Index-error caused by bug in program"
+    echo "System-error-description:"
+    echo errob.name
+    echo errob.msg
+    echo repr(errob) 
+    echo "----End error-----\p"
+
+    #unanticipated errors come here
+  except:
+    let errob = getCurrentException()
+    echo "\p******* Unanticipated error *******" 
+    echo errob.name
+    echo errob.msg
+    echo repr(errob)
+    echo "\p****End exception****\p"
+
+
+
+
+
+proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int) = 
+
+
+#[
+  Show a tree of declarations; either a usage-tree or a used-by-tree.
+]#
+
+
+  showItem(itemDeclaration, proj_def_pathst, directionst, maxdepthit)
+
 
 
 
@@ -1872,10 +1979,12 @@ proc echoHelpInfo() =
             procst = "createMultiProjectFiles"
           of "v", "views":
             procst = "createAllViewFiles"
-          of "g", "generate_all":
+          of "g", "generate_all":                 # both dec-lists and view-files
             procst = "generate_all"
           of "t", "tree":
             procst = "showDeclarationBranch"
+          of "s", "sourcecode":
+            procst = "showSourceCode"
         of "r", "direction":
           case val:
           of "u", "usage":
@@ -2007,7 +2116,10 @@ proc processCommandLine() =
           of "b", "used-by":
             directionst = "used-by"          
         of "d", "depth":
-          depthit = parseInt(val)
+          if val != "":
+            depthit = parseInt(val)
+          else:
+            echo "You entered the depth-key(-d), but not the value (like: -d:2)."
         of "h", "help":
           procst = "echoHelpInfo"
       of cmdEnd: 

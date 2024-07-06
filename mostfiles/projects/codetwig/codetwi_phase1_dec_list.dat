@@ -5,33 +5,35 @@ other_declaration~~~ctwig~~~type~~~ls:42
 other_declaration~~~ctwig~~~var debugbo: boo~~~ls:90
 extractFileExtension~~~ctwig~~~proc~~~ls:100~~~cs:5~~~ce:24
 clipString~~~ctwig~~~proc~~~ls:120~~~cs:5~~~ce:14
-addSourceFilesToProject_old~~~ctwig~~~proc~~~ls:137~~~cs:5~~~ce:31
-addSourceFilesToProject~~~ctwig~~~proc~~~ls:215~~~cs:5~~~ce:27
-extractFileSectionToSequence~~~ctwig~~~proc~~~ls:300~~~cs:5~~~ce:32
-getSliceFromAnchor~~~ctwig~~~proc~~~ls:323~~~cs:5~~~ce:22
-countLinesOfFile~~~ctwig~~~proc~~~ls:397~~~cs:5~~~ce:20
-createDeclarationList~~~ctwig~~~proc~~~ls:410~~~cs:5~~~ce:25
-getSliceFromLines~~~ctwig~~~proc~~~ls:691~~~cs:5~~~ce:21
-getXLinesWithSubstring~~~ctwig~~~proc~~~ls:772~~~cs:5~~~ce:26
-createCodeViewFile~~~ctwig~~~proc~~~ls:802~~~cs:5~~~ce:22
-getSeqFromFileLines~~~ctwig~~~proc~~~ls:1050~~~cs:5~~~ce:23
-getSeqFromFileLines2~~~ctwig~~~proc~~~ls:1112~~~cs:5~~~ce:24
-getSeqFromLinesSpecial~~~ctwig~~~proc~~~ls:1192~~~cs:5~~~ce:26
-writeFamily~~~ctwig~~~proc~~~ls:1260~~~cs:5~~~ce:15
-echoDeclarationData~~~ctwig~~~proc~~~ls:1354~~~cs:5~~~ce:23
-showDeclarationBranch~~~ctwig~~~proc~~~ls:1478~~~cs:5~~~ce:25
-getRangeOfFileLines~~~ctwig~~~proc~~~ls:1625~~~cs:5~~~ce:23
-echoSequence~~~ctwig~~~proc~~~ls:1653~~~cs:5~~~ce:16
-echoRangeOfFileLines~~~ctwig~~~proc~~~ls:1658~~~cs:5~~~ce:24
-getModulePath~~~ctwig~~~proc~~~ls:1664~~~cs:5~~~ce:17
-showSourceCode~~~ctwig~~~proc~~~ls:1683~~~cs:5~~~ce:18
-echoHelpInfo~~~ctwig~~~proc~~~ls:1836~~~cs:5~~~ce:16
-createMultiProjectFiles~~~ctwig~~~proc~~~ls:1883~~~cs:5~~~ce:27
-createAllViewFiles~~~ctwig~~~proc~~~ls:1932~~~cs:5~~~ce:22
-generate_all~~~ctwig~~~proc~~~ls:1941~~~cs:5~~~ce:16
-processCommandLine~~~ctwig~~~proc~~~ls:1949~~~cs:5~~~ce:22
-other_declaration~~~ctwig~~~var for_realbo: ~~~ls:2063
-other_declaration~~~ctwig~~~if for_realbo:~~~ls:2064
+addSourceFilesToProject~~~ctwig~~~proc~~~ls:136~~~cs:5~~~ce:27
+extractFileSectionToSequence~~~ctwig~~~proc~~~ls:221~~~cs:5~~~ce:32
+getSliceFromAnchor~~~ctwig~~~proc~~~ls:244~~~cs:5~~~ce:22
+countLinesOfFile~~~ctwig~~~proc~~~ls:318~~~cs:5~~~ce:20
+createDeclarationList~~~ctwig~~~proc~~~ls:331~~~cs:5~~~ce:25
+getSliceFromLines~~~ctwig~~~proc~~~ls:613~~~cs:5~~~ce:21
+getXLinesWithSubstring~~~ctwig~~~proc~~~ls:694~~~cs:5~~~ce:26
+createCodeViewFile~~~ctwig~~~proc~~~ls:724~~~cs:5~~~ce:22
+getSeqFromFileLines~~~ctwig~~~proc~~~ls:977~~~cs:5~~~ce:23
+getSeqFromFileLines2~~~ctwig~~~proc~~~ls:1039~~~cs:5~~~ce:24
+getSeqFromLinesSpecial~~~ctwig~~~proc~~~ls:1119~~~cs:5~~~ce:26
+writeFamily~~~ctwig~~~proc~~~ls:1187~~~cs:5~~~ce:15
+echoDeclarationData~~~ctwig~~~proc~~~ls:1283~~~cs:5~~~ce:23
+showDeclarationBranch_old~~~ctwig~~~proc~~~ls:1408~~~cs:5~~~ce:29
+findLines~~~ctwig~~~proc~~~ls:1557~~~cs:5~~~ce:13
+echoDeclarationParts~~~ctwig~~~proc~~~ls:1583~~~cs:5~~~ce:24
+showDeclarationBranch~~~ctwig~~~proc~~~ls:1609~~~cs:5~~~ce:25
+getRangeOfFileLines~~~ctwig~~~proc~~~ls:1717~~~cs:5~~~ce:23
+echoSequence~~~ctwig~~~proc~~~ls:1745~~~cs:5~~~ce:16
+echoRangeOfFileLines~~~ctwig~~~proc~~~ls:1750~~~cs:5~~~ce:24
+getModulePath~~~ctwig~~~proc~~~ls:1756~~~cs:5~~~ce:17
+showSourceCode~~~ctwig~~~proc~~~ls:1775~~~cs:5~~~ce:18
+echoHelpInfo~~~ctwig~~~proc~~~ls:1930~~~cs:5~~~ce:16
+createMultiProjectFiles~~~ctwig~~~proc~~~ls:1979~~~cs:5~~~ce:27
+createAllViewFiles~~~ctwig~~~proc~~~ls:2028~~~cs:5~~~ce:22
+generate_all~~~ctwig~~~proc~~~ls:2037~~~cs:5~~~ce:16
+processCommandLine~~~ctwig~~~proc~~~ls:2045~~~cs:5~~~ce:22
+other_declaration~~~ctwig~~~var for_realbo: ~~~ls:2162
+other_declaration~~~ctwig~~~if for_realbo:~~~ls:2163
 other_declaration~~~jolibs/generic/g_cookie~~~import tables, s~~~ls:8
 other_declaration~~~jolibs/generic/g_cookie~~~import g_json2ht~~~ls:9
 other_declaration~~~jolibs/generic/g_cookie~~~var versionfl: f~~~ls:11
