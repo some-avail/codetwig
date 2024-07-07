@@ -31,7 +31,7 @@ import std/[os, strutils, paths, tables, parseopt]
 
 
 var 
-  versionfl: float = 1.64
+  versionfl: float = 1.641
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -1602,140 +1602,12 @@ proc echoDeclarationParts(linest, sep3st, sep1st, proj_def_pathst, directionst: 
   linestartst = wordsq[3].split(":")[1]
   projectst = wordsq[7]
   outputst = declarest.alignLeft(33) & modulest.alignLeft(40) & dectypest.alignLeft(15) & linestartst.alignLeft(10) & projectst.alignLeft(12)
-  echo declarest, " - ", modulest, "               ", "show declar. parts, direction: ", directionst, ", maxdepth: ", $maxdepthit, "\p"
+  echo declarest, " - ", modulest, "                   ", "show declaration-parts, direction: ", directionst, ", maxdepth: ", $maxdepthit, "\p"
   echoDeclarationData(proj_def_pathst, declarest, modulest, projectst)
   echo outputst
   echo "--------------------------------------------------------------------------------------------------------------"
   writeFamily(proj_def_pathst, declarest, modulest, directionst, 1, maxdepthit, projectst)
   echo "--------------------------------------------------------------------------------------------------------------"
-
-
-
-proc showItem(itemtypeu: ItemType, proj_def_pathst, directionst: string, maxdepthit: int) = 
-
-#[
-  Show either declarational partial data or full source-code
-]#
-
-
-
-  try:
-
-    var projecttypest: string
-    if proj_def_pathst.extractFileExtension() == "mul":
-      projecttypest = "multi"
-    elif proj_def_pathst.extractFileExtension() == "pro":
-      projecttypest = "single"
-    else:
-      echo "Your (multi-)project-definition \"" & proj_def_pathst & "\" has an invalid extension (must be .pro or .mul)"
-
-
-    # set the target-dir and declaration-file
-    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
-    var reltargetprojectpathst: string = string(Path(ct_projectsdirst) / pd_filebasepa)
-
-    echo "--------------------------------------------------------"
-    echo "Direction (tree-type) = ", directionst, ", Maxdepth = ", maxdepthit
-    echo "Enter:  declaration;module;project      to view specific items, emtpy for all items, or exit to exit: "
-
-    var projectprefikst: string = clipString(string(pd_filebasepa), 7)
-    var decfilepathst: string = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_phase3_" & dec_list_suffikst))
-
-    var decfilob: File = open(decfilepathst, fmRead)
-    var decfilecontentst: string = decfilob.readAll()
-
-    var inputst = ""
-    while inputst notin ["exit","quit"]:
-
-      inputst = readline(stdin)
-      wisp(inputst)
-    
-      var 
-        sep1st = "~~~"
-        sep2st = "___"
-        sep3st = "==="
-
-      var foundlinesq: seq[string] = findLines(inputst, sep1st, sep3st, decfilecontentst, projecttypest)
-
-
-      # if no exact match found or wildcard used (all found):
-      if foundlinesq.len == 0 or foundlinesq.len > 1:
-
-        var 
-          foundsublinesq, wordsq: seq[string]
-          outputst: string
-          onelinest, declarest, modulest, dectypest, linestartst: string
-          projectst: string
-
-
-        if foundlinesq.len == 0:
-          # maybe find something with substring-search
-          foundsublinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst], @[cmSubInsens], @[@[0,0]])
-        else:   # when wildcard has been entered (all found) proceed as if many are found
-          foundsublinesq = foundlinesq
-
-        if foundsublinesq.len > 1:
-          #echo foundlinesq
-          echo "=============================================================================================================="
-          for linest in foundsublinesq:
-            wordsq = linest.split(sep3st)[0].split(sep1st)
-            outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10) & wordsq[7].alignLeft(12)
-            echo outputst
-          echo "--------------------------------------------------------------------------------------------------------------"
-        elif foundsublinesq.len == 1:
-
-          if itemtypeu == itemDeclaration:
-            echoDeclarationParts(foundsublinesq[0], sep3st, sep1st, proj_def_pathst, directionst, maxdepthit)
-          else:
-            echo "not yet there"
-
-        elif foundsublinesq.len == 0:
-          echo "Item not found..."
-
-      elif foundlinesq.len == 1:
-
-        if itemtypeu == itemDeclaration:
-          echoDeclarationParts(foundlinesq[0], sep3st, sep1st, proj_def_pathst, directionst, maxdepthit)
-        else:
-          echo "not yet there"
-
-
-
-    echo "Exiting..."
-
-
-  except IndexDefect:
-    let errob = getCurrentException()
-    echo "\p-----error start-----" 
-    echo "Index-error caused by bug in program"
-    echo "System-error-description:"
-    echo errob.name
-    echo errob.msg
-    echo repr(errob) 
-    echo "----End error-----\p"
-
-    #unanticipated errors come here
-  except:
-    let errob = getCurrentException()
-    echo "\p******* Unanticipated error *******" 
-    echo errob.name
-    echo errob.msg
-    echo repr(errob)
-    echo "\p****End exception****\p"
-
-
-
-
-
-proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int) = 
-
-
-#[
-  Show a tree of declarations; either a usage-tree or a used-by-tree.
-]#
-
-
-  showItem(itemDeclaration, proj_def_pathst, directionst, maxdepthit)
 
 
 
@@ -1798,7 +1670,180 @@ proc getModulePath(proj_def_pathst, modulest, projectst: string): string =
 
 
 
+
+proc echoSourceCode(linest, sep3st, sep1st, proj_def_pathst: string) = 
+
+
+
+  var 
+    wordsq: seq[string]
+    outputst: string
+    declarest, modulest, dectypest, linestartst, lineendst: string
+    projectst: string
+
+
+  echo "============================================================================================================"
+  wordsq = linest.split(sep3st)[0].split(sep1st)
+  declarest = wordsq[0]
+  modulest = wordsq[1]
+  linestartst = wordsq[3].split(":")[1]
+  lineendst = wordsq[6].split(":")[1]
+  projectst = wordsq[7]
+
+  outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10) & wordsq[7].alignLeft(12)
+
+  echo declarest, " - ", modulest, "                         show SourceCode\p"   
+  echo outputst
+  echo "--------------------------------------------------------------------------------------------------------------\p"
+  echoRangeOfFileLines(getModulePath(proj_def_pathst, modulest, projectst), parseInt(linestartst), parseInt(lineendst))
+
+  echo "--------------------------------------------------------------------------------------------------------------"
+
+
+
+
+
+proc showItem(itemtypeu: ItemType, proj_def_pathst: string, directionst = "", maxdepthit = 0) = 
+
+#[
+  Show either declarational partial data or full source-code
+]#
+
+
+  try:
+
+    var projecttypest: string
+    if proj_def_pathst.extractFileExtension() == "mul":
+      projecttypest = "multi"
+    elif proj_def_pathst.extractFileExtension() == "pro":
+      projecttypest = "single"
+    else:
+      echo "Your (multi-)project-definition \"" & proj_def_pathst & "\" has an invalid extension (must be .pro or .mul)"
+
+
+    # set the target-dir and declaration-file
+    var (pd_dirpa, pd_filebasepa, pd_extst) = splitFile(Path(proj_def_pathst))
+    var reltargetprojectpathst: string = string(Path(ct_projectsdirst) / pd_filebasepa)
+
+
+    var projectprefikst: string = clipString(string(pd_filebasepa), 7)
+    var decfilepathst: string = string(Path(reltargetprojectpathst) / Path(projectprefikst & "_phase3_" & dec_list_suffikst))
+
+    var decfilob: File = open(decfilepathst, fmRead)
+    var decfilecontentst: string = decfilob.readAll()
+
+    var inputst = ""
+    while inputst notin ["exit","quit"]:
+
+      echo "--------------------------------------------------------"
+      if itemtypeu == itemDeclaration:
+        echo "show declaration-parts;   Direction (tree-type) = ", directionst, ", Maxdepth = ", maxdepthit
+      elif itemtypeu == itemSourceCode:
+        echo "show the sourcecode of the declaration"
+      echo "Enter:  declaration;module;project      to view specific items, emtpy for all items, or exit to exit: "
+
+      inputst = readline(stdin)
+      wisp(inputst)
+    
+      var 
+        sep1st = "~~~"
+        sep2st = "___"
+        sep3st = "==="
+
+      var foundlinesq: seq[string] = findLines(inputst, sep1st, sep3st, decfilecontentst, projecttypest)
+
+
+      # if no exact match found or wildcard used (all found):
+      if foundlinesq.len == 0 or foundlinesq.len > 1:
+
+        var 
+          foundsublinesq, wordsq: seq[string]
+          outputst: string
+          onelinest, declarest, modulest, dectypest, linestartst: string
+          projectst: string
+
+
+        if foundlinesq.len == 0:
+          # maybe find something with substring-search
+          foundsublinesq = readFromSeparatedString(decfilecontentst, "\p" , @[sep3st, sep1st], @[], @[inputst], @[cmSubInsens], @[@[0,0]])
+        else:   # when wildcard has been entered (all found) proceed as if many are found
+          foundsublinesq = foundlinesq
+
+        if foundsublinesq.len > 1:
+          #echo foundlinesq
+          echo "=============================================================================================================="
+          for linest in foundsublinesq:
+            wordsq = linest.split(sep3st)[0].split(sep1st)
+            outputst = wordsq[0].alignLeft(33) & wordsq[1].alignLeft(40) & wordsq[2].alignLeft(15) & wordsq[3].split(":")[1].alignLeft(10) & wordsq[7].alignLeft(12)
+            echo outputst
+          echo "--------------------------------------------------------------------------------------------------------------"
+        elif foundsublinesq.len == 1:
+
+          if itemtypeu == itemDeclaration:
+            echoDeclarationParts(foundsublinesq[0], sep3st, sep1st, proj_def_pathst, directionst, maxdepthit)
+          elif itemtypeu == itemSourceCode:
+            echoSourceCode(foundsublinesq[0], sep3st, sep1st, proj_def_pathst)
+
+
+        elif foundsublinesq.len == 0:
+          echo "Item not found..."
+
+      elif foundlinesq.len == 1:
+
+        if itemtypeu == itemDeclaration:
+          echoDeclarationParts(foundlinesq[0], sep3st, sep1st, proj_def_pathst, directionst, maxdepthit)
+        elif itemtypeu == itemSourceCode:
+          echoSourceCode(foundlinesq[0], sep3st, sep1st, proj_def_pathst)
+
+
+    echo "Exiting..."
+
+
+  except IndexDefect:
+    let errob = getCurrentException()
+    echo "\p-----error start-----" 
+    echo "Index-error caused by bug in program"
+    echo "System-error-description:"
+    echo errob.name
+    echo errob.msg
+    echo repr(errob) 
+    echo "----End error-----\p"
+
+    #unanticipated errors come here
+  except:
+    let errob = getCurrentException()
+    echo "\p******* Unanticipated error *******" 
+    echo errob.name
+    echo errob.msg
+    echo repr(errob)
+    echo "\p****End exception****\p"
+
+
+
+
+
+proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int) = 
+
+  #[
+    Show a tree of declarations; either a usage-tree or a used-by-tree.
+  ]#
+
+  showItem(itemDeclaration, proj_def_pathst, directionst, maxdepthit)
+
+
+
 proc showSourceCode(proj_def_pathst: string) = 
+
+  #[
+    Show the source-code of a declaration
+  ]#
+
+  showItem(itemSourceCode, proj_def_pathst)
+
+
+
+
+proc showSourceCode_old(proj_def_pathst: string) = 
 #[
   Show the source-code of a declaration
 ]#
