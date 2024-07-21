@@ -34,7 +34,7 @@ import std/[os, strutils, paths, tables, parseopt]
 #  mies
 
 var 
-  versionfl: float = 1.65
+  versionfl: float = 1.651
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -482,7 +482,7 @@ proc substringInSequence(stringsq: seq[string]; substringst: string): bool =
 
 
 
-proc containsWithValidBoundaries(tekst, subst: string; beforesq, aftersq: seq[string], allowfirstlastbo: bool): bool = 
+proc containsWithValidBoundaries(tekst, subst: string; beforesq, aftersq: seq[string]; allowfirstbo, allowlastbo: bool): bool = 
 
   # subst within tekst has valid bounds if before and after strings are in seqs
   # allowfirstlastbo means that the subst is allowed as first or last part of tekst
@@ -500,27 +500,40 @@ proc containsWithValidBoundaries(tekst, subst: string; beforesq, aftersq: seq[st
     aftokbo = false
     skipbo = false
 
-    substartit = tekst.find(subst)
-    subendit = substartit + subst.len
-
+    wisp("tekst = ", tekst)
+    wisp("subst =", subst)
+    wisp("beforesq = ", $beforesq)
+    wisp("aftersq = ", $aftersq)
     wisp("tekst.len = ", tekst.len)
+    wisp("allowfirstbo = ", allowfirstbo)
+    wisp("allowlastbo = ", allowlastbo)
+
+
+    substartit = tekst.find(subst)
+    subendit = substartit + subst.len - 1
+
     wisp("substartit = ", substartit)
     wisp("subendit = ", subendit)
-    wisp("allowfirstlastbo = ", allowfirstlastbo)
+
 
     if substartit >= 0:
 
-      if allowfirstlastbo:
+      if allowfirstbo:
         if substartit == 0:
           forokbo = true
+      else:
+        if substartit == 0:
+          skipbo = true
+
+      if allowlastbo:
         if subendit == tekst.len - 1:
           aftokbo = true
       else:
-        if substartit == 0 or subendit == tekst.len - 1:
-          # no further testing needed
+        if subendit == tekst.len - 1:
           skipbo = true
 
-      if not forokbo and not (substartit == 0) and not skipbo:
+
+      if not forokbo and not skipbo:
         wisp "in for"
         for forst in beforesq:
           forstartit = substartit - forst.len
@@ -531,18 +544,20 @@ proc containsWithValidBoundaries(tekst, subst: string; beforesq, aftersq: seq[st
               forokbo = true
               break
 
-      if not aftokbo and not (subendit == tekst.len - 1) and not skipbo:
+      if not aftokbo and not skipbo:
         wisp "in aft"
         for aftst in aftersq:
           aftendit = subendit + aftst.len
           wisp("aftendit = ", aftendit)
-          if aftendit <= tekst.len:
-            aftslicest = tekst[subendit .. aftendit - 1]
+          if aftendit < tekst.len:
+            aftslicest = tekst[subendit + 1 .. aftendit]
             wisp("aftslicest = ", aftslicest)
             if aftslicest == aftst:
               aftokbo = true
               break
 
+    wisp("forokbo =", forokbo)
+    wisp("aftokbo = ", aftokbo)
 
     wispbo = false
 
@@ -823,7 +838,7 @@ proc createDeclarationList(proj_def_pathst: string) =
 
                 if sline.len > 2 and not incommentblockbo and not commentclosingbo and not singlecommentbo:
                   #if sline.contains(declare2st) and not sline.contains("\"" & declare2st & "\""):
-                  if sline.containsWithValidBoundaries(declare2st, @[".", "(", " ", "=", "["], @["(", "=", " ", "."], false) :
+                  if sline.containsWithValidBoundaries(declare2st, @[".", "(", " ", "=", "["], @["(", "=", " ", "."], false, true) :
 
                     foundcountit += 1
 
@@ -2414,5 +2429,5 @@ else:
   if true:
     var tekst = "aapnootmies"
 
-    echo "containsWithValidBoundaries = ", $containsWithValidBoundaries(tekst, "noot", @["p"], @["mie"], false)
+    echo "containsWithValidBoundaries = ", $containsWithValidBoundaries(tekst, "noot", @["p"], @["mi"], true, true)
 
