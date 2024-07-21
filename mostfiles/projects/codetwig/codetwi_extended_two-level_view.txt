@@ -6,32 +6,13 @@
 ****************    ctwig   ***********************************************************************
 
 ----------------------------------------------------------------------
-    clipString                       ctwig          proc      line: 120
+    clipString                       ctwig          proc      line: 129
         (inputst: string, lengthit: int): string 
 
   # maximize string at lengthit
  
 ----------------------------------------------------------------------
-    addSourceFilesToProject_old      ctwig          proc      line: 137
-        (proj_def_pathst: string): string 
-        
-  Based on the project-path in the project-def-file, the source-files
-  from that project are added to the project-def-file.
-
-  ADAP FUT
-  -add param overwritebo to overwrite / update the current sf-list
-  -exclusion-list to auto-exclude certain files that are probably copies
-  of originals, with numbers and words like bak or copy.
-  
-
-    # open the project-file for read-write access
-        # check for block-header
-              # read the project-path
- 
-        writeFilePatternToSeq            .../g_disk2nim         proc      182
-        writeFilePatternToSeq2           .../g_disk2nim         proc      182
-----------------------------------------------------------------------
-    addSourceFilesToProject          ctwig          proc      line: 215
+    addSourceFilesToProject          ctwig          proc      line: 145
         (proj_def_pathst: string): string 
         
   Based on the project-path in the project-def-file, the source-files
@@ -51,10 +32,9 @@
         # check for block-header
               # read the project-path
  
-        writeFilePatternToSeq            .../g_disk2nim         proc      264
-        writeFilePatternToSeqRec         .../g_disk2nim         proc      264
+        writeFilePatternToSeqRec         .../g_disk2nim         proc      194
 ----------------------------------------------------------------------
-    extractFileSectionToSequence     ctwig          proc      line: 300
+    extractFileSectionToSequence     ctwig          proc      line: 230
         (filepathst, start_separst, end_separst: string): seq[string] 
         
     Extract the lines of a file that are located between the starting and ending separator and 
@@ -62,10 +42,9 @@
   
 
  
-        withFile                         .../g_templates        template  311
-        withFileAdvanced                 .../g_templates        template  311
+        withFileAdvanced                 .../g_templates        template  241
 ----------------------------------------------------------------------
-    getSliceFromAnchor               ctwig          proc      line: 323
+    getSliceFromAnchor               ctwig          proc      line: 253
         (tekst, anchorst: string, possib_endmarksq: seq[string], appendspacebo: bool): array[0..1, int] 
         
     Searching in the tekst, return a target-string indicated as slice [start,end] located after an anchor-string.
@@ -86,12 +65,72 @@
 
  
 ----------------------------------------------------------------------
-    countLinesOfFile                 ctwig          proc      line: 397
+    countLinesOfFile                 ctwig          proc      line: 327
         (filepathst: string): int 
 
  
 ----------------------------------------------------------------------
-    createDeclarationList            ctwig          proc      line: 410
+    getStandardLibsOfNim             ctwig          proc      line: 340
+        (filepathst: string): seq[string] 
+        
+    All modules in the standard library of Nim.
+    Current Nim version: 2.0.8
+    Gotten from: https://nim-lang.org/docs/theindex.html
+    Sub-section modules
+  
+
+ 
+        withFileAdvanced                 .../g_templates        template  352
+----------------------------------------------------------------------
+    getNimImports                    ctwig          proc      line: 365
+        (filepathst: string; exclude_stdlibsbo: bool = true, include_selfbo: bool = true): seq[string] 
+         
+    Open the file and read the relevant imports to a sequence.
+    param exclude_stdlibsbo = false not yet fully implemented.
+            usefull for analysing nimlang and its libs themselves
+   
+
+    # below resp: the resulting module-list, temp. module-list, split import-path-parts
+            # not yet implemented
+ 
+        getStandardLibsOfNim             ctwig                  proc      375
+        wisp                             .../g_templates        template  394
+----------------------------------------------------------------------
+    testNimImports                   ctwig          proc      line: 428
+        (proj_def_pathst: string) 
+        
+   test the proc getNimImports for a specific project-def
+  
+
+    # retrieve project-data from project-def-file
+ 
+        extractFileSectionToSequence     ctwig                  proc      441
+        getNimImports                    ctwig                  proc      453
+----------------------------------------------------------------------
+    substringInSequence              ctwig          proc      line: 470
+        (stringsq: seq[string]; substringst: string): bool 
+        
+    Return true if the substring is in one of the elements.
+  
+
+ 
+----------------------------------------------------------------------
+    containsWithValidBoundaries      ctwig          proc      line: 485
+        (tekst, subst: string; beforesq, aftersq: seq[string], allowfirstlastbo: bool): bool 
+
+  # subst within tekst has valid bounds if before and after strings are in seqs
+  # allowfirstlastbo means that the subst is allowed as first or last part of tekst
+          # no further testing needed
+ 
+        wisp                             .../g_templates        template  506
+----------------------------------------------------------------------
+    containsDeclaration              ctwig          proc      line: 564
+        (linest, declarationst: string): bool 
+
+  # test if the line contains a dec. and has the right boundaries
+ 
+----------------------------------------------------------------------
+    createDeclarationList            ctwig          proc      line: 572
         (proj_def_pathst: string) 
         
   proj_def_pathst = path to the file in which the codetwig-project for a source-project is defined
@@ -113,11 +152,16 @@
     # to avoid doubles
     # must be unique
  
-        extractFileSectionToSequence     ctwig                  proc      467
-        getSliceFromAnchor               ctwig                  proc      522
-        countLinesOfFile                 ctwig                  proc      578
+        clipString                       ctwig                  proc      646
+        extractFileSectionToSequence     ctwig                  proc      632
+        getSliceFromAnchor               ctwig                  proc      687
+        countLinesOfFile                 ctwig                  proc      743
+        getNimImports                    ctwig                  proc      767
+        substringInSequence              ctwig                  proc      832
+        containsWithValidBoundaries      ctwig                  proc      826
+        wisp                             .../g_templates        template  837
 ----------------------------------------------------------------------
-    getSliceFromLines                ctwig          proc      line: 691
+    getSliceFromLines                ctwig          proc      line: 897
         (fileob: var File, linestartit, lineendit: int, starttagst, endtagst: string, samelinebo: bool = false): array[0..1, int] 
         
     Looping thru the lines, starting at linestart, retrieve the starting and ending point 
@@ -133,7 +177,7 @@
                 # search the next occurence of starttagst
  
 ----------------------------------------------------------------------
-    getXLinesWithSubstring           ctwig          proc      line: 772
+    getXLinesWithSubstring           ctwig          proc      line: 978
         (fileob: var File, subst: string, linestartit, lineendit, numberit: int): seq[string] 
          Retrieve numberit lines from fileob based on the substring in them 
      starting from linestartit and put them in a sequence. Lines are prestripped for comparison
@@ -144,7 +188,7 @@
 
  
 ----------------------------------------------------------------------
-    createCodeViewFile               ctwig          proc      line: 802
+    createCodeViewFile               ctwig          proc      line: 1008
         (proj_def_pathst: string, viewtypeeu: ViewType) 
         
   Create view-files of the enum-type
@@ -157,11 +201,12 @@
     # set the target-dir and declaration-file
     # create the source-file-table
  
-        extractFileSectionToSequence     ctwig                  proc      833
-        getSliceFromLines                ctwig                  proc      948
-        getXLinesWithSubstring           ctwig                  proc      985
+        clipString                       ctwig                  proc      1053
+        extractFileSectionToSequence     ctwig                  proc      1041
+        getSliceFromLines                ctwig                  proc      1159
+        getXLinesWithSubstring           ctwig                  proc      1196
 ----------------------------------------------------------------------
-    getSeqFromFileLines              ctwig          proc      line: 1050
+    getSeqFromFileLines              ctwig          proc      line: 1261
         (filepathst, searchst, sep1st, sep2st: string, searchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
         
     Add lines to the sequence which match the search-filter.
@@ -179,7 +224,7 @@
 
  
 ----------------------------------------------------------------------
-    getSeqFromFileLines2             ctwig          proc      line: 1112
+    getSeqFromFileLines2             ctwig          proc      line: 1323
         (filepathst, fstsearchst, secsearchst, sep1st, sep2st: string, fstsearchfieldar, secsearchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
         
     Add lines to the sequence which match the search-filter.
@@ -196,7 +241,7 @@
 
  
 ----------------------------------------------------------------------
-    getSeqFromLinesSpecial           ctwig          proc      line: 1192
+    getSeqFromLinesSpecial           ctwig          proc      line: 1403
         (filepathst, searchst, sep1st, sep2st: string, projectst = ""): seq[string] 
         
     Search-function specific for the dec-list phase-3.
@@ -207,9 +252,15 @@
     extra separator and sortfieldar may come later
   
 
+    # set the target-dir and declaration-file
  
+        clipString                       ctwig                  proc      1499
+        substringInSequence              ctwig                  proc      1525
+        getSeqFromLinesSpecial           ctwig                  proc      1538
+        writeFamily                      ctwig                  proc      1533
+        readFromSeparatedString          .../g_stringdata       proc      1512
 ----------------------------------------------------------------------
-    writeFamily                      ctwig          proc      line: 1260
+    writeFamily                      ctwig          proc      line: 1572
         (proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int, projectst: string = "") 
         
   Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
@@ -217,11 +268,12 @@
 
     # set the target-dir and declaration-file
  
-        getSeqFromLinesSpecial           ctwig                  proc      1320
-        writeFamily                      ctwig                  proc      1315
-        readFromSeparatedString          .../g_stringdata       proc      1296
+        clipString                       ctwig                  proc      1600
+        getSeqFromLinesSpecial           ctwig                  proc      1633
+        writeFamily                      ctwig                  proc      1628
+        readFromSeparatedString          .../g_stringdata       proc      1609
 ----------------------------------------------------------------------
-    echoDeclarationData              ctwig          proc      line: 1354
+    echoDeclarationData              ctwig          proc      line: 1667
         (proj_def_pathst, declarationst, modulest: string, projectst: string = "") 
         
     Echo extra data of the declare like parameters and comment.
@@ -231,30 +283,28 @@
     # set the target-dir and declaration-file
     # add the parameter-declares (inputs)
  
-        extractFileExtension             ctwig                  proc      1381
-        extractFileSectionToSequence     ctwig                  proc      1383
-        getSliceFromLines                ctwig                  proc      1421
-        getXLinesWithSubstring           ctwig                  proc      1446
-        readFromSeparatedString          .../g_stringdata       proc      1404
-        wisp                             .../g_templates        template  1377
+        extractFileExtension             ctwig                  proc      1694
+        clipString                       ctwig                  proc      1708
+        extractFileSectionToSequence     ctwig                  proc      1696
+        getSliceFromLines                ctwig                  proc      1735
+        getXLinesWithSubstring           ctwig                  proc      1760
+        readFromSeparatedString          .../g_stringdata       proc      1718
+        wisp                             .../g_templates        template  1691
 ----------------------------------------------------------------------
-    showDeclarationBranch            ctwig          proc      line: 1478
-        (proj_def_pathst, directionst: string, maxdepthit: int) 
-        
-  Show a tree of declarations; either a usage-tree or a used-by-tree.
+    findLines                        ctwig          proc      line: 1793
+        (inputst, sep1st, sep3st, decfilecontentst, projecttypest: string): seq[string] 
 
-
-    # set the target-dir and declaration-file
-      # if no exact match found or wildcard used (all found):
-          # maybe find something with substring-search
  
-        extractFileExtension             ctwig                  proc      1504
-        writeFamily                      ctwig                  proc      1579
-        echoDeclarationData              ctwig                  proc      1576
-        readFromSeparatedString          .../g_stringdata       proc      1533
-        wisp                             .../g_templates        template  1529
+        readFromSeparatedString          .../g_stringdata       proc      1805
 ----------------------------------------------------------------------
-    getRangeOfFileLines              ctwig          proc      line: 1625
+    echoDeclarationParts             ctwig          proc      line: 1845
+        (linest, sep3st, sep1st, proj_def_pathst, directionst: string, maxdepthit: int) 
+
+ 
+        writeFamily                      ctwig                  proc      1866
+        echoDeclarationData              ctwig                  proc      1863
+----------------------------------------------------------------------
+    getRangeOfFileLines              ctwig          proc      line: 1872
         (filepathst: string, linestartit, lineendit: int): seq[string] 
         
     Write the lines of the range starting with linestartit and ending with lineendit 
@@ -262,51 +312,77 @@
   
 
  
-        withFile                         .../g_templates        template  1638
-        withFileAdvanced                 .../g_templates        template  1638
+        withFileAdvanced                 .../g_templates        template  1885
 ----------------------------------------------------------------------
-    echoSequence                     ctwig          proc      line: 1653
+    echoSequence                     ctwig          proc      line: 1900
         (inputsq: seq[string]) 
 
  
 ----------------------------------------------------------------------
-    echoRangeOfFileLines             ctwig          proc      line: 1658
+    echoRangeOfFileLines             ctwig          proc      line: 1905
         (filepathst: string, linestartit, lineendit: int) 
 
  
-        getRangeOfFileLines              ctwig                  proc      1660
-        echoSequence                     ctwig                  proc      1660
+        getRangeOfFileLines              ctwig                  proc      1907
+        echoSequence                     ctwig                  proc      1907
 ----------------------------------------------------------------------
-    getModulePath                    ctwig          proc      line: 1664
+    getModulePath                    ctwig          proc      line: 1911
         (proj_def_pathst, modulest, projectst: string): string 
 
     # retrieve project-data from project-def-file
  
-        extractFileExtension             ctwig                  proc      1669
-        extractFileSectionToSequence     ctwig                  proc      1671
+        extractFileExtension             ctwig                  proc      1916
+        extractFileSectionToSequence     ctwig                  proc      1918
 ----------------------------------------------------------------------
-    showSourceCode                   ctwig          proc      line: 1683
-        (proj_def_pathst: string) 
+    echoSourceCode                   ctwig          proc      line: 1931
+        (linest, sep3st, sep1st, proj_def_pathst: string) 
+
+ 
+        echoRangeOfFileLines             ctwig                  proc      1955
+        getModulePath                    ctwig                  proc      1955
+----------------------------------------------------------------------
+    showItem                         ctwig          proc      line: 1963
+        (itemtypeu: ItemType, proj_def_pathst: string, directionst = "", maxdepthit = 0) 
         
-  Show the source-code of a declaration
+  Show either declarational partial data or full source-code
 
 
     # set the target-dir and declaration-file
       # if no exact match found or wildcard used (all found):
           # maybe find something with substring-search
  
-        extractFileExtension             ctwig                  proc      1707
-        echoRangeOfFileLines             ctwig                  proc      1785
-        getModulePath                    ctwig                  proc      1785
-        readFromSeparatedString          .../g_stringdata       proc      1736
-        wisp                             .../g_templates        template  1732
+        extractFileExtension             ctwig                  proc      1973
+        clipString                       ctwig                  proc      1986
+        findLines                        ctwig                  proc      2010
+        echoDeclarationParts             ctwig                  proc      2040
+        echoSourceCode                   ctwig                  proc      2042
+        readFromSeparatedString          .../g_stringdata       proc      2025
+        wisp                             .../g_templates        template  2003
 ----------------------------------------------------------------------
-    echoHelpInfo                     ctwig          proc      line: 1836
+    showDeclarationBranch            ctwig          proc      line: 2082
+        (proj_def_pathst, directionst: string, maxdepthit: int) 
+        
+    Show a tree of declarations; either a usage-tree or a used-by-tree.
+  
+
+ 
+        showItem                         ctwig                  proc      2088
+----------------------------------------------------------------------
+    showSourceCode                   ctwig          proc      line: 2092
+        (proj_def_pathst: string) 
+        
+    Show the source-code of a declaration
+  
+
+ 
+        showItem                         ctwig                  proc      2098
+----------------------------------------------------------------------
+    echoHelpInfo                     ctwig          proc      line: 2103
         () 
 
  
 ----------------------------------------------------------------------
-    createMultiProjectFiles          ctwig          proc      line: 1883
+    createMultiProjectFiles          ctwig          proc      line: 2152
         (multiprojectdefst: string) 
         
   Currently:
@@ -324,24 +400,24 @@
   # extract the project-file-names from the multiproj-file
   # retrieve the phase3 dec-list for all projects and put them in a list-seq
  
-        clipString                       ctwig                  proc      1922
-        extractFileSectionToSequence     ctwig                  proc      1915
-        concatenateFiles                 .../g_tools            proc      1927
+        clipString                       ctwig                  proc      2191
+        extractFileSectionToSequence     ctwig                  proc      2184
+        concatenateFiles                 .../g_tools            proc      2196
 ----------------------------------------------------------------------
-    createAllViewFiles               ctwig          proc      line: 1932
+    createAllViewFiles               ctwig          proc      line: 2201
         (filepathst: string) 
 
  
-        createCodeViewFile               ctwig                  proc      1934
+        createCodeViewFile               ctwig                  proc      2203
 ----------------------------------------------------------------------
-    generate_all                     ctwig          proc      line: 1941
+    generate_all                     ctwig          proc      line: 2210
         (projectpathst: string) 
 
  
-        createDeclarationList            ctwig                  proc      1943
-        createAllViewFiles               ctwig                  proc      1944
+        createDeclarationList            ctwig                  proc      2212
+        createAllViewFiles               ctwig                  proc      2213
 ----------------------------------------------------------------------
-    processCommandLine               ctwig          proc      line: 1949
+    processCommandLine               ctwig          proc      line: 2218
         () 
         
   firstly load the args from the commandline and set the needed vars 
@@ -352,14 +428,14 @@
 
     # firstly load the args from the commandline and set the needed vars 
  
-        addSourceFilesToProject          ctwig                  proc      2017
-        createDeclarationList            ctwig                  proc      2019
-        showDeclarationBranch            ctwig                  proc      2027
-        showSourceCode                   ctwig                  proc      2029
-        echoHelpInfo                     ctwig                  proc      2031
-        createMultiProjectFiles          ctwig                  proc      2021
-        createAllViewFiles               ctwig                  proc      2023
-        generate_all                     ctwig                  proc      2025
+        addSourceFilesToProject          ctwig                  proc      2289
+        createDeclarationList            ctwig                  proc      2291
+        showDeclarationBranch            ctwig                  proc      2299
+        showSourceCode                   ctwig                  proc      2301
+        echoHelpInfo                     ctwig                  proc      2303
+        createMultiProjectFiles          ctwig                  proc      2293
+        createAllViewFiles               ctwig                  proc      2295
+        generate_all                     ctwig                  proc      2297
 
 
 ****************    jolibs/generic/g_cookie   ***********************************************************************
@@ -380,7 +456,7 @@
 #     "funcname:setDropDown++location:inner++varname:dropdown1++param2:dropdownname_01++param3:third realvalue++param4:1", 60);
 # proc setDropDown*(jnob: JsonNode, dropdownnamest, selected_valuest: string, 
  
-        dummyPass                        .../g_cookie           proc      49
+        dummyPass                        .../g_cookie           proc      50
         setDropDown                      .../g_json2html        proc      52
 
 
@@ -433,7 +509,6 @@ Purpose STRING, Modelnr TEXT)
     # firstly strip surrounding spaces and then split on spaces
     # strip possible brackets
  
-        withDb                           .../g_database         template  125
 ----------------------------------------------------------------------
     getFieldAndTypeList              jolibs/generic/g_databaseproc      line: 149
         (tablenamest: string, 
@@ -465,7 +540,6 @@ ORDER BY Relations.Change
       # strip possible brackets
       # firstly strip surrounding spaces and then split on spaces
  
-        withDb                           .../g_database         template  185
         split2                           .../g_tools            proc      218
 ----------------------------------------------------------------------
     readFromParams                   jolibs/generic/g_databaseproc      line: 252
@@ -500,7 +574,6 @@ ORDER BY Relations.Change
   # prepare the where-clause / row-filter
   # prep order-strings
  
-        withDb                           .../g_database         template  338
 ----------------------------------------------------------------------
     Old_readFromParams               jolibs/generic/g_databaseproc      line: 344
         (tablenamest: string, fieldsq: seq[string] = @[], 
@@ -534,7 +607,6 @@ ORDER BY Relations.Change
   # prepare the where-clause / row-filter
   # prep order-strings
  
-        withDb                           .../g_database         template  426
 ----------------------------------------------------------------------
     addNewFromParams                 jolibs/generic/g_databaseproc      line: 430
         (tablenamest: string, fieldvaluesq: seq[array[2, string]]) 
@@ -550,7 +622,6 @@ ORDER BY Relations.Change
    
 
  
-        withDb                           .../g_database         template  471
 ----------------------------------------------------------------------
     deleteFromParams                 jolibs/generic/g_databaseproc      line: 476
         (tablenamest: string, comparetype: Comparetype = compString, 
@@ -564,7 +635,6 @@ ORDER BY Relations.Change
   # prepare the where-clause / row-filter
   # get the row-sequence
  
-        withDb                           .../g_database         template  517
 ----------------------------------------------------------------------
     updateFromParams                 jolibs/generic/g_databaseproc      line: 523
         (tablenamest: string, setfieldvaluesq: seq[array[2, string]],
@@ -669,7 +739,6 @@ ORDER BY Relations.Change
 
   # walk thru the file-iterator and sequence the right file(names)
  
-        writeFilePatternToSeq            .../g_disk2nim         proc      169
         getPatternLocation               .../g_disk2nim         proc      134
         writeFilePatternToSeq3           .../g_disk2nim         proc      169
         wisp                             .../g_templates        template  139
@@ -745,7 +814,6 @@ ORDER BY Relations.Change
  
         newlang                          .../g_json2html        proc      82
         getDeepNodeFromKey               .../g_json_plus        proc      72
-        newlang                          .../g_options          proc      82
 ----------------------------------------------------------------------
     setCheckBoxSet                   jolibs/generic/g_json2htmlproc      line: 108
         (jnob: JsonNode, setnamest:string, checked_onesq:seq[string], 
@@ -772,7 +840,6 @@ Returns for sample-def (default):
  
         newlang                          .../g_json2html        proc      147
         getDeepNodeFromKey               .../g_json_plus        proc      131
-        newlang                          .../g_options          proc      147
 ----------------------------------------------------------------------
     setDropDown                      jolibs/generic/g_json2htmlproc      line: 171
         (jnob: JsonNode, dropdownnamest, selected_valuest: string, 
@@ -806,7 +873,6 @@ Sample output:
  
         newlang                          .../g_json2html        proc      210
         getDeepNodeFromKey               .../g_json_plus        proc      206
-        newlang                          .../g_options          proc      210
 ----------------------------------------------------------------------
     setTableBasic                    jolibs/generic/g_json2htmlproc      line: 249
         (jnob: JsonNode, tablenamest: string): string 
@@ -951,7 +1017,6 @@ Sample output:
  
         newlang                          .../g_json2html        proc      683
         getDeepNodeFromKey               .../g_json_plus        proc      679
-        newlang                          .../g_options          proc      683
 
 
 ****************    jolibs/generic/g_json_plus   ***********************************************************************
@@ -1508,7 +1573,7 @@ Sample output:
           # zoom in to the return-fragment
  
         zoomIntoFragments                .../g_stringdata       proc      252
-        wisp                             .../g_templates        template  224
+        wisp                             .../g_templates        template  240
 ----------------------------------------------------------------------
     writeToSeparatedString           jolibs/generic/g_stringdataproc      line: 302
         (tekst, insertst: string, operationeu: OperationOnString, separatorsq: seq[string], filtercoordinatesq: seq[seq[int]], filtervaluesq, comparisonsq: seq[string]): string 
@@ -1532,23 +1597,20 @@ Sample output:
 
   # works only for non-release-compilation; thats ok
  
-        wisp                             .../g_templates        template  36
 ----------------------------------------------------------------------
     wisp                             jolibs/generic/g_templatestemplate  line: 53
         (wordsq: varargs[string, `$`]) 
 
   # works only for non-release-compilation; thats ok
  
-        wisp                             .../g_templates        template  61
 ----------------------------------------------------------------------
     withFile                         jolibs/generic/g_templatestemplate  line: 85
-        (f, fn, mode, actions: untyped): untyped 
+        (fileob, filenamest, mode, actions: untyped): untyped 
 
  
-        withFile                         .../g_templates        template  93
 ----------------------------------------------------------------------
     withFileAdvanced                 jolibs/generic/g_templatestemplate  line: 97
-        (f, fn, mode, actions: untyped): untyped 
+        (fileob, filenamest, mode, actions: untyped): untyped 
          
 Below are some timing-functions that may or may not
 work. I find the cpuTime function unreliable, for example
@@ -1558,31 +1620,29 @@ accurate.
  
 
  
-        withFile                         .../g_templates        template  110
-        withFileAdvanced                 .../g_templates        template  110
 ----------------------------------------------------------------------
-    doWork                           jolibs/generic/g_templatesproc      line: 125
+    doWork                           jolibs/generic/g_templatesproc      line: 126
         (x: int) 
 
  
 ----------------------------------------------------------------------
-    timeStuff                        jolibs/generic/g_templatestemplate  line: 131
+    timeStuff                        jolibs/generic/g_templatestemplate  line: 132
         (statement: untyped): string 
 
  
 ----------------------------------------------------------------------
-    timeThings                       jolibs/generic/g_templatestemplate  line: 137
+    timeThings                       jolibs/generic/g_templatestemplate  line: 138
         (statement: untyped) 
 
   # easiest to use
  
 ----------------------------------------------------------------------
-    timeNeatly                       jolibs/generic/g_templatestemplate  line: 145
+    timeNeatly                       jolibs/generic/g_templatestemplate  line: 146
         (statement: untyped): float 
 
  
 ----------------------------------------------------------------------
-    timeCop                          jolibs/generic/g_templatestemplate  line: 151
+    timeCop                          jolibs/generic/g_templatestemplate  line: 152
         (statement: untyped) 
 
   # measures real-time instead of cpu-time

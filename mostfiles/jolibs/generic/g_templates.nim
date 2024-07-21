@@ -3,7 +3,7 @@ import std/[times, strutils]
 var versionfl: float = 0.12
 
 
-var wispbo* = false
+var wispbo* = true
 
 
 
@@ -82,21 +82,22 @@ template wisp*(wordsq: varargs[string, `$`]) =
 
 
 
-template withFile*(f, fn, mode, actions: untyped): untyped =
-  var f: File
-  if open(f, fn, mode):
+template withFile*(fileob, filenamest, mode, actions: untyped): untyped =
+  var fileob: File
+  if open(fileob, filenamest, mode):
     try:
       actions
     finally:
-      close(f)
+      close(fileob)
   else:
-    echo("withFile cannot open: " & fn)
+    echo("withFile cannot open: " & filenamest)
 
 
 
-template withFileAdvanced*(f, fn, mode, actions: untyped): untyped =
-  var f: File
-  if open(f, fn, mode):
+template withFileAdvanced*(fileob, filenamest, mode, actions: untyped): untyped =
+  
+  var fileob: File
+  if open(fileob, filenamest, mode):
     try:
       actions
 
@@ -105,9 +106,9 @@ template withFileAdvanced*(f, fn, mode, actions: untyped): untyped =
       echo "\p******* Unanticipated error ******* \p" 
       echo repr(errob) & "\p****End exception****\p"
     finally:
-      close(f)
+      close(fileob)
   else:
-    echo("withFileAdvanced cannot open: " & fn)
+    echo("withFileAdvanced cannot open: " & filenamest)
 
 
 

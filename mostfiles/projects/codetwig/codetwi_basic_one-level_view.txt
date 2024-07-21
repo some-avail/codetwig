@@ -2,32 +2,41 @@
  ~~~~~~~~~~~~~~~~~  Project = codetwig  ~~~~~~~~~~~~~~~~~~~~
 
 ctwig---------------------------------------------------
-    clipString                       proc      line: 120
-    addSourceFilesToProject_old      proc      line: 137
-    addSourceFilesToProject          proc      line: 215
-    extractFileSectionToSequence     proc      line: 300
-    getSliceFromAnchor               proc      line: 323
-    countLinesOfFile                 proc      line: 397
-    createDeclarationList            proc      line: 410
-    getSliceFromLines                proc      line: 691
-    getXLinesWithSubstring           proc      line: 772
-    createCodeViewFile               proc      line: 802
-    getSeqFromFileLines              proc      line: 1050
-    getSeqFromFileLines2             proc      line: 1112
-    getSeqFromLinesSpecial           proc      line: 1192
-    writeFamily                      proc      line: 1260
-    echoDeclarationData              proc      line: 1354
-    showDeclarationBranch            proc      line: 1478
-    getRangeOfFileLines              proc      line: 1625
-    echoSequence                     proc      line: 1653
-    echoRangeOfFileLines             proc      line: 1658
-    getModulePath                    proc      line: 1664
-    showSourceCode                   proc      line: 1683
-    echoHelpInfo                     proc      line: 1836
-    createMultiProjectFiles          proc      line: 1883
-    createAllViewFiles               proc      line: 1932
-    generate_all                     proc      line: 1941
-    processCommandLine               proc      line: 1949
+    clipString                       proc      line: 129
+    addSourceFilesToProject          proc      line: 145
+    extractFileSectionToSequence     proc      line: 230
+    getSliceFromAnchor               proc      line: 253
+    countLinesOfFile                 proc      line: 327
+    getStandardLibsOfNim             proc      line: 340
+    getNimImports                    proc      line: 365
+    testNimImports                   proc      line: 428
+    substringInSequence              proc      line: 470
+    containsWithValidBoundaries      proc      line: 485
+    containsDeclaration              proc      line: 564
+    createDeclarationList            proc      line: 572
+    getSliceFromLines                proc      line: 897
+    getXLinesWithSubstring           proc      line: 978
+    createCodeViewFile               proc      line: 1008
+    getSeqFromFileLines              proc      line: 1261
+    getSeqFromFileLines2             proc      line: 1323
+    getSeqFromLinesSpecial           proc      line: 1403
+    writeFamily                      proc      line: 1572
+    echoDeclarationData              proc      line: 1667
+    findLines                        proc      line: 1793
+    echoDeclarationParts             proc      line: 1845
+    getRangeOfFileLines              proc      line: 1872
+    echoSequence                     proc      line: 1900
+    echoRangeOfFileLines             proc      line: 1905
+    getModulePath                    proc      line: 1911
+    echoSourceCode                   proc      line: 1931
+    showItem                         proc      line: 1963
+    showDeclarationBranch            proc      line: 2082
+    showSourceCode                   proc      line: 2092
+    echoHelpInfo                     proc      line: 2103
+    createMultiProjectFiles          proc      line: 2152
+    createAllViewFiles               proc      line: 2201
+    generate_all                     proc      line: 2210
+    processCommandLine               proc      line: 2218
 jolibs/generic/g_cookie---------------------------------------------------
     getFuncParts                     proc      line: 29
     runFunctionFromClient            proc      line: 46
@@ -120,11 +129,11 @@ jolibs/generic/g_templates---------------------------------------------------
     wisp                             template  line: 53
     withFile                         template  line: 85
     withFileAdvanced                 template  line: 97
-    doWork                           proc      line: 125
-    timeStuff                        template  line: 131
-    timeThings                       template  line: 137
-    timeNeatly                       template  line: 145
-    timeCop                          template  line: 151
+    doWork                           proc      line: 126
+    timeStuff                        template  line: 132
+    timeThings                       template  line: 138
+    timeNeatly                       template  line: 146
+    timeCop                          template  line: 152
 jolibs/generic/g_tools---------------------------------------------------
     convertSequenceToFile            proc      line: 48
     convertSequenceToText            proc      line: 56

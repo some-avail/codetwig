@@ -6,28 +6,12 @@
 ****************    ctwig   ***********************************************************************
 
 ----------------------------------------------------------------------
-    clipString                       ctwig          proc      line: 120
+    clipString                       ctwig          proc      line: 129
         (inputst: string, lengthit: int): string 
 
   # maximize string at lengthit
 ----------------------------------------------------------------------
-    addSourceFilesToProject_old      ctwig          proc      line: 137
-        (proj_def_pathst: string): string 
-        
-  Based on the project-path in the project-def-file, the source-files
-  from that project are added to the project-def-file.
-
-  ADAP FUT
-  -add param overwritebo to overwrite / update the current sf-list
-  -exclusion-list to auto-exclude certain files that are probably copies
-  of originals, with numbers and words like bak or copy.
-  
-
-    # open the project-file for read-write access
-        # check for block-header
-              # read the project-path
-----------------------------------------------------------------------
-    addSourceFilesToProject          ctwig          proc      line: 215
+    addSourceFilesToProject          ctwig          proc      line: 145
         (proj_def_pathst: string): string 
         
   Based on the project-path in the project-def-file, the source-files
@@ -47,7 +31,7 @@
         # check for block-header
               # read the project-path
 ----------------------------------------------------------------------
-    extractFileSectionToSequence     ctwig          proc      line: 300
+    extractFileSectionToSequence     ctwig          proc      line: 230
         (filepathst, start_separst, end_separst: string): seq[string] 
         
     Extract the lines of a file that are located between the starting and ending separator and 
@@ -55,7 +39,7 @@
   
 
 ----------------------------------------------------------------------
-    getSliceFromAnchor               ctwig          proc      line: 323
+    getSliceFromAnchor               ctwig          proc      line: 253
         (tekst, anchorst: string, possib_endmarksq: seq[string], appendspacebo: bool): array[0..1, int] 
         
     Searching in the tekst, return a target-string indicated as slice [start,end] located after an anchor-string.
@@ -75,11 +59,59 @@
   
 
 ----------------------------------------------------------------------
-    countLinesOfFile                 ctwig          proc      line: 397
+    countLinesOfFile                 ctwig          proc      line: 327
         (filepathst: string): int 
 
 ----------------------------------------------------------------------
-    createDeclarationList            ctwig          proc      line: 410
+    getStandardLibsOfNim             ctwig          proc      line: 340
+        (filepathst: string): seq[string] 
+        
+    All modules in the standard library of Nim.
+    Current Nim version: 2.0.8
+    Gotten from: https://nim-lang.org/docs/theindex.html
+    Sub-section modules
+  
+
+----------------------------------------------------------------------
+    getNimImports                    ctwig          proc      line: 365
+        (filepathst: string; exclude_stdlibsbo: bool = true, include_selfbo: bool = true): seq[string] 
+         
+    Open the file and read the relevant imports to a sequence.
+    param exclude_stdlibsbo = false not yet fully implemented.
+            usefull for analysing nimlang and its libs themselves
+   
+
+    # below resp: the resulting module-list, temp. module-list, split import-path-parts
+            # not yet implemented
+----------------------------------------------------------------------
+    testNimImports                   ctwig          proc      line: 428
+        (proj_def_pathst: string) 
+        
+   test the proc getNimImports for a specific project-def
+  
+
+    # retrieve project-data from project-def-file
+----------------------------------------------------------------------
+    substringInSequence              ctwig          proc      line: 470
+        (stringsq: seq[string]; substringst: string): bool 
+        
+    Return true if the substring is in one of the elements.
+  
+
+----------------------------------------------------------------------
+    containsWithValidBoundaries      ctwig          proc      line: 485
+        (tekst, subst: string; beforesq, aftersq: seq[string], allowfirstlastbo: bool): bool 
+
+  # subst within tekst has valid bounds if before and after strings are in seqs
+  # allowfirstlastbo means that the subst is allowed as first or last part of tekst
+          # no further testing needed
+----------------------------------------------------------------------
+    containsDeclaration              ctwig          proc      line: 564
+        (linest, declarationst: string): bool 
+
+  # test if the line contains a dec. and has the right boundaries
+----------------------------------------------------------------------
+    createDeclarationList            ctwig          proc      line: 572
         (proj_def_pathst: string) 
         
   proj_def_pathst = path to the file in which the codetwig-project for a source-project is defined
@@ -101,7 +133,7 @@
     # to avoid doubles
     # must be unique
 ----------------------------------------------------------------------
-    getSliceFromLines                ctwig          proc      line: 691
+    getSliceFromLines                ctwig          proc      line: 897
         (fileob: var File, linestartit, lineendit: int, starttagst, endtagst: string, samelinebo: bool = false): array[0..1, int] 
         
     Looping thru the lines, starting at linestart, retrieve the starting and ending point 
@@ -116,7 +148,7 @@
           # geval2: starttag is ( en eindtag is )
                 # search the next occurence of starttagst
 ----------------------------------------------------------------------
-    getXLinesWithSubstring           ctwig          proc      line: 772
+    getXLinesWithSubstring           ctwig          proc      line: 978
         (fileob: var File, subst: string, linestartit, lineendit, numberit: int): seq[string] 
          Retrieve numberit lines from fileob based on the substring in them 
      starting from linestartit and put them in a sequence. Lines are prestripped for comparison
@@ -126,7 +158,7 @@
 
 
 ----------------------------------------------------------------------
-    createCodeViewFile               ctwig          proc      line: 802
+    createCodeViewFile               ctwig          proc      line: 1008
         (proj_def_pathst: string, viewtypeeu: ViewType) 
         
   Create view-files of the enum-type
@@ -139,7 +171,7 @@
     # set the target-dir and declaration-file
     # create the source-file-table
 ----------------------------------------------------------------------
-    getSeqFromFileLines              ctwig          proc      line: 1050
+    getSeqFromFileLines              ctwig          proc      line: 1261
         (filepathst, searchst, sep1st, sep2st: string, searchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
         
     Add lines to the sequence which match the search-filter.
@@ -156,7 +188,7 @@
   
 
 ----------------------------------------------------------------------
-    getSeqFromFileLines2             ctwig          proc      line: 1112
+    getSeqFromFileLines2             ctwig          proc      line: 1323
         (filepathst, fstsearchst, secsearchst, sep1st, sep2st: string, fstsearchfieldar, secsearchfieldar: array[0..1, int], substringbo: bool = true): seq[string] 
         
     Add lines to the sequence which match the search-filter.
@@ -172,7 +204,7 @@
   
 
 ----------------------------------------------------------------------
-    getSeqFromLinesSpecial           ctwig          proc      line: 1192
+    getSeqFromLinesSpecial           ctwig          proc      line: 1403
         (filepathst, searchst, sep1st, sep2st: string, projectst = ""): seq[string] 
         
     Search-function specific for the dec-list phase-3.
@@ -183,8 +215,9 @@
     extra separator and sortfieldar may come later
   
 
+    # set the target-dir and declaration-file
 ----------------------------------------------------------------------
-    writeFamily                      ctwig          proc      line: 1260
+    writeFamily                      ctwig          proc      line: 1572
         (proj_def_pathst, declarationst, modulest, directionst: string, curdepthit, maxdepthit: int, projectst: string = "") 
         
   Recursive procedure to write / echo either used or used-by declarations, which can also be seen as children and parents.
@@ -192,7 +225,7 @@
 
     # set the target-dir and declaration-file
 ----------------------------------------------------------------------
-    echoDeclarationData              ctwig          proc      line: 1354
+    echoDeclarationData              ctwig          proc      line: 1667
         (proj_def_pathst, declarationst, modulest: string, projectst: string = "") 
         
     Echo extra data of the declare like parameters and comment.
@@ -202,17 +235,15 @@
     # set the target-dir and declaration-file
     # add the parameter-declares (inputs)
 ----------------------------------------------------------------------
-    showDeclarationBranch            ctwig          proc      line: 1478
-        (proj_def_pathst, directionst: string, maxdepthit: int) 
-        
-  Show a tree of declarations; either a usage-tree or a used-by-tree.
+    findLines                        ctwig          proc      line: 1793
+        (inputst, sep1st, sep3st, decfilecontentst, projecttypest: string): seq[string] 
 
-
-    # set the target-dir and declaration-file
-      # if no exact match found or wildcard used (all found):
-          # maybe find something with substring-search
 ----------------------------------------------------------------------
-    getRangeOfFileLines              ctwig          proc      line: 1625
+    echoDeclarationParts             ctwig          proc      line: 1845
+        (linest, sep3st, sep1st, proj_def_pathst, directionst: string, maxdepthit: int) 
+
+----------------------------------------------------------------------
+    getRangeOfFileLines              ctwig          proc      line: 1872
         (filepathst: string, linestartit, lineendit: int): seq[string] 
         
     Write the lines of the range starting with linestartit and ending with lineendit 
@@ -220,34 +251,52 @@
   
 
 ----------------------------------------------------------------------
-    echoSequence                     ctwig          proc      line: 1653
+    echoSequence                     ctwig          proc      line: 1900
         (inputsq: seq[string]) 
 
 ----------------------------------------------------------------------
-    echoRangeOfFileLines             ctwig          proc      line: 1658
+    echoRangeOfFileLines             ctwig          proc      line: 1905
         (filepathst: string, linestartit, lineendit: int) 
 
 ----------------------------------------------------------------------
-    getModulePath                    ctwig          proc      line: 1664
+    getModulePath                    ctwig          proc      line: 1911
         (proj_def_pathst, modulest, projectst: string): string 
 
     # retrieve project-data from project-def-file
 ----------------------------------------------------------------------
-    showSourceCode                   ctwig          proc      line: 1683
-        (proj_def_pathst: string) 
+    echoSourceCode                   ctwig          proc      line: 1931
+        (linest, sep3st, sep1st, proj_def_pathst: string) 
+
+----------------------------------------------------------------------
+    showItem                         ctwig          proc      line: 1963
+        (itemtypeu: ItemType, proj_def_pathst: string, directionst = "", maxdepthit = 0) 
         
-  Show the source-code of a declaration
+  Show either declarational partial data or full source-code
 
 
     # set the target-dir and declaration-file
       # if no exact match found or wildcard used (all found):
           # maybe find something with substring-search
 ----------------------------------------------------------------------
-    echoHelpInfo                     ctwig          proc      line: 1836
+    showDeclarationBranch            ctwig          proc      line: 2082
+        (proj_def_pathst, directionst: string, maxdepthit: int) 
+        
+    Show a tree of declarations; either a usage-tree or a used-by-tree.
+  
+
+----------------------------------------------------------------------
+    showSourceCode                   ctwig          proc      line: 2092
+        (proj_def_pathst: string) 
+        
+    Show the source-code of a declaration
+  
+
+----------------------------------------------------------------------
+    echoHelpInfo                     ctwig          proc      line: 2103
         () 
 
 ----------------------------------------------------------------------
-    createMultiProjectFiles          ctwig          proc      line: 1883
+    createMultiProjectFiles          ctwig          proc      line: 2152
         (multiprojectdefst: string) 
         
   Currently:
@@ -265,15 +314,15 @@
   # extract the project-file-names from the multiproj-file
   # retrieve the phase3 dec-list for all projects and put them in a list-seq
 ----------------------------------------------------------------------
-    createAllViewFiles               ctwig          proc      line: 1932
+    createAllViewFiles               ctwig          proc      line: 2201
         (filepathst: string) 
 
 ----------------------------------------------------------------------
-    generate_all                     ctwig          proc      line: 1941
+    generate_all                     ctwig          proc      line: 2210
         (projectpathst: string) 
 
 ----------------------------------------------------------------------
-    processCommandLine               ctwig          proc      line: 1949
+    processCommandLine               ctwig          proc      line: 2218
         () 
         
   firstly load the args from the commandline and set the needed vars 
@@ -1293,11 +1342,11 @@ Sample output:
   # works only for non-release-compilation; thats ok
 ----------------------------------------------------------------------
     withFile                         jolibs/generic/g_templatestemplate  line: 85
-        (f, fn, mode, actions: untyped): untyped 
+        (fileob, filenamest, mode, actions: untyped): untyped 
 
 ----------------------------------------------------------------------
     withFileAdvanced                 jolibs/generic/g_templatestemplate  line: 97
-        (f, fn, mode, actions: untyped): untyped 
+        (fileob, filenamest, mode, actions: untyped): untyped 
          
 Below are some timing-functions that may or may not
 work. I find the cpuTime function unreliable, for example
@@ -1307,24 +1356,24 @@ accurate.
  
 
 ----------------------------------------------------------------------
-    doWork                           jolibs/generic/g_templatesproc      line: 125
+    doWork                           jolibs/generic/g_templatesproc      line: 126
         (x: int) 
 
 ----------------------------------------------------------------------
-    timeStuff                        jolibs/generic/g_templatestemplate  line: 131
+    timeStuff                        jolibs/generic/g_templatestemplate  line: 132
         (statement: untyped): string 
 
 ----------------------------------------------------------------------
-    timeThings                       jolibs/generic/g_templatestemplate  line: 137
+    timeThings                       jolibs/generic/g_templatestemplate  line: 138
         (statement: untyped) 
 
   # easiest to use
 ----------------------------------------------------------------------
-    timeNeatly                       jolibs/generic/g_templatestemplate  line: 145
+    timeNeatly                       jolibs/generic/g_templatestemplate  line: 146
         (statement: untyped): float 
 
 ----------------------------------------------------------------------
-    timeCop                          jolibs/generic/g_templatestemplate  line: 151
+    timeCop                          jolibs/generic/g_templatestemplate  line: 152
         (statement: untyped) 
 
   # measures real-time instead of cpu-time

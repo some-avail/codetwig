@@ -1,40 +1,46 @@
-other_declaration~~~ctwig~~~import jolibs/ge~~~ls:29
-other_declaration~~~ctwig~~~import std/[os, ~~~ls:30
-other_declaration~~~ctwig~~~var ~~~ls:33
-other_declaration~~~ctwig~~~type~~~ls:42
-other_declaration~~~ctwig~~~var debugbo: boo~~~ls:95
-extractFileExtension~~~ctwig~~~proc~~~ls:105~~~cs:5~~~ce:24
-clipString~~~ctwig~~~proc~~~ls:125~~~cs:5~~~ce:14
-addSourceFilesToProject~~~ctwig~~~proc~~~ls:141~~~cs:5~~~ce:27
-extractFileSectionToSequence~~~ctwig~~~proc~~~ls:226~~~cs:5~~~ce:32
-getSliceFromAnchor~~~ctwig~~~proc~~~ls:249~~~cs:5~~~ce:22
-countLinesOfFile~~~ctwig~~~proc~~~ls:323~~~cs:5~~~ce:20
-createDeclarationList~~~ctwig~~~proc~~~ls:336~~~cs:5~~~ce:25
-getSliceFromLines~~~ctwig~~~proc~~~ls:618~~~cs:5~~~ce:21
-getXLinesWithSubstring~~~ctwig~~~proc~~~ls:699~~~cs:5~~~ce:26
-createCodeViewFile~~~ctwig~~~proc~~~ls:729~~~cs:5~~~ce:22
-getSeqFromFileLines~~~ctwig~~~proc~~~ls:982~~~cs:5~~~ce:23
-getSeqFromFileLines2~~~ctwig~~~proc~~~ls:1044~~~cs:5~~~ce:24
-getSeqFromLinesSpecial~~~ctwig~~~proc~~~ls:1124~~~cs:5~~~ce:26
-writeFamily~~~ctwig~~~proc~~~ls:1192~~~cs:5~~~ce:15
-echoDeclarationData~~~ctwig~~~proc~~~ls:1288~~~cs:5~~~ce:23
-showDeclarationBranch_old~~~ctwig~~~proc~~~ls:1413~~~cs:5~~~ce:29
-findLines~~~ctwig~~~proc~~~ls:1562~~~cs:5~~~ce:13
-echoDeclarationParts~~~ctwig~~~proc~~~ls:1588~~~cs:5~~~ce:24
-showItem~~~ctwig~~~proc~~~ls:1614~~~cs:5~~~ce:12
-showDeclarationBranch~~~ctwig~~~proc~~~ls:1730~~~cs:5~~~ce:25
-getRangeOfFileLines~~~ctwig~~~proc~~~ls:1743~~~cs:5~~~ce:23
-echoSequence~~~ctwig~~~proc~~~ls:1771~~~cs:5~~~ce:16
-echoRangeOfFileLines~~~ctwig~~~proc~~~ls:1776~~~cs:5~~~ce:24
-getModulePath~~~ctwig~~~proc~~~ls:1782~~~cs:5~~~ce:17
-showSourceCode~~~ctwig~~~proc~~~ls:1801~~~cs:5~~~ce:18
-echoHelpInfo~~~ctwig~~~proc~~~ls:1956~~~cs:5~~~ce:16
-createMultiProjectFiles~~~ctwig~~~proc~~~ls:2005~~~cs:5~~~ce:27
-createAllViewFiles~~~ctwig~~~proc~~~ls:2054~~~cs:5~~~ce:22
-generate_all~~~ctwig~~~proc~~~ls:2063~~~cs:5~~~ce:16
-processCommandLine~~~ctwig~~~proc~~~ls:2071~~~cs:5~~~ce:22
-other_declaration~~~ctwig~~~var for_realbo: ~~~ls:2188
-other_declaration~~~ctwig~~~if for_realbo:~~~ls:2189
+other_declaration~~~ctwig~~~import jolibs/ge~~~ls:31
+other_declaration~~~ctwig~~~import std/[os, ~~~ls:32
+other_declaration~~~ctwig~~~var ~~~ls:36
+other_declaration~~~ctwig~~~type~~~ls:46
+other_declaration~~~ctwig~~~var debugbo: boo~~~ls:99
+extractFileExtension~~~ctwig~~~proc~~~ls:109~~~cs:5~~~ce:24
+clipString~~~ctwig~~~proc~~~ls:129~~~cs:5~~~ce:14
+addSourceFilesToProject~~~ctwig~~~proc~~~ls:145~~~cs:5~~~ce:27
+extractFileSectionToSequence~~~ctwig~~~proc~~~ls:230~~~cs:5~~~ce:32
+getSliceFromAnchor~~~ctwig~~~proc~~~ls:253~~~cs:5~~~ce:22
+countLinesOfFile~~~ctwig~~~proc~~~ls:327~~~cs:5~~~ce:20
+getStandardLibsOfNim~~~ctwig~~~proc~~~ls:340~~~cs:5~~~ce:24
+getNimImports~~~ctwig~~~proc~~~ls:365~~~cs:5~~~ce:17
+testNimImports~~~ctwig~~~proc~~~ls:428~~~cs:5~~~ce:18
+substringInSequence~~~ctwig~~~proc~~~ls:470~~~cs:5~~~ce:23
+containsWithValidBoundaries~~~ctwig~~~proc~~~ls:485~~~cs:5~~~ce:31
+containsDeclaration~~~ctwig~~~proc~~~ls:564~~~cs:5~~~ce:23
+createDeclarationList~~~ctwig~~~proc~~~ls:572~~~cs:5~~~ce:25
+getSliceFromLines~~~ctwig~~~proc~~~ls:897~~~cs:5~~~ce:21
+getXLinesWithSubstring~~~ctwig~~~proc~~~ls:978~~~cs:5~~~ce:26
+createCodeViewFile~~~ctwig~~~proc~~~ls:1008~~~cs:5~~~ce:22
+getSeqFromFileLines~~~ctwig~~~proc~~~ls:1261~~~cs:5~~~ce:23
+getSeqFromFileLines2~~~ctwig~~~proc~~~ls:1323~~~cs:5~~~ce:24
+getSeqFromLinesSpecial~~~ctwig~~~proc~~~ls:1403~~~cs:5~~~ce:26
+writeFamily~~~ctwig~~~proc~~~ls:1572~~~cs:5~~~ce:15
+echoDeclarationData~~~ctwig~~~proc~~~ls:1667~~~cs:5~~~ce:23
+findLines~~~ctwig~~~proc~~~ls:1793~~~cs:5~~~ce:13
+echoDeclarationParts~~~ctwig~~~proc~~~ls:1845~~~cs:5~~~ce:24
+getRangeOfFileLines~~~ctwig~~~proc~~~ls:1872~~~cs:5~~~ce:23
+echoSequence~~~ctwig~~~proc~~~ls:1900~~~cs:5~~~ce:16
+echoRangeOfFileLines~~~ctwig~~~proc~~~ls:1905~~~cs:5~~~ce:24
+getModulePath~~~ctwig~~~proc~~~ls:1911~~~cs:5~~~ce:17
+echoSourceCode~~~ctwig~~~proc~~~ls:1931~~~cs:5~~~ce:18
+showItem~~~ctwig~~~proc~~~ls:1963~~~cs:5~~~ce:12
+showDeclarationBranch~~~ctwig~~~proc~~~ls:2082~~~cs:5~~~ce:25
+showSourceCode~~~ctwig~~~proc~~~ls:2092~~~cs:5~~~ce:18
+echoHelpInfo~~~ctwig~~~proc~~~ls:2103~~~cs:5~~~ce:16
+createMultiProjectFiles~~~ctwig~~~proc~~~ls:2152~~~cs:5~~~ce:27
+createAllViewFiles~~~ctwig~~~proc~~~ls:2201~~~cs:5~~~ce:22
+generate_all~~~ctwig~~~proc~~~ls:2210~~~cs:5~~~ce:16
+processCommandLine~~~ctwig~~~proc~~~ls:2218~~~cs:5~~~ce:22
+other_declaration~~~ctwig~~~var for_realbo: ~~~ls:2335
+other_declaration~~~ctwig~~~if for_realbo:~~~ls:2336
 other_declaration~~~jolibs/generic/g_cookie~~~import tables, s~~~ls:8
 other_declaration~~~jolibs/generic/g_cookie~~~import g_json2ht~~~ls:9
 other_declaration~~~jolibs/generic/g_cookie~~~var versionfl: f~~~ls:11
@@ -181,18 +187,18 @@ writeToSeparatedString~~~jolibs/generic/g_stringdata~~~proc~~~ls:302~~~cs:5~~~ce
 other_declaration~~~jolibs/generic/g_stringdata~~~when isMainModul~~~ls:315
 other_declaration~~~jolibs/generic/g_templates~~~import std/[time~~~ls:1
 other_declaration~~~jolibs/generic/g_templates~~~var versionfl: f~~~ls:3
-other_declaration~~~jolibs/generic/g_templates~~~var wispbo* = fa~~~ls:6
+other_declaration~~~jolibs/generic/g_templates~~~var wispbo* = tr~~~ls:6
 wisp_old~~~jolibs/generic/g_templates~~~template~~~ls:10~~~cs:9~~~ce:16
 getTrace~~~jolibs/generic/g_templates~~~template~~~ls:29~~~cs:9~~~ce:16
 wisp~~~jolibs/generic/g_templates~~~template~~~ls:53~~~cs:9~~~ce:12
 withFile~~~jolibs/generic/g_templates~~~template~~~ls:85~~~cs:9~~~ce:16
 withFileAdvanced~~~jolibs/generic/g_templates~~~template~~~ls:97~~~cs:9~~~ce:24
-doWork~~~jolibs/generic/g_templates~~~proc~~~ls:125~~~cs:5~~~ce:10
-timeStuff~~~jolibs/generic/g_templates~~~template~~~ls:131~~~cs:9~~~ce:17
-timeThings~~~jolibs/generic/g_templates~~~template~~~ls:137~~~cs:9~~~ce:18
-timeNeatly~~~jolibs/generic/g_templates~~~template~~~ls:145~~~cs:9~~~ce:18
-timeCop~~~jolibs/generic/g_templates~~~template~~~ls:151~~~cs:9~~~ce:15
-other_declaration~~~jolibs/generic/g_templates~~~when isMainModul~~~ls:161
+doWork~~~jolibs/generic/g_templates~~~proc~~~ls:126~~~cs:5~~~ce:10
+timeStuff~~~jolibs/generic/g_templates~~~template~~~ls:132~~~cs:9~~~ce:17
+timeThings~~~jolibs/generic/g_templates~~~template~~~ls:138~~~cs:9~~~ce:18
+timeNeatly~~~jolibs/generic/g_templates~~~template~~~ls:146~~~cs:9~~~ce:18
+timeCop~~~jolibs/generic/g_templates~~~template~~~ls:152~~~cs:9~~~ce:15
+other_declaration~~~jolibs/generic/g_templates~~~when isMainModul~~~ls:162
 other_declaration~~~jolibs/generic/g_tools~~~import strutils,~~~ls:8
 other_declaration~~~jolibs/generic/g_tools~~~import g_templat~~~ls:9
 other_declaration~~~jolibs/generic/g_tools~~~var versionfl: f~~~ls:11

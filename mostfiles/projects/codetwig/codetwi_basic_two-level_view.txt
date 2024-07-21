@@ -2,87 +2,114 @@
  ~~~~~~~~~~~~~~~~~  Project = codetwig  ~~~~~~~~~~~~~~~~~~~~
 
 ctwig--------------------------------------------------------------------
-    clipString                       proc      line: 120
-    addSourceFilesToProject_old      proc      line: 137
-        writeFilePatternToSeq            .../g_disk2nim         proc      182
-        writeFilePatternToSeq2           .../g_disk2nim         proc      182
-    addSourceFilesToProject          proc      line: 215
-        writeFilePatternToSeq            .../g_disk2nim         proc      264
-        writeFilePatternToSeqRec         .../g_disk2nim         proc      264
-    extractFileSectionToSequence     proc      line: 300
-        withFile                         .../g_templates        template  311
-        withFileAdvanced                 .../g_templates        template  311
-    getSliceFromAnchor               proc      line: 323
-    countLinesOfFile                 proc      line: 397
-    createDeclarationList            proc      line: 410
-        extractFileSectionToSequence     ctwig                  proc      467
-        getSliceFromAnchor               ctwig                  proc      522
-        countLinesOfFile                 ctwig                  proc      578
-    getSliceFromLines                proc      line: 691
-    getXLinesWithSubstring           proc      line: 772
-    createCodeViewFile               proc      line: 802
-        extractFileSectionToSequence     ctwig                  proc      833
-        getSliceFromLines                ctwig                  proc      948
-        getXLinesWithSubstring           ctwig                  proc      985
-    getSeqFromFileLines              proc      line: 1050
-    getSeqFromFileLines2             proc      line: 1112
-    getSeqFromLinesSpecial           proc      line: 1192
-    writeFamily                      proc      line: 1260
-        getSeqFromLinesSpecial           ctwig                  proc      1320
-        writeFamily                      ctwig                  proc      1315
-        readFromSeparatedString          .../g_stringdata       proc      1296
-    echoDeclarationData              proc      line: 1354
-        extractFileExtension             ctwig                  proc      1381
-        extractFileSectionToSequence     ctwig                  proc      1383
-        getSliceFromLines                ctwig                  proc      1421
-        getXLinesWithSubstring           ctwig                  proc      1446
-        readFromSeparatedString          .../g_stringdata       proc      1404
-        wisp                             .../g_templates        template  1377
-    showDeclarationBranch            proc      line: 1478
-        extractFileExtension             ctwig                  proc      1504
-        writeFamily                      ctwig                  proc      1579
-        echoDeclarationData              ctwig                  proc      1576
-        readFromSeparatedString          .../g_stringdata       proc      1533
-        wisp                             .../g_templates        template  1529
-    getRangeOfFileLines              proc      line: 1625
-        withFile                         .../g_templates        template  1638
-        withFileAdvanced                 .../g_templates        template  1638
-    echoSequence                     proc      line: 1653
-    echoRangeOfFileLines             proc      line: 1658
-        getRangeOfFileLines              ctwig                  proc      1660
-        echoSequence                     ctwig                  proc      1660
-    getModulePath                    proc      line: 1664
-        extractFileExtension             ctwig                  proc      1669
-        extractFileSectionToSequence     ctwig                  proc      1671
-    showSourceCode                   proc      line: 1683
-        extractFileExtension             ctwig                  proc      1707
-        echoRangeOfFileLines             ctwig                  proc      1785
-        getModulePath                    ctwig                  proc      1785
-        readFromSeparatedString          .../g_stringdata       proc      1736
-        wisp                             .../g_templates        template  1732
-    echoHelpInfo                     proc      line: 1836
-    createMultiProjectFiles          proc      line: 1883
-        clipString                       ctwig                  proc      1922
-        extractFileSectionToSequence     ctwig                  proc      1915
-        concatenateFiles                 .../g_tools            proc      1927
-    createAllViewFiles               proc      line: 1932
-        createCodeViewFile               ctwig                  proc      1934
-    generate_all                     proc      line: 1941
-        createDeclarationList            ctwig                  proc      1943
-        createAllViewFiles               ctwig                  proc      1944
-    processCommandLine               proc      line: 1949
-        addSourceFilesToProject          ctwig                  proc      2017
-        createDeclarationList            ctwig                  proc      2019
-        showDeclarationBranch            ctwig                  proc      2027
-        showSourceCode                   ctwig                  proc      2029
-        echoHelpInfo                     ctwig                  proc      2031
-        createMultiProjectFiles          ctwig                  proc      2021
-        createAllViewFiles               ctwig                  proc      2023
-        generate_all                     ctwig                  proc      2025
+    clipString                       proc      line: 129
+    addSourceFilesToProject          proc      line: 145
+        writeFilePatternToSeqRec         .../g_disk2nim         proc      194
+    extractFileSectionToSequence     proc      line: 230
+        withFileAdvanced                 .../g_templates        template  241
+    getSliceFromAnchor               proc      line: 253
+    countLinesOfFile                 proc      line: 327
+    getStandardLibsOfNim             proc      line: 340
+        withFileAdvanced                 .../g_templates        template  352
+    getNimImports                    proc      line: 365
+        getStandardLibsOfNim             ctwig                  proc      375
+        wisp                             .../g_templates        template  394
+    testNimImports                   proc      line: 428
+        extractFileSectionToSequence     ctwig                  proc      441
+        getNimImports                    ctwig                  proc      453
+    substringInSequence              proc      line: 470
+    containsWithValidBoundaries      proc      line: 485
+        wisp                             .../g_templates        template  506
+    containsDeclaration              proc      line: 564
+    createDeclarationList            proc      line: 572
+        clipString                       ctwig                  proc      646
+        extractFileSectionToSequence     ctwig                  proc      632
+        getSliceFromAnchor               ctwig                  proc      687
+        countLinesOfFile                 ctwig                  proc      743
+        getNimImports                    ctwig                  proc      767
+        substringInSequence              ctwig                  proc      832
+        containsWithValidBoundaries      ctwig                  proc      826
+        wisp                             .../g_templates        template  837
+    getSliceFromLines                proc      line: 897
+    getXLinesWithSubstring           proc      line: 978
+    createCodeViewFile               proc      line: 1008
+        clipString                       ctwig                  proc      1053
+        extractFileSectionToSequence     ctwig                  proc      1041
+        getSliceFromLines                ctwig                  proc      1159
+        getXLinesWithSubstring           ctwig                  proc      1196
+    getSeqFromFileLines              proc      line: 1261
+    getSeqFromFileLines2             proc      line: 1323
+    getSeqFromLinesSpecial           proc      line: 1403
+        clipString                       ctwig                  proc      1499
+        substringInSequence              ctwig                  proc      1525
+        getSeqFromLinesSpecial           ctwig                  proc      1538
+        writeFamily                      ctwig                  proc      1533
+        readFromSeparatedString          .../g_stringdata       proc      1512
+    writeFamily                      proc      line: 1572
+        clipString                       ctwig                  proc      1600
+        getSeqFromLinesSpecial           ctwig                  proc      1633
+        writeFamily                      ctwig                  proc      1628
+        readFromSeparatedString          .../g_stringdata       proc      1609
+    echoDeclarationData              proc      line: 1667
+        extractFileExtension             ctwig                  proc      1694
+        clipString                       ctwig                  proc      1708
+        extractFileSectionToSequence     ctwig                  proc      1696
+        getSliceFromLines                ctwig                  proc      1735
+        getXLinesWithSubstring           ctwig                  proc      1760
+        readFromSeparatedString          .../g_stringdata       proc      1718
+        wisp                             .../g_templates        template  1691
+    findLines                        proc      line: 1793
+        readFromSeparatedString          .../g_stringdata       proc      1805
+    echoDeclarationParts             proc      line: 1845
+        writeFamily                      ctwig                  proc      1866
+        echoDeclarationData              ctwig                  proc      1863
+    getRangeOfFileLines              proc      line: 1872
+        withFileAdvanced                 .../g_templates        template  1885
+    echoSequence                     proc      line: 1900
+    echoRangeOfFileLines             proc      line: 1905
+        getRangeOfFileLines              ctwig                  proc      1907
+        echoSequence                     ctwig                  proc      1907
+    getModulePath                    proc      line: 1911
+        extractFileExtension             ctwig                  proc      1916
+        extractFileSectionToSequence     ctwig                  proc      1918
+    echoSourceCode                   proc      line: 1931
+        echoRangeOfFileLines             ctwig                  proc      1955
+        getModulePath                    ctwig                  proc      1955
+    showItem                         proc      line: 1963
+        extractFileExtension             ctwig                  proc      1973
+        clipString                       ctwig                  proc      1986
+        findLines                        ctwig                  proc      2010
+        echoDeclarationParts             ctwig                  proc      2040
+        echoSourceCode                   ctwig                  proc      2042
+        readFromSeparatedString          .../g_stringdata       proc      2025
+        wisp                             .../g_templates        template  2003
+    showDeclarationBranch            proc      line: 2082
+        showItem                         ctwig                  proc      2088
+    showSourceCode                   proc      line: 2092
+        showItem                         ctwig                  proc      2098
+    echoHelpInfo                     proc      line: 2103
+    createMultiProjectFiles          proc      line: 2152
+        clipString                       ctwig                  proc      2191
+        extractFileSectionToSequence     ctwig                  proc      2184
+        concatenateFiles                 .../g_tools            proc      2196
+    createAllViewFiles               proc      line: 2201
+        createCodeViewFile               ctwig                  proc      2203
+    generate_all                     proc      line: 2210
+        createDeclarationList            ctwig                  proc      2212
+        createAllViewFiles               ctwig                  proc      2213
+    processCommandLine               proc      line: 2218
+        addSourceFilesToProject          ctwig                  proc      2289
+        createDeclarationList            ctwig                  proc      2291
+        showDeclarationBranch            ctwig                  proc      2299
+        showSourceCode                   ctwig                  proc      2301
+        echoHelpInfo                     ctwig                  proc      2303
+        createMultiProjectFiles          ctwig                  proc      2293
+        createAllViewFiles               ctwig                  proc      2295
+        generate_all                     ctwig                  proc      2297
 jolibs/generic/g_cookie--------------------------------------------------------------------
     getFuncParts                     proc      line: 29
     runFunctionFromClient            proc      line: 46
-        dummyPass                        .../g_cookie           proc      49
+        dummyPass                        .../g_cookie           proc      50
         setDropDown                      .../g_json2html        proc      52
 jolibs/generic/g_database--------------------------------------------------------------------
     withDb                           template  line: 78
@@ -91,18 +118,12 @@ jolibs/generic/g_database-------------------------------------------------------
     dequote                          proc      line: 92
     convertChars                     proc      line: 96
     old_getFieldAndTypeList          proc      line: 102
-        withDb                           .../g_database         template  125
     getFieldAndTypeList              proc      line: 149
-        withDb                           .../g_database         template  185
         split2                           .../g_tools            proc      218
     readFromParams                   proc      line: 252
-        withDb                           .../g_database         template  338
     Old_readFromParams               proc      line: 344
-        withDb                           .../g_database         template  426
     addNewFromParams                 proc      line: 430
-        withDb                           .../g_database         template  471
     deleteFromParams                 proc      line: 476
-        withDb                           .../g_database         template  517
     updateFromParams                 proc      line: 523
         withDb                           .../g_database         template  570
     getAllUserTables                 proc      line: 575
@@ -123,7 +144,6 @@ jolibs/generic/g_disk2nim-------------------------------------------------------
     writeFilePatternToSeq2           proc      line: 73
         getPatternLocation               .../g_disk2nim         proc      87
     writeFilePatternToSeq3           proc      line: 120
-        writeFilePatternToSeq            .../g_disk2nim         proc      169
         getPatternLocation               .../g_disk2nim         proc      134
         writeFilePatternToSeq3           .../g_disk2nim         proc      169
         wisp                             .../g_templates        template  139
@@ -139,15 +159,12 @@ jolibs/generic/g_json2html------------------------------------------------------
     setRadioButtons                  proc      line: 54
         newlang                          .../g_json2html        proc      82
         getDeepNodeFromKey               .../g_json_plus        proc      72
-        newlang                          .../g_options          proc      82
     setCheckBoxSet                   proc      line: 108
         newlang                          .../g_json2html        proc      147
         getDeepNodeFromKey               .../g_json_plus        proc      131
-        newlang                          .../g_options          proc      147
     setDropDown                      proc      line: 171
         newlang                          .../g_json2html        proc      210
         getDeepNodeFromKey               .../g_json_plus        proc      206
-        newlang                          .../g_options          proc      210
     setTableBasic                    proc      line: 249
         getDeepNodeFromKey               .../g_json_plus        proc      281
     setTableFromDb                   proc      line: 311
@@ -159,7 +176,6 @@ jolibs/generic/g_json2html------------------------------------------------------
     setDatalist                      proc      line: 647
         newlang                          .../g_json2html        proc      683
         getDeepNodeFromKey               .../g_json_plus        proc      679
-        newlang                          .../g_options          proc      683
 jolibs/generic/g_json_plus--------------------------------------------------------------------
     testDeepNodeFromKey              proc      line: 50
         testDeepNodeFromKey              .../g_json_plus        proc      82
@@ -255,23 +271,18 @@ jolibs/generic/g_options--------------------------------------------------------
 jolibs/generic/g_stringdata--------------------------------------------------------------------
     readFromSeparatedString          proc      line: 179
         zoomIntoFragments                .../g_stringdata       proc      252
-        wisp                             .../g_templates        template  224
+        wisp                             .../g_templates        template  240
     writeToSeparatedString           proc      line: 302
 jolibs/generic/g_templates--------------------------------------------------------------------
     getTrace                         template  line: 29
-        wisp                             .../g_templates        template  36
     wisp                             template  line: 53
-        wisp                             .../g_templates        template  61
     withFile                         template  line: 85
-        withFile                         .../g_templates        template  93
     withFileAdvanced                 template  line: 97
-        withFile                         .../g_templates        template  110
-        withFileAdvanced                 .../g_templates        template  110
-    doWork                           proc      line: 125
-    timeStuff                        template  line: 131
-    timeThings                       template  line: 137
-    timeNeatly                       template  line: 145
-    timeCop                          template  line: 151
+    doWork                           proc      line: 126
+    timeStuff                        template  line: 132
+    timeThings                       template  line: 138
+    timeNeatly                       template  line: 146
+    timeCop                          template  line: 152
 jolibs/generic/g_tools--------------------------------------------------------------------
     convertSequenceToFile            proc      line: 48
         withFile                         .../g_templates        template  50
