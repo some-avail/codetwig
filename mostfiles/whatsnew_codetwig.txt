@@ -1,5 +1,14 @@
 What's new in CodeTwig?
 
+1.65
+- within search now you can use line-start-appending to uniquify overloaded names
+  use like: someproc~linenumber
+- to limit false positives, dec-usages are now limited to:
+  - the imported modules
+  - only declarations with the right boundary-characters are added
+  (without param-evaluation false positives are still to be expected; however I have no plans to add  param-eval)
+
+
 1.62
 - removed bug caused by short project-names
 - added declaration-types method, iterator and converter

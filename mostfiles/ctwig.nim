@@ -30,11 +30,10 @@ u-CT version x.y - implement the objects?? not soon because they only beautify t
 
 import jolibs/generic/[g_disk2nim, g_templates, g_tools, g_stringdata]
 import std/[os, strutils, paths, tables, parseopt]
-#import aap, noot, 
-#  mies
+
 
 var 
-  versionfl: float = 1.651
+  versionfl: float = 1.652
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"

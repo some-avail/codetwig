@@ -1,0 +1,87 @@
+snel_installer definition-file for 
+si-version===2.45
+
+
+This file contains installation-information for:
+project-name===codetwig-source-package
+def-version===1.2
+
+
+Project-specific remarks:
+Small def to package the source-code of codetwig
+
+- check and update file additions, deletions and path-changes
+- put snelinstaller-exe in: /media/OnsSpul/1klein/1joris/k1-onderwerpen/computer/Programmeren/nimtaal/codetwig
+- Writes currently to above project-folder
+
+===================================================
+
+
+
+VARIABLES TO SET
+comment: defaultly call enclosed in # like #var#
+arguments---separator=#
+version=1.652
+target=./bundels_ct/codetwig_#version#
+archive=./bundels_ct/codetwig_#version#.tar.gz
+dirbasename=codetwig_#version#
+>----------------------------------<
+DIRECTORIES TO CREATE
+comment: from 2.3 onward all super-dirs are co-created
+arguments---none
+#target#/help_info
+#target#/projects
+#target#/testing_projects
+>----------------------------------<
+TARGET-LOCATION AND SOURCE-FILES TO COPY
+comment: source-files
+arguments---none
+#target#
+./mostfiles
+ctwig.nim
+nim_std_lib.lst
+>----------------------------------<
+TARGET-LOCATION AND SOURCE-FILES TO COPY
+comment: source-files
+arguments---copy_branch=1,,sample_permissions=0
+#target#
+./mostfiles/jolibs
+>----------------------------------<
+TARGET-LOCATION AND SOURCE-FILES TO COPY
+comment: none
+arguments---none
+#target#/help_info
+.
+README.md
+>----------------------------------<
+TARGET-LOCATION AND SOURCE-FILES TO COPY
+your-comment-here
+arguments---none
+#target#/help_info
+./mostfiles
+manual_codetwig.txt
+whatsnew_codetwig.txt
+>----------------------------------<
+TARGET-LOCATION AND SOURCE-FILES TO COPY
+comment: some sample project-def-files
+arguments---none
+#target#/projects
+./mostfiles/projects
+codetwig.pro
+project_template_to_copy.pro
+multiproject_template_to_copy.mul
+>----------------------------------<
+TARGET-LOCATION AND SOURCE-FILES TO COPY
+comment: sample generated folder
+arguments---copy_branch=1,,sample_permissions=0
+#target#/projects
+./mostfiles/projects/codetwig
+>----------------------------------<
+EXECUTE SHELL-COMMANDS - IN ORDER
+comment: create a tar.gz-archive; -C changes dir to avoid absolute paths
+arguments---none
+tar cfz #archive# -C #target#/.. #dirbasename#
+>----------------------------------<
+#END-OF-BLOCKS
+
+

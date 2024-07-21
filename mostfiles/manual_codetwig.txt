@@ -137,6 +137,8 @@ declaration;module;project
 
 Omitting things means a wildcard. A tilde ~ prepended or postpended means exact-match (but case-insensitive).
 
+Since 1.65, When the same declaration-name exists multiple times, a specific one can be chosen by adding the line-number after the tilde, like: someproc~401
+
 Examples:
 
 - entering nothing returns all decs
@@ -148,6 +150,8 @@ Defaultly the search is substring but sometimes you need an EXACT-MATCH, for exa
 - myfunc~ returns only that function (if unique in all projects); also allowed
 - ~myfunc
 - ~myfunc~ for who likes to type ;-)
+- myfunc~581 for the dec-occurence on that line
+
 
 
 -----------------------------------------------------------------------------

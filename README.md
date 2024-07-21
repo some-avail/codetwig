@@ -9,7 +9,7 @@
 [Go to the user-manual](mostfiles/manual_codetwig.txt)
 
 
-#### Forthcoming version: 1.62
+#### Forthcoming version: 1.651
 
 ### Description CodeTwig
 
@@ -53,14 +53,19 @@ Or look at the commits.
 - 1.62
   - removed bug caused by short project-names
   - added declaration-types method, iterator and converter
-
+- 1.65
+  - within search now you can use line-start-appending to uniquify overloaded names
+    use like: someproc~linenumber
+  - to limit false positives, dec-usages are now limited to:
+    - the imported modules
+    - only declarations with the right boundary-characters are added
+    (without param-evaluation false positives are still to be expected; however I have no plans to add  param-eval)
 
 
 ### Remaining future plans:
 - add an options-file (for example for customizing the number of comment-lines)
-- within search do enable line-start-appending to be able to uniquify overloaded names
-- limit decs in the usage-tree to the imported modules (optionize).
 - multiproject-level regeneration of individual project-files.
+- add a command to view a full module (instead of just a declaration)
 
 
 ### Maybe ever?
