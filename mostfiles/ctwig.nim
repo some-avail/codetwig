@@ -28,12 +28,12 @@ u-CT version x.y - implement the objects?? not soon because they only beautify t
 
 
 
-import jolibs/generic/[g_disk2nim, g_templates, g_tools, g_stringdata]
+import jolibs/generic/[g_disk2nim, g_templates, g_tools, g_stringdata, g_options]
 import std/[os, strutils, paths, tables, parseopt]
 
 
 var 
-  versionfl: float = 1.652
+  versionfl: float = 1.701
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -493,7 +493,7 @@ proc containsWithValidBoundaries(tekst, subst: string; beforesq, aftersq: seq[st
 
   try:
 
-    wispbo = true
+    wispbo = false
 
     forokbo = false
     aftokbo = false
@@ -572,13 +572,6 @@ proc containsWithValidBoundaries(tekst, subst: string; beforesq, aftersq: seq[st
     #echo repr(errob) 
     echo "\p****End exception****\p"
 
-
-
-
-proc containsDeclaration(linest, declarationst: string): bool = 
-
-  # test if the line contains a dec. and has the right boundaries
-  discard()
 
 
 
@@ -770,22 +763,18 @@ proc createDeclarationList(proj_def_pathst: string) =
     # phase 3 uses a phase-2 dec-list and appends all used decs from the source-code-range..
     echo "-------------third phase----------------"
 
-    var imports_testbo: bool = false       # run a diagnostic imports-test
+
+    
     # create the source-file-table
     for filest in source_filesq:
       filepathst = string(Path(sourceprojectpathst) / Path(filest))
       moduleta[filest] = open(filepathst, fmRead)
-      if imports_testbo:
-        echo "**************************************"
-        echo "Imported modules for: ", filepathst
-        echo getNimImports(filepathst)
-        echo ""
-
+    
 
     var imported_modulesq: seq[string]
     var check_for_imported_modulesbo: bool = true
     var module2_tailest: string
-
+    var exclude_stdlibsbo: bool = parseBool(readOptionFromFile("exclude_nim_standardlibs", optValue))
 
     if phase2fileob.open(phase2_dec_list_filepathst, fmRead) and phase2file2ob.open(phase2_dec_list_filepathst, fmRead) and phase3fileob.open(phase3_dec_list_filepathst, fmWrite):
 
@@ -802,8 +791,8 @@ proc createDeclarationList(proj_def_pathst: string) =
         lineendit  = parseInt(line1sq[6].split(":")[1])
         appendst = ""
         unique_decplusmodule2sq = @[]     # reset for every new dec1
-        #imported_modulesq = getNimImports(modulest & ".nim")
-        imported_modulesq = getNimImports(string(Path(sourceprojectpathst) / Path(modulest & ".nim")))
+        imported_modulesq = getNimImports(string(Path(sourceprojectpathst) / Path(modulest & ".nim")), exclude_stdlibsbo, true)
+
 
         # for dec2 in dec-list:
         phase2file2ob.setFilePos(0)
@@ -1204,11 +1193,12 @@ proc createCodeViewFile(proj_def_pathst: string, viewtypeeu: ViewType) =
               elif viewtypeeu == viewExtended_TwoLevels:
                 etfileob.writeLine("        " & slicest)
 
-
+            let num_double_commentit: int = parseInt(readOptionFromFile("number_double_hash_comments", optValue))
+            let num_single_commentit: int = parseInt(readOptionFromFile("number_single_hash_comments", optValue))
 
             # add separate comment-lines if present
-            doublehashsq = getXLinesWithSubstring(fob, "## ", linestartit, lineendit , 4)
-            singlehashsq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
+            doublehashsq = getXLinesWithSubstring(fob, "## ", linestartit, lineendit , num_double_commentit)
+            singlehashsq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , num_single_commentit)
 
             commentlinesq = doublehashsq & singlehashsq
 
@@ -1770,9 +1760,12 @@ proc echoDeclarationData(proj_def_pathst, declarationst, modulest: string, proje
       slicest = modstringst[interpointar[0]..interpointar[1]]
       echo("        " & slicest & "\p")
 
+    let num_double_commentit: int = parseInt(readOptionFromFile("number_double_hash_comments", optValue))
+    let num_single_commentit: int = parseInt(readOptionFromFile("number_single_hash_comments", optValue))
+
     # add separate comment-lines if present
-    doublehashsq = getXLinesWithSubstring(fob, "## ", linestartit, lineendit , 4)
-    singlehashsq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , 2)
+    doublehashsq = getXLinesWithSubstring(fob, "## ", linestartit, lineendit , num_double_commentit)
+    singlehashsq = getXLinesWithSubstring(fob, "# ", linestartit, lineendit , num_single_commentit)
 
     commentlinesq = doublehashsq & singlehashsq
     for commentlinest in commentlinesq:
