@@ -33,13 +33,13 @@ import std/[os, strutils, paths, tables, parseopt]
 
 
 var 
-  versionfl: float = 1.701
+  versionfl: float = 1.72
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
 
   excluded_declaresq: seq[string] = @["log", "else"]
-
+  extract_flowsq: seq[string] = @["  if ", "elif ", " else:", "  case ", "  of ", "  while ", "  for ", "  block "]
 
 
 type
@@ -54,6 +54,7 @@ type
   ItemType = enum
     itemDeclaration
     itemSourceCode
+    itemExtractedCode
 
 
 
@@ -1875,8 +1876,26 @@ proc echoDeclarationParts(linest, sep3st, sep1st, proj_def_pathst, directionst: 
 
 
 
+proc extractLines(codelinesq, extractablesq: seq[string]): seq[string] = 
+  #[
+    Extract lines from code-segment (usually proc) based on extractablesq which hold the extractable items.
+    Started for flow-structures like: case, if, while, for
+  ]#
+  var outlinesq: seq[string]
 
-proc getRangeOfFileLines(filepathst: string, linestartit, lineendit: int): seq[string] = 
+  for linest in codelinesq:
+    block extract:
+      for wordst in extractablesq:
+        if wordst in linest:
+          outlinesq.add(linest)
+          break extract
+
+  result = outlinesq
+
+
+
+
+proc getRangeOfFileLines(filepathst: string, linestartit, lineendit: int, filtersq: seq[string]): seq[string] = 
   #[
     Write the lines of the range starting with linestartit and ending with lineendit 
     to an output-sequence and return it.
@@ -1900,7 +1919,11 @@ proc getRangeOfFileLines(filepathst: string, linestartit, lineendit: int): seq[s
       if in_declarebo:
         outputsq.add(linest)
 
-      result = outputsq
+  if filtersq == @[""]:    # is empty
+    result = outputsq
+  else:
+    result = extractLines(outputsq, filtersq)
+
 
 
 
@@ -1909,9 +1932,9 @@ proc echoSequence(inputsq: seq[string]) =
     echo linest
 
 
-proc echoRangeOfFileLines(filepathst: string, linestartit, lineendit: int) = 
+proc echoRangeOfFileLines(filepathst: string, linestartit, lineendit: int, filtersq: seq[string]) = 
 
-  echoSequence(getRangeOfFileLines(filepathst, linestartit, lineendit))
+  echoSequence(getRangeOfFileLines(filepathst, linestartit, lineendit, filtersq))
 
 
 
@@ -1935,7 +1958,7 @@ proc getModulePath(proj_def_pathst, modulest, projectst: string): string =
 
 
 
-proc echoSourceCode(linest, sep3st, sep1st, proj_def_pathst: string) = 
+proc echoSourceCode(linest, sep3st, sep1st, proj_def_pathst: string, filtersq: seq[string]) = 
 
 
 
@@ -1959,7 +1982,7 @@ proc echoSourceCode(linest, sep3st, sep1st, proj_def_pathst: string) =
   echo declarest, " - ", modulest, "                         show SourceCode\p"   
   echo outputst
   echo "--------------------------------------------------------------------------------------------------------------\p"
-  echoRangeOfFileLines(getModulePath(proj_def_pathst, modulest, projectst), parseInt(linestartst), parseInt(lineendst))
+  echoRangeOfFileLines(getModulePath(proj_def_pathst, modulest, projectst), parseInt(linestartst), parseInt(lineendst), filtersq)
 
   echo "--------------------------------------------------------------------------------------------------------------"
 
@@ -1967,7 +1990,7 @@ proc echoSourceCode(linest, sep3st, sep1st, proj_def_pathst: string) =
 
 
 
-proc showItem(itemtypeu: ItemType, proj_def_pathst: string, directionst = "", maxdepthit = 0) = 
+proc showItem(itemtypeu: ItemType, proj_def_pathst: string, directionst = "", maxdepthit = 0, filtersq: seq[string] = @[""]) = 
 
 #[
   Show either declarational partial data or full source-code
@@ -2046,7 +2069,7 @@ proc showItem(itemtypeu: ItemType, proj_def_pathst: string, directionst = "", ma
           if itemtypeu == itemDeclaration:
             echoDeclarationParts(foundsublinesq[0], sep3st, sep1st, proj_def_pathst, directionst, maxdepthit)
           elif itemtypeu == itemSourceCode:
-            echoSourceCode(foundsublinesq[0], sep3st, sep1st, proj_def_pathst)
+            echoSourceCode(foundsublinesq[0], sep3st, sep1st, proj_def_pathst, filtersq)
 
 
         elif foundsublinesq.len == 0:
@@ -2057,7 +2080,7 @@ proc showItem(itemtypeu: ItemType, proj_def_pathst: string, directionst = "", ma
         if itemtypeu == itemDeclaration:
           echoDeclarationParts(foundlinesq[0], sep3st, sep1st, proj_def_pathst, directionst, maxdepthit)
         elif itemtypeu == itemSourceCode:
-          echoSourceCode(foundlinesq[0], sep3st, sep1st, proj_def_pathst)
+          echoSourceCode(foundlinesq[0], sep3st, sep1st, proj_def_pathst, filtersq)
 
 
     echo "Exiting..."
@@ -2092,17 +2115,17 @@ proc showDeclarationBranch(proj_def_pathst, directionst: string, maxdepthit: int
     Show a tree of declarations; either a usage-tree or a used-by-tree.
   ]#
 
-  showItem(itemDeclaration, proj_def_pathst, directionst, maxdepthit)
+  showItem(itemDeclaration, proj_def_pathst, directionst, maxdepthit, @[""])
 
 
 
-proc showSourceCode(proj_def_pathst: string) = 
+proc showSourceCode(proj_def_pathst: string, filtersq: seq[string]) = 
 
   #[
     Show the source-code of a declaration
   ]#
 
-  showItem(itemSourceCode, proj_def_pathst)
+  showItem(itemSourceCode, proj_def_pathst, filtersq=filtersq)
 
 
 
@@ -2263,6 +2286,8 @@ proc processCommandLine() =
             procst = "showDeclarationBranch"
           of "s", "sourcecode":
             procst = "showSourceCode"
+          of "f", "flow":
+            procst = "showSourceCode_filtered"
         of "r", "direction":
           case val:
           of "u", "usage":
@@ -2305,7 +2330,9 @@ proc processCommandLine() =
         of "showDeclarationBranch":
           showDeclarationBranch(projectpathst, directionst, depthit)
         of "showSourceCode":
-          showSourceCode(projectpathst)
+          showSourceCode(projectpathst, @[""])
+        of "showSourceCode_filtered":
+          showSourceCode(projectpathst, extract_flowsq)
         of "echoHelpInfo":
           echoHelpInfo()
 
