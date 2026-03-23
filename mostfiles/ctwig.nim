@@ -33,7 +33,7 @@ import std/[os, strutils, paths, tables, parseopt]
 
 
 var 
-  versionfl: float = 1.72
+  versionfl: float = 1.721
   codetwigst: string = "CodeTwig"
   ct_projectsdirst: string = "projects"
   dec_list_suffikst: string = "dec_list.dat"
@@ -2162,6 +2162,8 @@ proc echoHelpInfo() =
             procst = "showDeclarationBranch"
           of "s", "sourcecode":
             procst = "showSourceCode"
+          of "f", "flow":
+            procst = "showSourceCode_filtered"
         of "r", "direction":
           case val:
           of "u", "usage":
@@ -2169,7 +2171,10 @@ proc echoHelpInfo() =
           of "b", "used-by":
             directionst = "used-by"          
         of "d", "depth":
-          depthit = parseInt(val)
+          if val != "":
+            depthit = parseInt(val)
+          else:
+            echo "You entered the depth-key(-d), but not the value (like: -d:2)."
         of "h", "help":
           procst = "echoHelpInfo"
       of cmdEnd: 

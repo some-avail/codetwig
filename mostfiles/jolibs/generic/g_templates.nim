@@ -1,6 +1,6 @@
 import std/[times, strutils]
 
-var versionfl: float = 0.12
+var versionfl: float = 0.13
 
 
 var wispbo* = true

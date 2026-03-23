@@ -1,5 +1,12 @@
 What's new in CodeTwig?
 
+
+1.72
+ - added option -cf to filter flow-elements in the source-code (if, for, while etc.)
+
+1.701
+- added some options with codetwig_settings.conf.
+
 1.65
 - within search now you can use line-start-appending to uniquify overloaded names
   use like: someproc~linenumber

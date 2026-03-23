@@ -17,7 +17,7 @@ CodeTwig (CT) is terminal-program to view the outline of the source-code and to 
 
 #### Features
 - CT scans the source-code-files on basis of the project you have defined and adds the files from all underlying directories (after which you can prune the list).
-- It creates a declaration-list in which all declarations like procs and templates are listed 
+- It creates a declaration-list in which all declarations (decs) like procs and templates are listed, as well as other declarations the declaration uses.
 - The declaration-list is used to generate 4 text-files that give specific views of the project.
 - CT can also show (for a certain declaration / proc) the usage-trees and used-by trees on basis of the dec-list, and gives with it the arguments and the comment-section.
 - a source-code-view option (-c:s); search and show the full source-code of the proc /declaration.
@@ -25,6 +25,7 @@ CodeTwig (CT) is terminal-program to view the outline of the source-code and to 
 - multiproject-feature; CT can combine dec-list of multiple projects and thus show trees for multiple projects (multiproject-feature).
 - all functions are called by entering terminal-commands, allthough the generated view-files can be watched by themselves of course.
 
+So the dec-list (phase3) holds the list of declarations and its used declarations. However since overloaded names in Nim are common, actually they are same-named decs and sometimes the used dec is one of more same-named decs. Nim solves this by parameter-evaluation, but for now I will not get into that, and one has to accept some false positives. 
 
 ### Installation by building
 Since the program (at this stage) is for Nim only, users = programmers are assumed to be able to build the executable themselves.

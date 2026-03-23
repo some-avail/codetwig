@@ -166,5 +166,15 @@ The search-function is the same as in the tree-command; you can search for a:
 declaration;module;project
 
 See above for further explanation.
+-----------------------------------------------------------------------------
 
+-c:f or --command:flow
 
+Full example:
+ctwig projects/yourproject.pro -c:f
+
+This command shows a filtering of the source-code, specifically all the flow-element of the language. This comprises currently: if, elif, else, case (of), while, for and block
+
+Why is it usefull? Because they summarize the main structure of a proc or declaration, depending of certain variable-values.
+
+-----------------------------------------------------------------------------
